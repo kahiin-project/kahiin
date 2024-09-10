@@ -1,20 +1,34 @@
-from flask import Flask, send_from_directory
+from flask import Flask, render_template
+from flask_socketio import SocketIO, emit
+import json
+import sys
+
+passcode = sys.argv[1]
+
+with open('config.json') as config_file:
+    config = json.load(config_file)
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 
-#Route HTML files
+app.static_folder = 'web/static'
+app.template_folder = 'web/templates'
+
+
+@app.route('/admin')
+def route_admin():
+    return render_template('admin.html')
+
+
+@socketio.on('message')
+def handle_message(message):
+    emit('message', message)
+
+
 @app.route('/')
 def route_landing_page():
-    return send_from_directory('web/html', 'landing-page.html')
+    return render_template('landing-page.html')
 
-# Route CSS files
-@app.route('/<filename>.css')
-def route_css(filename):
-    return send_from_directory('web/css', filename + '.css')
-#Route JS files
-@app.route('/<filename>.js')
-def route_js(filename):
-    return send_from_directory('web/js', filename + '.js')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8080)
+    socketio.run(app, debug=True)
