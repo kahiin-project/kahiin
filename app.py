@@ -73,4 +73,4 @@ def route_landing_page():
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, port=8080)
