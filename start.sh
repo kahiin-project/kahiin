@@ -5,8 +5,8 @@ if [[ "$(uname)" == "Linux" ]]; then
     if [[ -f /data/data/com.termux/files/usr/bin/bash ]]; then
         # Termux
         pkg update
-        pkg upgrade -y
-        pkg install python3 -y
+        yes | pkg upgrade
+        yes | pkg install python3
         pip install flask
         pip install flask-socketio
         python3 app.py 1234
@@ -17,9 +17,9 @@ if [[ "$(uname)" == "Linux" ]]; then
         echo To run this script, you need to be root.
         echo 
         apt update
-        apt install python3 -y
-        apt install python3-flask -y
-        apt install python3-flask-socketio -y
+        yes | apt install python3
+        yes | apt install python3-flask
+        yes | apt install python3-flask-socketio
         python3 app.py 1234
     else
         echo "OS not supported"
