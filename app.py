@@ -39,26 +39,26 @@ class Client:
         """Remove the client from the list upon deletion."""
         clients.remove(self)
 
-# List to keep track of display connections
-display_list = []
+# List to keep track of board connections
+board_list = []
 
-class Display:
-    """Class representing a display connection."""
+class Board:
+    """Class representing a board connection."""
     
     def __init__(self, sid: str, code: str) -> None:
         """
-        Initialize a new Display instance.
+        Initialize a new Board instance.
 
-        :param sid: Session ID of the display
-        :param code: Passcode used for the display connection
+        :param sid: Session ID of the board
+        :param code: Passcode used for the board connection
         """
         self.sid = sid
         self.code = code
-        display_list.append(self)
+        board_list.append(self)
     
     def __del__(self):
-        """Remove the display from the list upon deletion."""
-        display_list.remove(self)
+        """Remove the board from the list upon deletion."""
+        board_list.remove(self)
 
 @app.route('/admin')
 def route_admin() -> str:
@@ -75,21 +75,21 @@ def route_homepage() -> str:
     """Render the homepage."""
     return render_template('homepage.html')
 
-@app.route('/display')
-def route_display_page() -> str:
-    """Render the display page."""
-    return render_template('display-page.html')
+@app.route('/board')
+def route_board_page() -> str:
+    """Render the board page."""
+    return render_template('board-page.html')
 
-@socketio.on('displayConnect')
-def handle_display_connect(code: str) -> None:
+@socketio.on('boardConnect')
+def handle_board_connect(code: str) -> None:
     """
-    Handle display connection requests.
+    Handle board connection requests.
 
-    :param code: Passcode provided by the display
+    :param code: Passcode provided by the board
     """
     if code == passcode:
-        session = Display(request.sid, code)
-        # Notify all clients about the new display connection
+        session = Board(request.sid, code)
+        # Notify all clients about the new board connection
         for c in clients:
             emit('newUser', {'username': c.username, 'sid': c.sid})
     else:
@@ -121,14 +121,14 @@ def handle_disconnect() -> None:
     sessid = request.sid
     for c in clients:
         if c.sid == sessid:
-            # Notify displays about the user disconnection
-            for d in display_list:
+            # Notify boards about the user disconnection
+            for d in board_list:
                 emit('rmUser', {'username': c.username, 'passcode': passcode}, to=d.sid)
             del(c)  # Remove the client
             return
 
-    # Remove display if it is disconnected
-    for d in display_list:
+    # Remove board if it is disconnected
+    for d in board_list:
         if d.sid == sessid:
             del(d)
 
