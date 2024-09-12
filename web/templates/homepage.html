@@ -7,17 +7,18 @@
     <script src="static/homepage.js"></script>
     <script></script>
     <title>Homepage</title>
+    <link rel="stylesheet" href="static/homepage.css" media="all" />
+    <link rel="icon" type="image/png" href="/static/app-icon-rounded.png" />
   </head>
   <body>
     <div id="form">
       <input type="text" id="Username" />
       <button id="Submit" onclick="Submit()">Submit</button>
     </div>
-    <div id="loader">
-      <!--
-      Go on Tristang
-      -->
-    </div>
+    <span id="loader"></span>
     <!-- Buttons to answer questions -->
   </body>
+  <script>
+    document.getElementById("loader").style.display = "none";
+  </script>
 </html>
