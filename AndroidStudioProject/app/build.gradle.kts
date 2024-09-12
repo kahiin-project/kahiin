@@ -51,6 +51,10 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.concurrent.futures)
+    implementation(libs.guava)
+
+    implementation(libs.listenablefuture)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
