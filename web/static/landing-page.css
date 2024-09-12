@@ -59,23 +59,27 @@ html, body{
 
 @media only screen and (max-height : 750px) {
     .main-container{
-        height: 100%;
-        top: 0;
+        /* height: 100%; */
+        height: fit-content;
+        position:fixed;
+        margin-top: auto;
+        transform: translateY(100px);
     }
     .main-container img{
         height: 250px;
         width: 250px;
-        margin-top: 70px;
+        margin-top: 0px;
         margin-left: calc(50% - 125px);
     }
     .main-container h1{
         font-size: 50px;
     }
     .main-container a{
-        height: 50px;
+        height: 45px;
         font-size: 35px;
         width: 250px;
         margin-left: calc(50% - 125px);
+        padding-bottom: 0;
     }
 }
 
