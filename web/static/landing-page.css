@@ -1,0 +1,54 @@
+@import url('https://fonts.cdnfonts.com/css/zai-seagull-felt-tip-pen');
+html, body{
+    margin: 0;
+    padding: 0;
+}
+
+.main-container{
+    position: absolute;
+    width: 400px;
+    height: 750px;
+    left: calc(50% - 200px);
+    top: calc(50% - 400px);
+}
+
+.main-container img{
+    width: 300px;
+    height: 300px;
+    margin-left: calc(50% - 150px);
+    margin-top: 50px;
+}
+.main-container h1{
+    text-align: center;
+    font-family: 'zai Seagull Felt-tip Pen', sans-serif;
+    font-size: 60px;
+    margin-top: 0;
+}
+.main-container a{
+    background: #f0f0f0;
+    display: block;
+    width: 300px;
+    height: 60px;
+    margin-bottom: 20px;
+    color: black;
+    text-decoration: none;
+    text-align: center;
+    font-family: 'zai Seagull Felt-tip Pen', sans-serif;
+    font-size: 40px;
+    border-radius: 20px;
+    margin-left: calc(50% - 150px);
+    box-shadow: 0px 5px #a3a3a3;
+}
+.main-container a:hover{
+    background: #dbdbdb;
+}
+.main-container a:active{
+    box-shadow: none;
+    transform: translateY(5px)
+}
+
+@media only screen and (max-height : 750px) {
+    .main-container{
+        height: 100%;
+    }
+}
