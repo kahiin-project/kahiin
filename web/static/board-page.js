@@ -13,15 +13,11 @@ function Submit() {
   });
 
   socket.on("rmUser", (res) => {
-    console.log("1")
     if(res.passcode == passcode) {
       const usersList = document.getElementById("users");
-      console.log("1")
       const items = usersList.getElementsByTagName("li");
-      console.log("1")
       for (let i = 0; i < items.length; i++) {
         if (items[i].textContent === res.username) {
-          console.log("1")
           usersList.removeChild(items[i]);
           break;
         }
