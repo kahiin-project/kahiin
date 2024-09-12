@@ -1,19 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page d'accueil</title>
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-    <script src="static/board-page.js"></script>
-    <title>display</title>
+    <script src="static/host-page.js"></script>
   </head>
   <body>
     <div id="form">
       <input type="password" id="passcode" />
       <button id="Submit" onclick="Submit()">Submit</button>
     </div>
-    <div id="list" style="display: none">
-      <ul id="users"></ul>
-    </div>
+    <button onclick="StartSession()">Demarrer le jeu</button>
   </body>
 </html>
