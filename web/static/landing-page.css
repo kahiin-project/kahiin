@@ -30,25 +30,40 @@ html, body{
     width: 300px;
     height: 60px;
     margin-bottom: 20px;
+    margin-left: calc(50% - 150px);
     color: black;
     text-decoration: none;
     text-align: center;
     font-family: 'zai Seagull Felt-tip Pen', sans-serif;
     font-size: 40px;
     border-radius: 20px;
-    margin-left: calc(50% - 150px);
-    box-shadow: 0px 5px #a3a3a3;
-}
-.main-container a:hover{
-    background: #dbdbdb;
-}
-.main-container a:active{
-    box-shadow: none;
-    transform: translateY(5px)
 }
 
 @media only screen and (max-height : 750px) {
     .main-container{
         height: 100%;
+        top: 0;
+    }
+    .main-container img{
+        height: 250px;
+        width: 250px;
+        margin-top: 80px;
+        margin-left: calc(50% - 125px);
+    }
+    .main-container h1{
+        font-size: 50px;
+    }
+    .main-container a{
+        height: 50px;
+        font-size: 35px;
+        width: 250px;
+        margin-left: calc(50% - 125px);
+    }
+}
+
+@media only screen and (max-width : 400px) {
+    .main-container{
+        width: 100%;
+        left: 0;
     }
 }
