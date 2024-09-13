@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="static/js/board-page.js"></script>
+    <link rel="stylesheet" type="text/css" href="static/css/board-page.css" />
     <title>display</title>
   </head>
   <body>
@@ -15,8 +16,15 @@
     <div id="list" style="display: none">
       <ul id="users"></ul>
     </div>
-    <div id="display">
-      <a id="question"> Placeholder </a>
+    <div id="display" style="display: none">
+      <a id="question"></a>
+    </div>
+    <div class="container">
+      <div class="progress-bar__container">
+        <div class="progress-bar">
+          <span class="progress-bar__text">Uploaded Successfully!</span>
+        </div>
+      </div>
     </div>
   </body>
   <script onload="true">

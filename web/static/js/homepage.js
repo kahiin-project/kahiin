@@ -21,19 +21,10 @@ function Game() {
   });
 }
 
-function AnswerA() {
-  socket.emit("AnswerA");
-  /* Make the A button selectioned */
-}
-function AnswerB() {
-  socket.emit("AnswerB");
-  /* Make the B button selectioned */
-}
-function AnswerA() {
-  socket.emit("AnswerC");
-  /* Make the C button selectioned */
-}
-function AnswerA() {
-  socket.emit("AnswerD");
-  /* Make the D button selectioned */
+function sendAnswer(bouton) {
+  if (bouton in ["a", "b", "c", "d"]) {
+    emit("sendAnswer", bouton);
+  } else {
+    alert("Erreur au niveau de la reponse, veuillez réesayer");
+  }
 }
