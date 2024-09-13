@@ -1,5 +1,9 @@
+const socket = io();
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 function Submit() {
-  const socket = io();
   const passcode = document.getElementById("passcode").value;
   
   socket.emit("boardConnect", passcode);
@@ -29,5 +33,14 @@ function Submit() {
     alert(res);
     document.getElementById("list").style.display = "none";
     document.getElementById("form").style.display = "block";
+  });
+}
+
+function Display() {
+  socket.on("question", (res) => {
+    console.log("a")
+    document.getElementById("question").innerText = res.question
+    sleep(res.duration*1000);
+    document.getElementById("question").innerText = Placeholder
   });
 }
