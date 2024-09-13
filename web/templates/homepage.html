@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="static/js/homepage.js"></script>
-    <script></script>
     <title>Homepage</title>
     <link rel="stylesheet" href="static/css/homepage.css" media="all" />
     <link
@@ -19,16 +18,12 @@
       <input type="text" id="Username" />
       <button id="Submit" onclick="Submit()">Submit</button>
     </div>
-    <span id="loader"></span>
-    <div id="buttons">
+    <span id="loader" style="display: none"></span>
+    <div id="buttons" style="display: none">
       <button type="button" onclick="sendAnswer('a')">A</button>
       <button type="button" onclick="sendAnswer('b')">B</button>
       <button type="button" onclick="sendAnswer('c')">C</button>
       <button type="button" onclick="sendAnswer('d')">D</button>
     </div>
   </body>
-  <script>
-    document.getElementById("loader").style.display = "none";
-    document.getElementById("buttons").style.display = "none";
-  </script>
 </html>
