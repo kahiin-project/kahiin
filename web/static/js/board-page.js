@@ -38,10 +38,14 @@ function Submit() {
 }
 
 function Display() {
-  socket.on("question", (res) => {
-    console.log("a");
+  socket.on("questionStart", (res) => {
+    document.getElementById("question").style.display = "block";
     document.getElementById("question").innerText = res.question["title"];
-    // sleep(res.duration*1000);
-    // document.getElementById("question").innerText = "Placeholder";
+    document.getElementById("timer").innerText = "0";
+    duration = res.question["duration"];
+  });
+
+  socket.on("questionEnd", (res) => {
+    document.getElementById("question").style.display = "none";
   });
 }
