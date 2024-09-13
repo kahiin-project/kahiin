@@ -4,11 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-    <script src="static/homepage.js"></script>
+    <script src="static/js/homepage.js"></script>
     <script></script>
     <title>Homepage</title>
-    <link rel="stylesheet" href="static/homepage.css" media="all" />
-    <link rel="icon" type="image/png" href="/static/app-icon-rounded.png" />
+    <link rel="stylesheet" href="static/css/homepage.css" media="all" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/static/icon/app-icon-rounded.png"
+    />
   </head>
   <body>
     <div id="form">
@@ -17,13 +21,14 @@
     </div>
     <span id="loader"></span>
     <div id="buttons">
-      <button type="button" onclick="AnswerA()">A</button>
-      <button type="button" onclick="AnswerC()">B</button>
-      <button type="button" onclick="AnswerC()">C</button>
-      <button type="button" onclick="AnswerD()">D</button>
+      <button type="button" onclick="sendAnswer('a')">A</button>
+      <button type="button" onclick="sendAnswer('b')">B</button>
+      <button type="button" onclick="sendAnswer('c')">C</button>
+      <button type="button" onclick="sendAnswer('d')">D</button>
     </div>
   </body>
   <script>
     document.getElementById("loader").style.display = "none";
+    document.getElementById("buttons").style.display = "none";
   </script>
 </html>
