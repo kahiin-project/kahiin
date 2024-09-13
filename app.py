@@ -102,13 +102,14 @@ def handle_host_connect(code: str) -> None:
 @socketio.on('startSession')
 def handle_start_game(code: str) -> None:
     if code == passcode:
-        session = Host(request.sid, code)
-    emit('startGame' , broadcast=True)
+        emit('startGame' , broadcast=True)
+        for question in config["questions"]:
+            emit("question", {"question": question, "question_number": config["questions"].index(question), "duration" : question["duration"]}, broadcast=True)
+            pass
+    else: 
+        emit('error', "Code incorrect")
 
-    for q in config["questions"]:
-        #TODO
-        pass
-    
+
 @socketio.on('addUser')
 def handle_connect(username: str) -> None:
     """
@@ -133,13 +134,11 @@ def handle_connect(username: str) -> None:
 def handle_disconnect() -> None:
     """Handle client disconnection events."""
     sessid = request.sid
-    for c in clients:
-        if c.sid == sessid:
-            # Notify boards about the user disconnection
+    for client in clients:
+        if client.sid == sessid:
             for d in board_list:
-                emit('rmUser', {'username': c.username, 'passcode': passcode}, to=d.sid)
+                emit('rmUser', {'username': client.username, 'passcode': passcode}, to=d.sid)
             del(c)  # Remove the client
-            return
 
     # Remove board if it is disconnected
     for d in board_list:

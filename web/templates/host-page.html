@@ -11,6 +11,9 @@
       <input type="password" id="passcode" />
       <button id="Submit" onclick="Submit()">Submit</button>
     </div>
-    <button onclick="StartSession()">Demarrer le jeu</button>
+    <button id="start" onclick="StartSession()">Demarrer le jeu</button>
   </body>
+  <script onload=true>
+    document.getElementById("start").style.display = "none"
+  </script>
 </html>

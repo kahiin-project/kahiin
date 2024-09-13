@@ -20,3 +20,20 @@ function Game() {
     /* Make all the button visible */
   });
 }
+
+function AnswerA() {
+  socket.emit("AnswerA")
+  /* Make the A button selectioned */
+}
+function AnswerB() {
+  socket.emit("AnswerB")
+  /* Make the B button selectioned */
+}
+function AnswerA() {
+  socket.emit("AnswerC")
+  /* Make the C button selectioned */
+}
+function AnswerA() {
+  socket.emit("AnswerD")
+  /* Make the D button selectioned */
+}
