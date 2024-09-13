@@ -1,11 +1,12 @@
 const socket = io();
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
 function Submit() {
   const passcode = document.getElementById("passcode").value;
-  
+
   socket.emit("boardConnect", passcode);
   document.getElementById("form").style.display = "none";
   document.getElementById("list").style.display = "block";
@@ -17,7 +18,7 @@ function Submit() {
   });
 
   socket.on("rmUser", (res) => {
-    if(res.passcode == passcode) {
+    if (res.passcode == passcode) {
       const usersList = document.getElementById("users");
       const items = usersList.getElementsByTagName("li");
       for (let i = 0; i < items.length; i++) {
@@ -38,9 +39,9 @@ function Submit() {
 
 function Display() {
   socket.on("question", (res) => {
-    console.log("a")
-    document.getElementById("question").innerText = res.question
-    sleep(res.duration*1000);
-    document.getElementById("question").innerText = Placeholder
+    console.log("a");
+    document.getElementById("question").innerText = res.question["title"];
+    // sleep(res.duration*1000);
+    // document.getElementById("question").innerText = "Placeholder";
   });
 }
