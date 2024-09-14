@@ -98,7 +98,7 @@ def handle_message(message: str) -> None:
 @app.route('/homepage')
 def route_homepage() -> str:
     """Render the homepage."""
-    return render_template('homepage.html')
+    return render_template('home-page.html')
 
 
 @app.route('/board')
