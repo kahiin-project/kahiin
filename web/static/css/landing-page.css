@@ -1,15 +1,3 @@
-@font-face {
-    font-family: "Digital Paper";
-    src:
-      local("Trickster"),
-      url("/static/digital-paper.otf") format("opentype"),
-}
-
-html, body{
-    margin: 0;
-    padding: 0;
-}
-
 .main-container{
     position: absolute;
     width: 400px;
