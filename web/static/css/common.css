@@ -1,0 +1,11 @@
+@font-face {
+    font-family: "Digital Paper";
+    src:
+      local("Trickster"),
+      url("/static/font/digital-paper.otf") format("opentype"),
+}
+
+html, body{
+    margin: 0;
+    padding: 0;
+}
