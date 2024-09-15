@@ -24,7 +24,7 @@ app.template_folder = 'web/templates'
 class GameTab:
     """Class representing a connected client."""
 
-    def __init__(self, sid: str, username: str, connections: list) -> None:
+    def __init__(self, sid: str, connections: list) -> None:
         """
         Initialize a new Gametab instance.
 
@@ -32,13 +32,8 @@ class GameTab:
         :param username: Username of the client
         """
         self.sid = sid
-        self.username = username
         self.connections = connections
         self.connections.append(self)
-
-    def __del__(self):
-        """Remove the client from the list upon deletion."""
-        self.connections.remove(self)
 
 
 # List to keep track of client connections
@@ -47,7 +42,8 @@ clients = []
 
 class Client(GameTab):
     def __init__(self, sid: str, username: str, connections: list) -> None:
-        super().__init__(sid, username, connections)
+        super().__init__(sid, connections)
+        self.username = username
         self.score = 0
         self.timeBegin = 0
         self.timeEnd = 0
@@ -56,12 +52,13 @@ class Client(GameTab):
         self.userAnswer = ""
         self.expectedReponse = ""
 
-    def EvalScore(self) -> None:
+    def evalScore(self) -> None:
         self.responseTime = self.timeBegin - self.timeEnd
         if self.userAnswer == self.expectedReponse:
             # Magic calculation for a score up to 500
             # TODO
             ...
+
 
 # List to keep track of board connections
 
@@ -79,8 +76,8 @@ host_list = []
 
 
 class Host(GameTab):
-    def __init__(self, sid: str, code: str, connections: list) -> None:
-        super().__init__(sid, code, connections)
+    def __init__(self, sid: str, connections: list) -> None:
+        super().__init__(sid, connections)
 
 
 @app.route('/host')
@@ -115,9 +112,10 @@ def handle_board_connect(code: str) -> None:
     :param code: Passcode provided by the board
     """
     if code == passcode:
-        session = Board(request.sid, code, board_list)
+        session = Board(sid=request.sid, connections=board_list)
         # Notify all clients about the new board connection
         for c in clients:
+            print(c)
             emit('newUser', {'username': c.username, 'sid': c.sid})
     else:
         emit('error', "Vous n'avez pas entré le bon passcode")
@@ -126,7 +124,7 @@ def handle_board_connect(code: str) -> None:
 @socketio.on('hostConnect')
 def handle_host_connect(code: str) -> None:
     if code == passcode:
-        session = Host(request.sid, code, host_list)
+        session = Host(sid=request.sid, connections=host_list)
 
 
 @socketio.on('startSession')
@@ -166,7 +164,7 @@ def handle_connect(username: str) -> None:
         return
 
     # Create a new client session
-    session = Client(sessid, username, clients)
+    session = Client(sid=sessid, username=username, connections=clients)
     emit('newUser', {'username': session.username,
          'id': session.sid}, broadcast=True)
 
@@ -177,15 +175,17 @@ def handle_disconnect() -> None:
     sessid = request.sid
     for client in clients:
         if client.sid == sessid:
+            print("deleted")
             for d in board_list:
                 emit('rmUser', {'username': client.username,
                      'passcode': passcode}, to=d.sid)
-            del (c)  # Remove the client
+
+            clients.remove(client)  # Remove the client
 
     # Remove board if it is disconnected
-    for d in board_list:
-        if d.sid == sessid:
-            del (d)
+    for board in board_list:
+        if board.sid == sessid:
+            del board
 
 
 @socketio.on('edit')
