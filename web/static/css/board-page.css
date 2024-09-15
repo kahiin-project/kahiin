@@ -7,17 +7,20 @@
   right: 30px;
   bottom: 30px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  transition: 1s;
+  opacity: 0;
 }
 
 .progressbar {
   background-color: var(--progress);
   color: white;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   padding: 1rem;
   text-align: right;
   font-size: 20px;
   border-radius: 15px;
   background-color: #68e0f8;
-  width: 50%;
+  width: 25px;
   font-family: 'Digital Paper', sans-serif;
+  transition: 1s;
+  opacity: 0;
 }

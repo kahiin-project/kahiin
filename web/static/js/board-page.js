@@ -37,12 +37,25 @@ function Submit() {
   });
 }
 
+function Count(duration, seconds){
+  if(seconds >= 0){
+    setTimeout(function(){
+      document.getElementById("timer").innerText = `${duration - seconds}`;
+      document.getElementById("timer").style.width = `calc(${100 * (duration - seconds + 1) / (duration + 1)}% - 30px)`;
+      document.getElementById("timer").style.opacity = 1;
+      document.getElementById("timerbar").style.opacity = 1;
+      Count(duration, seconds - 1);
+    }, 1000)
+  }
+}
+
 function Display() {
   socket.on("questionStart", (res) => {
     document.getElementById("question").style.display = "block";
     document.getElementById("question").innerText = res.question["title"];
     document.getElementById("timer").innerText = "0";
     duration = res.question["duration"];
+    Count(duration, duration);
   });
 
   socket.on("questionEnd", (res) => {
