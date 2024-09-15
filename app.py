@@ -70,8 +70,8 @@ board_list = []
 
 
 class Board(GameTab):
-    def __init__(self, sid: str, username: str, connections: list) -> None:
-        super().__init__(sid, username, connections)
+    def __init__(self, sid: str, connections: list) -> None:
+        super().__init__(sid, connections)
 
 
 host_list = []
@@ -79,8 +79,8 @@ host_list = []
 
 
 class Host(GameTab):
-    def __init__(self, sid: str, username: str, connections: list) -> None:
-        super().__init__(sid, username, connections)
+    def __init__(self, sid: str, code: str, connections: list) -> None:
+        super().__init__(sid, code, connections)
 
 
 @app.route('/host')
