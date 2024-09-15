@@ -2,15 +2,17 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Page d'accueil</title>
     <link rel="stylesheet" href="static/css/common.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="static/css/host-page.css" />
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="static/js/host-page.js"></script>
   </head>
   <body>
     <div id="form">
-      <input type="password" id="passcode" />
-      <button id="Submit" onclick="Submit()">Submit</button>
+      <input type="password" id="passcode" placeholder="passcode" />
+      <button id="submit" onclick="Submit()">Submit</button>
     </div>
     <button id="start" style="display: none" onclick="StartSession()">
       Demarrer le jeu

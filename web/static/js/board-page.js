@@ -31,7 +31,9 @@ function Submit() {
   });
 
   socket.on("error", (res) => {
-    alert(res);
+    document.getElementById("passcode").value = "";
+    document.getElementById("error").style.display = "block";
+    document.getAnimations("error").innerText = res;
     document.getElementById("list").style.display = "none";
     document.getElementById("form").style.display = "block";
   });
