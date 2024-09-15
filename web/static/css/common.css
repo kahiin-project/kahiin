@@ -5,6 +5,10 @@
       url("/static/font/digital-paper.otf") format("opentype"),
 }
 
+*{
+    font-family: monospace;
+}
+
 html, body{
     margin: 0;
     padding: 0;
