@@ -15,11 +15,15 @@ if [[ "$(uname)" == "Linux" ]]; then
         echo 
         echo Welcome to Linux Mint.
         echo To run this script, you need to be root.
-        echo 
+        echo
         apt update
+        yes | apt install python$(python3 -V 2>&1 | awk -F'[ .]' '{print $2"."$3}')-venv
+        python3 -m venv venv
+        source venv/bin/activate
         yes | apt install python3
-        yes | apt install python3-flask
-        yes | apt install python3-flask-socketio
+        yes | pip install flask
+        yes | pip install flask-socketio
+        yes | pip install simple-websocket
         python3 app.py 1234
     else
         echo "OS not supported"
