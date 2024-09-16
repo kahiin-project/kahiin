@@ -115,7 +115,6 @@ def handle_board_connect(code: str) -> None:
         session = Board(sid=request.sid, connections=board_list)
         # Notify all clients about the new board connection
         for c in clients:
-            print(c)
             emit('newUser', {'username': c.username, 'sid': c.sid})
     else:
         emit('error', "Vous n'avez pas entré le bon passcode")
@@ -175,7 +174,6 @@ def handle_disconnect() -> None:
     sessid = request.sid
     for client in clients:
         if client.sid == sessid:
-            print("deleted")
             for d in board_list:
                 emit('rmUser', {'username': client.username,
                      'passcode': passcode}, to=d.sid)
