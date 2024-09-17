@@ -74,3 +74,22 @@
   transform: translateX(-50%) translateY(5px);
   box-shadow: none;
 }
+
+#display{
+  display: none;
+  position: relative;
+  background: #ebebeb;
+  width: auto;
+  height: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  border: none;
+  color: black;
+  text-align: center;
+  font-family: 'Digital Paper', sans-serif;
+  font-size: 40px;
+  border-radius: 20px;
+  box-shadow: 0px 5px #888888;
+  cursor: pointer;
+  margin-top: 20px;
+}

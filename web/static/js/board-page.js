@@ -1,9 +1,5 @@
 const socket = io();
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 function Submit() {
   const passcode = document.getElementById("passcode").value;
 
@@ -55,11 +51,11 @@ function Count(duration, seconds) {
 
 function Display() {
   socket.on("startGame", (res) => {
-    document.getElementById("question").style.display = "block";
     document.getElementById("timer").style.display = "block";
     document.getElementById("list").style.display = "none";
   });
   socket.on("questionStart", (res) => {
+    document.getElementById("display").style.display = "block";
     document.getElementById("question").innerText = res.question["title"];
     document.getElementById("timer").innerText = "0";
     duration = res.question["duration"];
