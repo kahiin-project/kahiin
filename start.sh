@@ -10,17 +10,19 @@ if [[ "$(uname)" == "Linux" ]]; then
         pip install flask
         pip install flask-socketio
         python3 app.py 1234
-    elif grep -q "Linux Mint" /etc/os-release; then
+    elif command -v apt >/dev/null 2>&1; then
         # Linux Mint
         echo 
-        echo Welcome to Linux Mint.
+        echo Welcome to $(grep -oP '^NAME="\K[^"]+' /etc/os-release).
         echo To run this script, you need to be root.
         echo
-        apt update
-        yes | apt install python$(python3 -V 2>&1 | awk -F'[ .]' '{print $2"."$3}')-venv
+        sudo apt update
+        yes | sudo apt install python3 
+        yes | sudo apt install python3-pip
+        yes | sudo apt install python$(python3 -V 2>&1 | awk -F'[ .]' '{print $2"."$3}')-venv
         python3 -m venv venv
         source venv/bin/activate
-        yes | apt install python3
+        yes | sudo apt install python3
         yes | pip install flask
         yes | pip install flask-socketio
         yes | pip install simple-websocket
