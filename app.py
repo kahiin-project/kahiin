@@ -130,18 +130,24 @@ def handle_host_connect(code: str) -> None:
 def handle_start_game(code: str) -> None:
     if code == passcode:
         emit('startGame', broadcast=True)
-        for question in config["questions"]:
-            emit("questionStart", {"question": question, "question_number": config["questions"].index(
-                question)}, broadcast=True)
-            for client in clients:
-                client.timeBegin = time.time()
-                client.expectedResponse = question.answer
-            asyncio.sleep(question.duration)
-            emit("questionEnd")
-            for client in clients:
-                client.EvalScore()
-            asyncio.sleep(3)
+    else:
+        emit('error', "Code incorrect")
 
+
+@socketio.on("nextQuestion")
+def handle_next_question(res) -> None:
+    code, questionNumber = res["passcode"], res["questionCount"]
+    if code == passcode:
+        question = config["questions"][questionNumber]
+        emit("questionStart", {"question": question, "question_number": config["questions"].index(
+            question)}, broadcast=True)
+        for client in clients:
+            client.timeBegin = time.time()
+            client.expectedResponse = question["answer"]
+        time.sleep(question["duration"])
+        emit("questionEnd")
+        for client in clients:
+            client.evalScore()
     else:
         emit('error', "Code incorrect")
 
