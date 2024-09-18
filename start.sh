@@ -11,7 +11,7 @@ if [[ "$(uname)" == "Linux" ]]; then
         pip install flask-socketio
         python3 app.py 1234
     elif command -v apt >/dev/null 2>&1; then
-        # Linux Mint
+        # Debian Based
         echo 
         echo Welcome to $(grep -oP '^NAME="\K[^"]+' /etc/os-release).
         echo To run this script, you need to be root.
