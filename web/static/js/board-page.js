@@ -59,9 +59,11 @@ function Display() {
   });
   socket.on("questionStart", (res) => {
     document.getElementById("question").style.opacity = 1;
-    document.getElementById("question").innerText = res.question["title"];
+    document.getElementById("question_number").style.opacity = 1;
+    document.getElementById("question").innerText = res["question_title"];
     document.getElementById("timer").innerText = "0";
-    duration = res.question["duration"];
+    document.getElementById("question_number").innerText = `Question ${res["question_number"]}/${res["question_count"]}`;
+    duration = res["question_duration"];
     Count(duration, duration);
   });
 

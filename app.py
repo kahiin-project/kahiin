@@ -169,8 +169,16 @@ def handle_next_question(res) -> None:
     code, questionNumber = res["passcode"], res["questionCount"]
     if code == passcode:
         question = config["questions"][questionNumber]
-        emit("questionStart", {"question": question, "question_number": config["questions"].index(
-            question), "question_type": question["type"], "question_onetry": question["onetry"]}, broadcast=True)
+        data = {
+            "question_title": question["title"],
+            "question_type": question["type"],
+            "question_onetry": question["onetry"],
+            "question_duration": question["duration"],
+            "question_number": config["questions"].index(question) + 1,
+            "question_count": len(config["questions"]),
+        }
+
+        emit("questionStart", data, broadcast=True)
         for client in clients:
             client.timeBegin = time.time()
             client.expectedResponse = question["answer"]
