@@ -50,14 +50,48 @@ class Client(GameTab):
         self.responseTime = 0
 
         self.userAnswer = ""
-        self.expectedReponse = ""
+        self.expectedResponse = []
+        self.questionType = ""
 
     def evalScore(self) -> None:
         self.responseTime = self.timeBegin - self.timeEnd
-        if self.userAnswer == self.expectedReponse:
-            # Magic calculation for a score up to 500
-            # TODO
-            ...
+        match self.questionType:
+            case "uniqueanswer":
+                if type(self.userAnswer) != list:
+                    # Bad answer syntax
+                    # TODO
+                    ...
+                elif len(self.userAnswer) != 1:
+                    # Bad answer syntax
+                    # TODO
+                    ...
+                else:
+                    if self.userAnswer in self.expectedResponse:
+                        # Magic calculation for a score up to 500
+                        # TODO
+                        ...
+            case "truefalse":
+                if type(self.userAnswer) != list:
+                    # Bad answer syntax
+                    # TODO
+                    ...
+                elif len(self.userAnswer) != 1:
+                    # Bad answer syntax
+                    # TODO
+                    ...
+                else:
+                    if self.userAnswer in self.expectedResponse:
+                        # Magic calculation for a score up to 500
+                        # TODO
+                        ...
+            case "mcq":
+                # Magic calculation for a score up to 500
+                # TODO
+                ...
+            case _:
+                print("Unsupported question type")
+            
+        
 
 
 # List to keep track of board connections
@@ -140,15 +174,16 @@ def handle_next_question(res) -> None:
     if code == passcode:
         question = config["questions"][questionNumber]
         emit("questionStart", {"question": question, "question_number": config["questions"].index(
-            question)}, broadcast=True)
+            question), "question_type": question["type"], "question_onetry": question["onetry"]}, broadcast=True)
         for client in clients:
             client.timeBegin = time.time()
             client.expectedResponse = question["answer"]
+            client.questionType = question["type"]
+            client.oneTry = question["onetry"]
 
-        # 1s for progress bar to appear, 
+        # 2sec for progress bar to appear and first delay, 
         # question["duration"] seconds for the game,
-        # 1s for transition
-        time.sleep(1 + question["duration"] + 1)
+        time.sleep(2 + question["duration"])
 
         emit("questionEnd")
         for client in clients:
@@ -213,14 +248,9 @@ def handle_edit(message: dict) -> None:
     else:
         emit('error', 'Invalid passcode')
 
-
-@socketio.on('sendAnswer')
-def handle_answer(answer: str) -> None:
-    sessid = request.sid
-    for client in clients:
-        if client.sid == sessid:
-            client.timeEnd = time.time()
-            client.userAnswer = answer
+    def setUserAnswer(self, answer) -> None:
+        if self.userAnswer == "":
+            self.userAnswer = answer
 
 
 @app.route('/')
