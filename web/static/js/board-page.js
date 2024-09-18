@@ -58,7 +58,7 @@ function Display() {
     socket.emit("nextQuestion", {passcode, questionCount});
   });
   socket.on("questionStart", (res) => {
-    document.getElementById("display").style.display = "block";
+    document.getElementById("question").style.opacity = 1;
     document.getElementById("question").innerText = res.question["title"];
     document.getElementById("timer").innerText = "0";
     duration = res.question["duration"];
@@ -66,6 +66,6 @@ function Display() {
   });
 
   socket.on("questionEnd", (res) => {
-    document.getElementById("question").style.display = "none";
+    // document.getElementById("question").style.display = "none";
   });
 }
