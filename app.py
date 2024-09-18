@@ -90,13 +90,9 @@ class Client(GameTab):
                 ...
             case _:
                 print("Unsupported question type")
-            
-        
 
 
 # List to keep track of board connections
-
-
 board_list = []
 
 
@@ -181,7 +177,7 @@ def handle_next_question(res) -> None:
             client.questionType = question["type"]
             client.oneTry = question["onetry"]
 
-        # 2sec for progress bar to appear and first delay, 
+        # 2sec for progress bar to appear and first delay,
         # question["duration"] seconds for the game,
         time.sleep(2 + question["duration"])
 
@@ -210,8 +206,8 @@ def handle_connect(username: str) -> None:
 
     # Create a new client session
     session = Client(sid=sessid, username=username, connections=clients)
-    emit('newUser', {'username': session.username,
-         'id': session.sid}, broadcast=True)
+    for board in board_list:
+        emit('newUser', {'username': username, 'sid': sessid}, to=board.sid)
 
 
 @socketio.on('disconnect')
@@ -220,16 +216,16 @@ def handle_disconnect() -> None:
     sessid = request.sid
     for client in clients:
         if client.sid == sessid:
-            for d in board_list:
+            for board in board_list:
                 emit('rmUser', {'username': client.username,
-                     'passcode': passcode}, to=d.sid)
+                     'passcode': passcode}, to=board.sid)
 
             clients.remove(client)  # Remove the client
 
     # Remove board if it is disconnected
     for board in board_list:
         if board.sid == sessid:
-            del board
+            board_list.remove(board)
 
 
 @socketio.on('edit')
