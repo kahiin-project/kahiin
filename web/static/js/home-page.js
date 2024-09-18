@@ -15,8 +15,7 @@ function Submit() {
 }
 
 function Game() {
-  socket.on("startGame", (res) => {
-    document.getElementById("loader").style.display = "none";
+  socket.on("questionStart", (res) => {
     document.getElementById("buttons").style.display = "block";
   });
 }
@@ -27,4 +26,4 @@ function sendAnswer(bouton) {
   } else {
     alert("Erreur au niveau de la reponse, veuillez réesayer");
   }
-}
+};

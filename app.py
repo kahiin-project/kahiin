@@ -19,6 +19,7 @@ app.static_folder = 'web/static'
 app.template_folder = 'web/templates'
 
 # List to keep track of connected clients
+gamerun = False
 
 
 class GameTab:
@@ -141,6 +142,9 @@ def handle_board_connect(code: str) -> None:
 
     :param code: Passcode provided by the board
     """
+    if gamerun:
+        emit('error', "La partie est déjà en cours")
+        return
     if code == passcode:
         session = Board(sid=request.sid, connections=board_list)
         # Notify all clients about the new board connection
@@ -152,14 +156,20 @@ def handle_board_connect(code: str) -> None:
 
 @socketio.on('hostConnect')
 def handle_host_connect(code: str) -> None:
+    if gamerun:
+        emit('error', "La partie est déjà en cours")
+        return
     if code == passcode:
         session = Host(sid=request.sid, connections=host_list)
+    else:
+        emit('error', "Vous n'avez pas entré le bon passcode")
 
 
 @socketio.on('startSession')
 def handle_start_game(code: str) -> None:
     if code == passcode:
-        emit('startGame', broadcast=True)
+        for client in clients + board_list + host_list:
+            emit('startGame', to=client.sid)
     else:
         emit('error', "Code incorrect")
 
@@ -168,6 +178,11 @@ def handle_start_game(code: str) -> None:
 def handle_next_question(res) -> None:
     code, questionNumber = res["passcode"], res["questionCount"]
     if code == passcode:
+        if questionNumber == len(config["questions"]):
+            for client in clients + board_list + host_list:
+                emit("gameEnd", to=client.sid)
+                gamerun = False
+            return
         question = config["questions"][questionNumber]
         data = {
             "question_title": question["title"],
@@ -177,8 +192,8 @@ def handle_next_question(res) -> None:
             "question_number": config["questions"].index(question) + 1,
             "question_count": len(config["questions"]),
         }
-
-        emit("questionStart", data, broadcast=True)
+        for client in clients + board_list + host_list:
+            emit("questionStart", data, to=client.sid)
         for client in clients:
             client.timeBegin = time.time()
             client.expectedResponse = question["answer"]
@@ -205,6 +220,9 @@ def handle_connect(username: str) -> None:
     """
     sessid = request.sid
     # Check if the username is already taken
+    if gamerun:
+        emit('error', "La partie est déjà en cours")
+        return
     if any(c.username == username for c in clients):
         emit('error', 'Nom d\'utilisateur déjà pris')
         return
@@ -252,9 +270,14 @@ def handle_edit(message: dict) -> None:
     else:
         emit('error', 'Invalid passcode')
 
-    def setUserAnswer(self, answer) -> None:
-        if self.userAnswer == "":
-            self.userAnswer = answer
+
+@socketio.on('sendAnswer')
+def handle_answer(answer: str) -> None:
+    sessid = request.sid
+    for client in clients:
+        if client.sid == sessid:
+            client.timeEnd = time.time()
+            client.userAnswer = answer
 
 
 @app.route('/')
