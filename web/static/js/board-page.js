@@ -44,7 +44,9 @@ function Count(duration, seconds){
     setTimeout(function(){
       document.getElementById("timer").innerText = `${duration - seconds}`;
       document.getElementById("timer").style.width = `calc(${100 * (duration - seconds + 1) / (duration + 1)}% - 30px)`;
+      document.getElementById("timer").style.display = "block";
       document.getElementById("timer").style.opacity = 1;
+      document.getElementById("timerbar").style.display = "block";
       document.getElementById("timerbar").style.opacity = 1;
       Count(duration, seconds - 1);
     }, 1000)
