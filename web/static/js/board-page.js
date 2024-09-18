@@ -53,6 +53,9 @@ function Display() {
   socket.on("startGame", (res) => {
     document.getElementById("timer").style.display = "block";
     document.getElementById("list").style.display = "none";
+    const passcode = document.getElementById("passcode").value;
+    questionCount = 0;
+    socket.emit("nextQuestion", {passcode, questionCount});
   });
   socket.on("questionStart", (res) => {
     document.getElementById("display").style.display = "block";
