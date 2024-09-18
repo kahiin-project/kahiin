@@ -144,7 +144,12 @@ def handle_next_question(res) -> None:
         for client in clients:
             client.timeBegin = time.time()
             client.expectedResponse = question["answer"]
-        time.sleep(question["duration"])
+
+        # 1s for progress bar to appear, 
+        # question["duration"] seconds for the game,
+        # 1s for transition
+        time.sleep(1 + question["duration"] + 1)
+
         emit("questionEnd")
         for client in clients:
             client.evalScore()
