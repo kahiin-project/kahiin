@@ -1,9 +1,5 @@
 const socket = io();
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 function Submit() {
   const passcode = document.getElementById("passcode").value;
 
@@ -39,30 +35,40 @@ function Submit() {
   });
 }
 
-function Count(duration, seconds){
-  if(seconds >= 0){
-    setTimeout(function(){
+function Count(duration, seconds) {
+  if (seconds >= 0) {
+    setTimeout(function () {
       document.getElementById("timer").innerText = `${duration - seconds}`;
-      document.getElementById("timer").style.width = `calc(${100 * (duration - seconds + 1) / (duration + 1)}% - 30px)`;
-      document.getElementById("timer").style.display = "block";
+      document.getElementById("timer").style.width = `calc(${
+        (100 * (duration - seconds + 1)) / (duration + 1)
+      }% - 30px)`;
       document.getElementById("timer").style.opacity = 1;
       document.getElementById("timerbar").style.display = "block";
       document.getElementById("timerbar").style.opacity = 1;
       Count(duration, seconds - 1);
-    }, 1000)
+    }, 1000);
   }
 }
 
 function Display() {
+  socket.on("startGame", (res) => {
+    document.getElementById("timer").style.display = "block";
+    document.getElementById("list").style.display = "none";
+    const passcode = document.getElementById("passcode").value;
+    questionCount = 0;
+    socket.emit("nextQuestion", {passcode, questionCount});
+  });
   socket.on("questionStart", (res) => {
-    document.getElementById("question").style.display = "block";
-    document.getElementById("question").innerText = res.question["title"];
+    document.getElementById("question").style.opacity = 1;
+    document.getElementById("question_number").style.opacity = 1;
+    document.getElementById("question").innerText = res["question_title"];
     document.getElementById("timer").innerText = "0";
-    duration = res.question["duration"];
+    document.getElementById("question_number").innerText = `Question ${res["question_number"]}/${res["question_count"]}`;
+    duration = res["question_duration"];
     Count(duration, duration);
   });
 
   socket.on("questionEnd", (res) => {
-    document.getElementById("question").style.display = "none";
+    // document.getElementById("question").style.display = "none";
   });
 }

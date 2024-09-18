@@ -1,4 +1,5 @@
 const socket = io();
+var questionCount = 0;
 function Submit() {
     const passcode = document.getElementById("passcode").value;
     document.getElementById("form").style.display = "none";
@@ -13,5 +14,12 @@ function Submit() {
 
 function StartSession() {
   const passcode = document.getElementById("passcode").value;
+  document.getElementById("start").style.display = "none";
+  document.getElementById("next").style.display = "block";
   socket.emit("startSession", passcode);
+}
+function NextQuestion() {
+  const passcode = document.getElementById("passcode").value;
+  questionCount += 1;
+  socket.emit("nextQuestion", {passcode, questionCount});
 }
