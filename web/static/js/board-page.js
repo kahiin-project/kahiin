@@ -43,7 +43,6 @@ function Count(duration, seconds) {
         (100 * (duration - seconds + 1)) / (duration + 1)
       }% - 30px)`;
       document.getElementById("timer").style.opacity = 1;
-      document.getElementById("timerbar").style.display = "block";
       document.getElementById("timerbar").style.opacity = 1;
       Count(duration, seconds - 1);
     }, 1000);
@@ -59,7 +58,9 @@ function Display() {
     socket.emit("nextQuestion", {passcode, questionCount});
   });
   socket.on("questionStart", (res) => {
+    document.getElementById("question").style.display = "block";
     document.getElementById("question").style.opacity = 1;
+    document.getElementById("question_number").style.display = "block";
     document.getElementById("question_number").style.opacity = 1;
     document.getElementById("question").innerText = res["question_title"];
     document.getElementById("timer").innerText = "0";
