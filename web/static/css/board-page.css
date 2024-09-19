@@ -25,7 +25,7 @@ ul {
   border-radius: 15px;
   background-color: #68e0f8;
   width: 25px;
-  font-family: 'Digital Paper', sans-serif;
+  font-family: 'Bagnard', sans-serif;
   transition: 1s;
   opacity: 0;
 }
@@ -70,7 +70,7 @@ ul {
   border: none;
   color: black;
   text-align: center;
-  font-family: 'Digital Paper', sans-serif;
+  font-family: 'Bagnard', sans-serif;
   font-size: 40px;
   border-radius: 20px;
   box-shadow: 0px 5px #888888;
@@ -100,10 +100,13 @@ ul {
   border: none;
   color: black;
   text-align: center;
-  font-family: 'Digital Paper', sans-serif;
+  font-family: 'Bagnard', sans-serif;
   font-size: 40px;
   transition: 1s;
   font-weight: normal;
+}
+#question h1, #question li{
+  font-family: 'Bagnard', sans-serif;
 }
 
 #question_number{
@@ -116,7 +119,7 @@ ul {
   padding-top: 15px;
   color: gray;
   text-align: center;
-  font-family: 'Digital Paper', sans-serif;
+  font-family: 'Bagnard', sans-serif;
   font-size: 35px;
   transition: 1s;
 }
