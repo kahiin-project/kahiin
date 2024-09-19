@@ -62,7 +62,15 @@ function Display() {
     document.getElementById("question").style.opacity = 1;
     document.getElementById("question_number").style.display = "block";
     document.getElementById("question_number").style.opacity = 1;
+
     document.getElementById("question").innerText = res["question_title"];
+    renderMathInElement(document.getElementById("question"), {
+      delimiters: [
+          {left: "\$", right: "\$", display: false},
+          {left: "\$$", right: "\$$", display: true}
+      ]
+    });
+
     document.getElementById("timer").innerText = "0";
     document.getElementById("question_number").innerText = `Question ${res["question_number"]}/${res["question_count"]}`;
     duration = res["question_duration"];
