@@ -16,6 +16,12 @@
       local("Trickster"),
       url("/static/font/CothamSans.otf") format("opentype"),
 }
+@font-face {
+    font-family: "Bagnard";
+    src:
+      local("Trickster"),
+      url("/static/font/Bagnard.otf") format("opentype"),
+}
 
 *{
     font-family: monospace;
