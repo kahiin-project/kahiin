@@ -1,5 +1,5 @@
 const socket = io();
-var questionCount = 0;
+var question_count = 0;
 function Submit() {
     const passcode = document.getElementById("passcode").value;
     document.getElementById("form").style.display = "none";
@@ -12,14 +12,16 @@ function Submit() {
     });
 }
 
-function StartSession() {
+function startSession() {
   const passcode = document.getElementById("passcode").value;
   document.getElementById("start").style.display = "none";
   document.getElementById("next").style.display = "block";
   socket.emit("startSession", passcode);
+  question_count = 0;
+  socket.emit("nextQuestion", {passcode, question_count});
 }
-function NextQuestion() {
+function nextQuestion() {
   const passcode = document.getElementById("passcode").value;
-  questionCount += 1;
-  socket.emit("nextQuestion", {passcode, questionCount});
+  question_count += 1;
+  socket.emit("nextQuestion", {passcode, question_count});
 }
