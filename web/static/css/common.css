@@ -4,6 +4,18 @@
       local("Trickster"),
       url("/static/font/digital-paper.otf") format("opentype"),
 }
+@font-face {
+    font-family: "Open Dyslexic";
+    src:
+      local("Trickster"),
+      url("/static/font/OpenDyslexic-Regular.otf") format("opentype"),
+}
+@font-face {
+    font-family: "Cotham Sans";
+    src:
+      local("Trickster"),
+      url("/static/font/CothamSans.otf") format("opentype"),
+}
 
 *{
     font-family: monospace;
