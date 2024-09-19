@@ -18,7 +18,7 @@ socketio = SocketIO(app)
 app.static_folder = 'web/static'
 app.template_folder = 'web/templates'
 
-# List to keep track of connected clients
+# List to keep track of connected client_list
 gamerun = False
 
 
@@ -38,7 +38,7 @@ class GameTab:
 
 
 # List to keep track of client connections
-clients = []
+client_list = []
 
 
 class Client(GameTab):
@@ -46,42 +46,42 @@ class Client(GameTab):
         super().__init__(sid, connections)
         self.username = username
         self.score = 0
-        self.timeBegin = 0
-        self.timeEnd = 0
+        self.time_begin = 0
+        self.time_end = 0
         self.responseTime = 0
 
-        self.userAnswer = ""
-        self.expectedResponse = []
-        self.questionType = ""
+        self.user_answer = ""
+        self.expected_response = []
+        self.question_type = ""
 
     def evalScore(self) -> None:
-        self.responseTime = self.timeBegin - self.timeEnd
-        match self.questionType:
+        self.responseTime = self.time_begin - self.time_end
+        match self.question_type:
             case "uniqueanswer":
-                if type(self.userAnswer) != list:
+                if type(self.user_answer) != list:
                     # Bad answer syntax
                     # TODO
                     ...
-                elif len(self.userAnswer) != 1:
+                elif len(self.user_answer) != 1:
                     # Bad answer syntax
                     # TODO
                     ...
                 else:
-                    if self.userAnswer in self.expectedResponse:
+                    if self.user_answer in self.expected_response:
                         # Magic calculation for a score up to 500
                         # TODO
                         ...
             case "truefalse":
-                if type(self.userAnswer) != list:
+                if type(self.user_answer) != list:
                     # Bad answer syntax
                     # TODO
                     ...
-                elif len(self.userAnswer) != 1:
+                elif len(self.user_answer) != 1:
                     # Bad answer syntax
                     # TODO
                     ...
                 else:
-                    if self.userAnswer in self.expectedResponse:
+                    if self.user_answer in self.expected_response:
                         # Magic calculation for a score up to 500
                         # TODO
                         ...
@@ -147,8 +147,8 @@ def handle_board_connect(code: str) -> None:
         return
     if code == passcode:
         session = Board(sid=request.sid, connections=board_list)
-        # Notify all clients about the new board connection
-        for c in clients:
+        # Notify all client_list about the new board connection
+        for c in client_list:
             emit('newUser', {'username': c.username, 'sid': c.sid})
     else:
         emit('error', "Vous n'avez pas entré le bon passcode")
@@ -168,7 +168,7 @@ def handle_host_connect(code: str) -> None:
 @socketio.on('startSession')
 def handle_start_game(code: str) -> None:
     if code == passcode:
-        for client in clients + board_list + host_list:
+        for client in client_list + board_list + host_list:
             emit('startGame', to=client.sid)
     else:
         emit('error', "Code incorrect")
@@ -176,14 +176,14 @@ def handle_start_game(code: str) -> None:
 
 @socketio.on("nextQuestion")
 def handle_next_question(res) -> None:
-    code, questionNumber = res["passcode"], res["questionCount"]
+    code, question_number = res["passcode"], res["question_count"]
     if code == passcode:
-        if questionNumber == len(config["questions"]):
-            for client in clients + board_list + host_list:
+        if question_number == len(config["questions"]):
+            for client in client_list + board_list + host_list:
                 emit("gameEnd", to=client.sid)
                 gamerun = False
             return
-        question = config["questions"][questionNumber]
+        question = config["questions"][question_number]
         data = {
             "question_title": question["title"],
             "question_type": question["type"],
@@ -192,20 +192,20 @@ def handle_next_question(res) -> None:
             "question_number": config["questions"].index(question) + 1,
             "question_count": len(config["questions"]),
         }
-        for client in clients + board_list + host_list:
+        for client in client_list + board_list + host_list:
             emit("questionStart", data, to=client.sid)
-        for client in clients:
-            client.timeBegin = time.time()
-            client.expectedResponse = question["answer"]
-            client.questionType = question["type"]
-            client.oneTry = question["onetry"]
+        for client in client_list:
+            client.time_begin = time.time()
+            client.expected_response = question["answer"]
+            client.question_type = question["type"]
+            client.one_try = question["onetry"]
 
         # 2sec for progress bar to appear and first delay,
         # question["duration"] seconds for the game,
         time.sleep(2 + question["duration"])
 
         emit("questionEnd")
-        for client in clients:
+        for client in client_list:
             client.evalScore()
     else:
         emit('error', "Code incorrect")
@@ -223,15 +223,15 @@ def handle_connect(username: str) -> None:
     if gamerun:
         emit('error', "La partie est déjà en cours")
         return
-    if any(c.username == username for c in clients):
+    if any(c.username == username for c in client_list):
         emit('error', 'Nom d\'utilisateur déjà pris')
         return
-    elif any(c.sid == sessid for c in clients):
+    elif any(c.sid == sessid for c in client_list):
         emit('error', 'Vous êtes déjà connecté')
         return
 
     # Create a new client session
-    session = Client(sid=sessid, username=username, connections=clients)
+    session = Client(sid=sessid, username=username, connections=client_list)
     for board in board_list:
         emit('newUser', {'username': username, 'sid': sessid}, to=board.sid)
 
@@ -240,13 +240,13 @@ def handle_connect(username: str) -> None:
 def handle_disconnect() -> None:
     """Handle client disconnection events."""
     sessid = request.sid
-    for client in clients:
+    for client in client_list:
         if client.sid == sessid:
             for board in board_list:
                 emit('rmUser', {'username': client.username,
                      'passcode': passcode}, to=board.sid)
 
-            clients.remove(client)  # Remove the client
+            client_list.remove(client)  # Remove the client
 
     # Remove board if it is disconnected
     for board in board_list:
@@ -272,12 +272,14 @@ def handle_edit(message: dict) -> None:
 
 
 @socketio.on('sendAnswer')
-def handle_answer(answer: str) -> None:
+def handle_answer(res) -> None:
+    user_answer = res["answer"]
+    question_number = res["question_number"]
     sessid = request.sid
-    for client in clients:
+    for client in client_list:
         if client.sid == sessid:
-            client.timeEnd = time.time()
-            client.userAnswer = answer
+            client.time_end = time.time()
+            client.user_answer = answer
 
 
 @app.route('/')
