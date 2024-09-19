@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import json
 import time
-import asyncio
+import sqlite3
 # Passcode for authentication (hardcoded for now)
 passcode = 'a'
 
@@ -48,47 +48,38 @@ class Client(GameTab):
         self.score = 0
         self.time_begin = 0
         self.time_end = 0
-        self.responseTime = 0
+        self.response_time = 0
+        self.timer_time = 0
 
         self.user_answer = ""
         self.expected_response = []
         self.question_type = ""
 
     def evalScore(self) -> None:
-        self.responseTime = self.time_begin - self.time_end
+        self.response_time = self.time_begin - self.time_end
+
         match self.question_type:
             case "uniqueanswer":
                 if type(self.user_answer) != list:
-                    # Bad answer syntax
-                    # TODO
-                    ...
-                elif len(self.user_answer) != 1:
-                    # Bad answer syntax
-                    # TODO
-                    ...
+                    self.score = 0
                 else:
-                    if self.user_answer in self.expected_response:
-                        # Magic calculation for a score up to 500
-                        # TODO
-                        ...
+                    if self.user_answer == self.expected_response:
+                        self.score = round(
+                            (1 - self.response_time / self.timer_time) / 500)
             case "truefalse":
-                if type(self.user_answer) != list:
-                    # Bad answer syntax
-                    # TODO
-                    ...
-                elif len(self.user_answer) != 1:
-                    # Bad answer syntax
-                    # TODO
-                    ...
+                if type(self.user_answer) != list or len(self.user_answer) != 1:
+                    self.score = 0
                 else:
-                    if self.user_answer in self.expected_response:
-                        # Magic calculation for a score up to 500
-                        # TODO
-                        ...
+                    if self.user_answer == self.expected_response:
+                        self.score = round(
+                            (1 - self.response_time / self.timer_time) / 500)
             case "mcq":
-                # Magic calculation for a score up to 500
-                # TODO
-                ...
+                if type(self.user_answer) != list:
+                    self.score = 0
+                else:
+                    if self.user_answer.sorted() == self.expected_response.sorted():
+                        self.score = round(
+                            (1 - self.response_time / self.timer_time) / 500)
             case _:
                 print("Unsupported question type")
 
@@ -109,6 +100,45 @@ host_list = []
 class Host(GameTab):
     def __init__(self, sid: str, connections: list) -> None:
         super().__init__(sid, connections)
+
+
+class Game:
+    def __init__(self) -> None:
+        self.previous_leaderboard = {}
+        self.current_leaderboard = {}
+        self.promoted_users = {}
+
+    def handleFirstLeaderboard(self):
+        self.current_leaderboard = sorted(
+            client_list, key=lambda x: x.score, reverse=True)
+
+    def handlePromotedUsers(self):
+        for user in self.current_leaderboard:
+            if user in self.previous_leaderboard:
+                place = self.previous_leaderboard.index(
+                    user) - self.current_leaderboard.index(user)
+                if place >= 2:
+                    self.promoted_users[user] = place
+
+    def handleNextLeaderboard(self):
+        self.previous_leaderboard = self.current_leaderboard
+        self.current_leaderboard = sorted(
+            client_list, key=lambda x: x.score, reverse=True)
+        self.handlePromotedUsers()
+
+    def display(self):
+        if not self.current_leaderboard:
+            self.handleFirstLeaderboard()
+        self.handleNextLeaderboard()
+        return self.current_leaderboard[:5], self.promoted_users
+
+    def reset(self):
+        self.previous_leaderboard = {}
+        self.current_leaderboard = {}
+        self.promoted_users = {}
+
+
+game = Game()
 
 
 @app.route('/host')
@@ -167,6 +197,9 @@ def handle_host_connect(code: str) -> None:
 
 @socketio.on('startSession')
 def handle_start_game(code: str) -> None:
+    if gamerun:
+        emit('error', "La partie est déjà en cours")
+        return
     if code == passcode:
         for client in client_list + board_list + host_list:
             emit('startGame', to=client.sid)
@@ -199,7 +232,7 @@ def handle_next_question(res) -> None:
             client.expected_response = question["answer"]
             client.question_type = question["type"]
             client.one_try = question["onetry"]
-
+            client.timer_time = question["duration"]
         # 2sec for progress bar to appear and first delay,
         # question["duration"] seconds for the game,
         time.sleep(2 + question["duration"])
@@ -207,6 +240,13 @@ def handle_next_question(res) -> None:
         emit("questionEnd")
         for client in client_list:
             client.evalScore()
+        promoted_users, game_lead = game.display()
+        data = {
+            "promoted_users": promoted_users,
+            "game_lead": game_lead
+        }
+        for board in board_list:
+            emit("leaderboard", data, to=board)
     else:
         emit('error', "Code incorrect")
 
@@ -279,7 +319,7 @@ def handle_answer(res) -> None:
     for client in client_list:
         if client.sid == sessid:
             client.time_end = time.time()
-            client.user_answer = answer
+            client.user_answer = user_answer
 
 
 @app.route('/')
