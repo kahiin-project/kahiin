@@ -60,7 +60,7 @@ function Display() {
     document.getElementById("question_number").style.display = "block";
     document.getElementById("question_number").style.opacity = 1;
 
-    document.getElementById("question").innerText = res["question_title"];
+    document.getElementById("question").innerHTML = marked(res["question_title"]);
     renderMathInElement(document.getElementById("question"), {
       delimiters: [
           {left: "\$", right: "\$", display: false},
