@@ -74,7 +74,16 @@ function Display() {
     Count(duration, duration);
   });
 
+  socket.on('leaderboard', (res) => {
+    promoted_user = res["promoted_user"]
+    game_lead = res["game_lead"]
+    document.getElementById("leaderboard").style.display = "block";
+    document.getElementById("leaderboard").style.opacity = 1;
+    // Faire une arrow avec le nombre de places gagnées pour les promoted, dans une box en dessous et au dessus une box avec les 5 premiers avec leurs scores
+    
+
+  })
   socket.on("questionEnd", (res) => {
-    // document.getElementById("question").style.display = "none";
+    document.getElementById("question").style.display = "none";
   });
 }

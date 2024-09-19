@@ -142,6 +142,22 @@
   animation: scaleUp 1s linear infinite;
 }
 
+.leaderboard{
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  display: grid;
+  background-color: #dfe6e9;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  width: 80%;
+  max-width: 500px;
+  max-height: 80%;
+  overflow-y: auto;
+}
 @keyframes scaleUp {
   0% { transform: translate(-50%, -50%) scale(0) }
   60% , 100% { transform: translate(-50%, -50%)  scale(1)}

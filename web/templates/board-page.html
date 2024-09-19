@@ -12,9 +12,12 @@
       type="image/png"
       href="/static/icon/app-icon-rounded.png"
     />
-    
+
     <!-- LATEK -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/auto-render.min.js"></script>
 
@@ -30,12 +33,21 @@
       <ul id="users"></ul>
     </div>
     <h1 id="question"></h1>
-    <h2 id="question_number" ></h2>
-    <span id="loader" style="display: none;"></span>
+    <h2 id="question_number"></h2>
+    <span id="loader" style="display: none"></span>
     <div class="container">
       <div id="timerbar" class="progressbar-wrapper">
-      <div id="timer" class="progressbar"></div>
-     </div>
+        <div id="timer" class="progressbar"></div>
+      </div>
+    </div>
+
+    <div id="leaderboard_top" class="leaderboard">
+      <h2>Top 5</h2>
+      <ul id="top5"></ul>
+    </div>
+    <div id="promoted-list" class="leaderboard">
+      <h2>Places gagnées</h2>
+      <ul id="promoted-list"></ul>
     </div>
   </body>
   <script onload="true">
