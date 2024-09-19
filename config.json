@@ -1,6 +1,6 @@
 {
     "questions" : [
-        {"title":"Test Question Answer A", "answer" : ["a"], "duration": 20, "type" : "uniqueanswer", "onetry": true},
+        {"title":"# Test Question Answer A\n- L'équation de la droite : $y = mx + b$\n- La formule quadratique : $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$", "answer" : ["a"], "duration": 20, "type" : "uniqueanswer", "onetry": true},
         {"title":"Test Question Answer B", "answer" : ["b"], "duration": 20, "type" : "truefalse", "onetry": true},
         {"title":"Test Question Answer C", "answer" : ["c"], "duration": 20, "type" : "mcq", "onetry": false},
         {"title":"Test Question Answer D", "answer" : ["d"], "duration": 20, "type" : "uniqueanswer", "onetry": false}
