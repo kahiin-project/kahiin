@@ -161,7 +161,6 @@ html, body {
 
 #leaderboard-container {
   display: none; /* Hide initially */
-  display: flex;
   flex-direction: column;
   align-items: center;
 }
@@ -190,6 +189,19 @@ html, body {
   width: 80%;
   max-width: 500px;
   max-height: 80%;
+}
+
+.username {
+  font-weight: bold;
+}
+
+.score {
+  color: #2d3436;
+}
+
+.arrow {
+  color: green;
+  font-weight: bold;
 }
 @keyframes scaleUp {
   0% { transform: translate(-50%, -50%) scale(0) }
