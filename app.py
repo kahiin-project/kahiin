@@ -213,8 +213,17 @@ def handle_next_question(res) -> None:
     if code == passcode:
         if question_number == len(config["questions"]):
             for client in client_list + board_list + host_list:
-                emit("gameEnd", to=client.sid)
-                gamerun = False
+                emit("questionEnd")
+                for client in client_list:
+                    client.evalScore()
+                promoted_users, game_lead = game.display()
+                data = {
+                    "promoted_users": promoted_users,
+                    "game_lead": game_lead
+                }
+                for board in board_list:
+                    emit("leaderboard", data, to=board)
+                print
             return
         question = config["questions"][question_number]
         data = {
@@ -237,16 +246,6 @@ def handle_next_question(res) -> None:
         # question["duration"] seconds for the game,
         time.sleep(2 + question["duration"])
 
-        emit("questionEnd")
-        for client in client_list:
-            client.evalScore()
-        promoted_users, game_lead = game.display()
-        data = {
-            "promoted_users": promoted_users,
-            "game_lead": game_lead
-        }
-        for board in board_list:
-            emit("leaderboard", data, to=board)
     else:
         emit('error', "Code incorrect")
 
