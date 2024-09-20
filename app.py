@@ -77,7 +77,9 @@ class Client(GameTab):
                 if type(self.user_answer) != list:
                     self.score = 0
                 else:
-                    if self.user_answer.sorted() == self.expected_response.sorted():
+                    self.user_answer.sort()
+                    self.expected_response.sort()
+                    if self.user_answer == self.expected_response:
                         self.score = round(
                             (1 - self.response_time / self.timer_time) / 500)
             case _:
@@ -130,7 +132,11 @@ class Game:
         if not self.current_leaderboard:
             self.handleFirstLeaderboard()
         self.handleNextLeaderboard()
-        return self.current_leaderboard[:5], self.promoted_users
+        leaderboard = {
+            user.username: user.score for user in self.current_leaderboard}
+        promoted_users = {user.username: place for user,
+                          place in self.promoted_users.items()}
+        return leaderboard[:5], promoted_users
 
     def reset(self):
         self.previous_leaderboard = {}
@@ -213,14 +219,17 @@ def handle_next_question(res) -> None:
     if code == passcode:
         if question_number == len(config["questions"]):
             for client in client_list + board_list + host_list:
-                emit("questionEnd")
                 for client in client_list:
                     client.evalScore()
                 promoted_users, game_lead = game.display()
+
+                for user in promoted_users, game_lead:
+                    print(user.username, user.score)
                 data = {
                     "promoted_users": promoted_users,
                     "game_lead": game_lead
                 }
+                print(data)
                 for board in board_list:
                     emit("leaderboard", data, to=board)
                 print
@@ -245,7 +254,8 @@ def handle_next_question(res) -> None:
         # 2sec for progress bar to appear and first delay,
         # question["duration"] seconds for the game,
         time.sleep(2 + question["duration"])
-
+        for client in client_list+board_list+host_list:
+            emit("questionEnd", to=client.sid)
     else:
         emit('error', "Code incorrect")
 
@@ -312,7 +322,8 @@ def handle_edit(message: dict) -> None:
 
 @socketio.on('sendAnswer')
 def handle_answer(res) -> None:
-    user_answer = res["answer"]
+    user_answer = res["answers"]
+    print(user_answer)
     question_number = res["question_number"]
     sessid = request.sid
     for client in client_list:

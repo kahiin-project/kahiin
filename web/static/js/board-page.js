@@ -54,11 +54,18 @@ function Display() {
     document.getElementById("timer").style.display = "block";
     document.getElementById("list").style.display = "none";
   });
+
   socket.on("questionStart", (res) => {
     document.getElementById("question").style.display = "block";
     document.getElementById("question").style.opacity = 1;
     document.getElementById("question_number").style.display = "block";
     document.getElementById("question_number").style.opacity = 1;
+    document.getElementById("timer").style.display = "block";
+    document.getElementById("timer").style.opacity = 1;
+    document.getElementById("timerbar").style.display = "block";
+    document.getElementById("timerbar").style.opacity = 1;
+    document.getElementById("loader").style.opacity = 0
+    document.getElementById("loader").style.display = "none"
 
     document.getElementById("question").innerHTML = marked(res["question_title"]);
     renderMathInElement(document.getElementById("question"), {
@@ -75,15 +82,48 @@ function Display() {
   });
 
   socket.on('leaderboard', (res) => {
-    promoted_user = res["promoted_user"]
-    game_lead = res["game_lead"]
-    document.getElementById("leaderboard").style.display = "block";
-    document.getElementById("leaderboard").style.opacity = 1;
-    // Faire une arrow avec le nombre de places gagnées pour les promoted, dans une box en dessous et au dessus une box avec les 5 premiers avec leurs scores
-    
+    const promotedUsers = res["promoted_users"];
+    const gameLead = res["game_lead"];
 
-  })
-  socket.on("questionEnd", (res) => {
-    document.getElementById("question").style.display = "none";
+    // Display leaderboard
+    const leaderboardTop = document.getElementById("leaderboard_top");
+    leaderboardTop.style.display = "block";
+    leaderboardTop.style.opacity = 1;
+
+    const top5List = document.getElementById("top5");
+    top5List.innerHTML = ""; // Clear previous content
+    for (const [username, score] of Object.entries(gameLead)) {
+      const listItem = document.createElement("li");
+      listItem.innerHTML = `<span class="username">${username}</span> - <span class="score">${score}</span>`;
+      top5List.appendChild(listItem);
+    }
+
+    // Display promoted users
+    const promotedList = document.getElementById("promoted-list");
+    promotedList.style.display = "block";
+    promotedList.style.opacity = 1;
+
+    const promotedListItems = document.getElementById("promoted-list-items");
+    promotedListItems.innerHTML = ""; // Clear previous content
+    for (const [username, places] of Object.entries(promotedUsers)) {
+      const listItem = document.createElement("li");
+      listItem.innerHTML = `<span class="username">${username}</span> <span class="arrow">↑ ${places}</span>`;
+      promotedListItems.appendChild(listItem);
+    }
   });
+
+  socket.on("questionEnd", (res) => {
+    document.getElementById("question").style.opacity = 0;
+    document.getElementById("question").style.display = "none";
+    document.getElementById("question_number").style.opacity = 0;
+    document.getElementById("question_number").style.display = "none";
+    document.getElementById("timer").style.opacity = 0;
+    document.getElementById("timer").style.display = "none";
+    document.getElementById("timerbar").style.opacity = 0;
+    document.getElementById("timerbar").style.display = "none";
+    document.getElementById("loader").style.opacity = 1
+    document.getElementById("loader").style.display = "block"
+
+  }
+);
 }
