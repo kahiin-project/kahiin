@@ -150,13 +150,24 @@ ul {
   transform: translate(-50%, -50%);
   animation: scaleUp 1s linear infinite;
 }
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-.leaderboard{
-  display: none;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translateX(-50%) translateY(-50%);
+#leaderboard-container {
+  display: none; /* Hide initially */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#leaderboard_top {
+  display: none; /* Hide initially */
   display: grid;
   background-color: #dfe6e9;
   border-radius: 15px;
@@ -166,6 +177,19 @@ ul {
   max-width: 500px;
   max-height: 80%;
   overflow-y: auto;
+  margin-bottom: 30px; /* Add margin-bottom to create space */
+}
+
+#promoted-list {
+  display: none; /* Hide initially */
+  display: grid;
+  background-color: #dfe6e9;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  width: 80%;
+  max-width: 500px;
+  max-height: 80%;
 }
 @keyframes scaleUp {
   0% { transform: translate(-50%, -50%) scale(0) }
