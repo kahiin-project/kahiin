@@ -20,13 +20,13 @@ for question in root.findall('question'):
     shown_answers = [answer.text for answer in question.find('shown_answers').findall('answer')]
     correct_answers = [answer.text for answer in question.find('correct_answers').findall('answer')]
 
-    config["questions"] = {
+    config["questions"].append({
         "title": title,
         "shown_answers": shown_answers,
         "correct_answers": correct_answers,
         "duration": duration,
         "type": question_type
-    }
+    })
 
 
 # Initialize Flask application and SocketIO
