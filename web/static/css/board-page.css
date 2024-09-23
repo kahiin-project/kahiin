@@ -153,6 +153,16 @@ ul {
   transform: translate(-50%, -50%);
   animation: scaleUp 1s linear infinite;
 }
+#loader-text{
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 40px);
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: gray;
+  font-size: 20px;
+}
 html, body {
   height: 100%;
   margin: 0;

@@ -64,8 +64,9 @@ function Display() {
     document.getElementById("timer").style.opacity = 1;
     document.getElementById("timerbar").style.display = "block";
     document.getElementById("timerbar").style.opacity = 1;
-    document.getElementById("loader").style.opacity = 0
-    document.getElementById("loader").style.display = "none"
+    document.getElementById("loader").style.opacity = 0;
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("loader-text").style.display = "none";
 
     document.getElementById("question").innerHTML = marked(res["question_title"]);
     renderMathInElement(document.getElementById("question"), {
@@ -121,8 +122,9 @@ function Display() {
     document.getElementById("timer").style.display = "none";
     document.getElementById("timerbar").style.opacity = 0;
     document.getElementById("timerbar").style.display = "none";
-    document.getElementById("loader").style.opacity = 1
-    document.getElementById("loader").style.display = "block"
+    document.getElementById("loader").style.opacity = 1;
+    document.getElementById("loader").style.display = "block";
+    document.getElementById("loader-text").style.display = "block";
 
   }
 );

@@ -7,6 +7,7 @@ function Submit() {
 
   document.getElementById("form").style.display = "none";
   document.getElementById("loader").style.display = "block";
+  document.getElementById("loader-text").style.display = "block";
 }
 
 function Game() {
@@ -21,6 +22,7 @@ function Game() {
     alert(res);
     document.getElementById("form").style.display = "block";
     document.getElementById("loader").style.display = "none";
+    document.getElementById("loader-text").style.display = "none";
   });
 }
 
