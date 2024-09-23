@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 passcode = 'a'
 
 # Load KHN (XML) file
-tree = ET.parse('questionnaire.khn')  # Assurez-vous que le fichier s'appelle 'questions.xml'
+tree = ET.parse('questionnaire.khn')
 root = tree.getroot()
 
 config = {"questions": []}
