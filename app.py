@@ -3,12 +3,31 @@ from flask_socketio import SocketIO, emit
 import json
 import time
 import sqlite3
+import xml.etree.ElementTree as ET
 # Passcode for authentication (hardcoded for now)
 passcode = 'a'
 
-# Load configuration from a JSON file
-with open('config.json') as config_file:
-    config = json.load(config_file)
+# Load KHN (XML) file
+tree = ET.parse('questionnaire.khn')
+root = tree.getroot()
+
+config = {"questions": []}
+# Add each question to config
+for question in root.findall('question'):
+    title = question.find('title').text
+    duration = question.find('duration').text
+    question_type = question.find('type').text
+    shown_answers = [answer.text for answer in question.find('shown_answers').findall('answer')]
+    correct_answers = [answer.text for answer in question.find('correct_answers').findall('answer')]
+
+    config["questions"] = {
+        "title": title,
+        "shown_answers": shown_answers,
+        "correct_answers": correct_answers,
+        "duration": duration,
+        "type": question_type
+    }
+
 
 # Initialize Flask application and SocketIO
 app = Flask(__name__)
