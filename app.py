@@ -24,7 +24,7 @@ for question in root.findall('question'):
         "title": title,
         "shown_answers": shown_answers,
         "correct_answers": correct_answers,
-        "duration": duration,
+        "duration": int(duration),
         "type": question_type
     })
 

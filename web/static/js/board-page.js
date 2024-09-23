@@ -68,7 +68,12 @@ function Display() {
     document.getElementById("loader").style.display = "none";
     document.getElementById("loader-text").style.display = "none";
 
-    document.getElementById("question").innerHTML = marked(res["question_title"]);
+    question_title = res["question_title"]
+    .split('\n')
+    .map(line => line.trim().replace(/\s+/g, ' '))
+    .join('\n');
+
+    document.getElementById("question").innerHTML = marked(question_title);
     renderMathInElement(document.getElementById("question"), {
       delimiters: [
           {left: "\$", right: "\$", display: false},

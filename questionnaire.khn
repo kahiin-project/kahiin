@@ -1,6 +1,10 @@
 <questions>
     <question>
-        <title># Test Question Answer A\n- L'équation de la droite : $y = mx + b$\n- La formule quadratique : $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$</title>
+        <title>
+        # Test Question Answer A
+        - L'équation de la droite : $y = mx + b$ 
+        - La formule quadratique : $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$
+        </title>
         <shown_answers>
             <answer>a</answer>
             <answer>b</answer>
