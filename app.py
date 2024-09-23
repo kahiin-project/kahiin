@@ -57,33 +57,32 @@ class Client(GameTab):
 
     def evalScore(self) -> None:
         self.response_time = self.time_begin - self.time_end
-
+        if type(self.user_answer) != list:
+            self.score = 0
         match self.question_type:
             case "uniqueanswer":
-                if type(self.user_answer) != list:
-                    self.score = 0
-                else:
-                    if self.user_answer == self.expected_response:
-                        self.score = round(
-                            (1 - self.response_time / self.timer_time) / 500)
+                self.score = 0
+                if self.user_answer == self.expected_response:
+                    self.score = round(
+                        (1 - self.response_time / self.timer_time) / 500)
             case "truefalse":
-                if type(self.user_answer) != list or len(self.user_answer) != 1:
+                if len(self.user_answer) != 1:
                     self.score = 0
                 else:
                     if self.user_answer == self.expected_response:
                         self.score = round(
                             (1 - self.response_time / self.timer_time) / 500)
             case "mcq":
-                if type(self.user_answer) != list:
-                    self.score = 0
-                else:
-                    self.user_answer.sort()
-                    self.expected_response.sort()
-                    if self.user_answer == self.expected_response:
-                        self.score = round(
-                            (1 - self.response_time / self.timer_time) / 500)
+                self.user_answer.sort()
+                self.expected_response.sort()
+                if self.user_answer == self.expected_response:
+                    self.score = round(
+                        (1 - self.response_time / self.timer_time) / 500)
             case _:
                 print("Unsupported question type")
+        print(self.score)
+        print(self.__dict__)
+        print("-"*10)
 
 
 # List to keep track of board connections
@@ -218,6 +217,29 @@ def handle_next_question(res) -> None:
     code, question_number = res["passcode"], res["question_count"]
     if code == passcode:
         if question_number == len(config["questions"]):
+            ...
+        question = config["questions"][question_number]
+        data = {
+            "question_title": question["title"],
+            "question_type": question["type"],
+            "question_possible_answers": question["shown_answers"],
+            "question_duration": question["duration"],
+            "question_number": config["questions"].index(question) + 1,
+            "question_count": len(config["questions"]),
+        }
+        for client in client_list + board_list + host_list:
+            emit("questionStart", data, to=client.sid)
+        for client in client_list:
+            client.time_begin = time.time()
+            client.expected_response = question["correct_answers"]
+            client.question_type = question["type"]
+            client.one_try = question["onetry"]
+            client.timer_time = question["duration"]
+        # 2sec for progress bar to appear and first delay,
+        # question["duration"] seconds for the game,
+        time.sleep(2 + question["duration"])
+        for client in client_list+board_list+host_list:
+            emit("questionEnd", to=client.sid)
             for client in client_list + board_list + host_list:
                 for client in client_list:
                     client.evalScore()
@@ -232,30 +254,6 @@ def handle_next_question(res) -> None:
                 print(data)
                 for board in board_list:
                     emit("leaderboard", data, to=board)
-                print
-            return
-        question = config["questions"][question_number]
-        data = {
-            "question_title": question["title"],
-            "question_type": question["type"],
-            "question_onetry": question["onetry"],
-            "question_duration": question["duration"],
-            "question_number": config["questions"].index(question) + 1,
-            "question_count": len(config["questions"]),
-        }
-        for client in client_list + board_list + host_list:
-            emit("questionStart", data, to=client.sid)
-        for client in client_list:
-            client.time_begin = time.time()
-            client.expected_response = question["answer"]
-            client.question_type = question["type"]
-            client.one_try = question["onetry"]
-            client.timer_time = question["duration"]
-        # 2sec for progress bar to appear and first delay,
-        # question["duration"] seconds for the game,
-        time.sleep(2 + question["duration"])
-        for client in client_list+board_list+host_list:
-            emit("questionEnd", to=client.sid)
     else:
         emit('error', "Code incorrect")
 
