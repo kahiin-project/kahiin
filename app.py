@@ -143,7 +143,7 @@ class Game:
             client_list, key=lambda x: x.score, reverse=True)
         self.handlePromotedUsers()
 
-    def genPromotedUsers(self, previous: list[tuple], current: list[tuple]) -> list[tuple]:
+    def genPromotedUsers(self, previous: list[list], current: list[list]) -> list[list]:
         previous_ranks = {k: i+1 for i, (k, _) in enumerate(previous)}
         current_ranks = {k: i+1 for i, (k, _) in enumerate(current)}
 
@@ -151,7 +151,7 @@ class Game:
         for username, current_rank in current_ranks.items():
             previous_rank = previous_ranks.get(username, float('inf'))
             if current_rank < previous_rank:
-                promoted_users.append((username, previous_rank - current_rank))
+                promoted_users.append([username, previous_rank - current_rank])
 
         promoted_users.sort(key=lambda x: x[1], reverse=True)
         return promoted_users
@@ -160,9 +160,9 @@ class Game:
         if not self.current_leaderboard:
             self.handleFirstLeaderboard()
         self.handleNextLeaderboard()
-        current_leaderboard = [(user.username, user.score)
+        current_leaderboard = [[user.username, user.score]
                                for user in self.current_leaderboard]
-        previous_leaderboard = [(user.username, user.score)
+        previous_leaderboard = [[user.username, user.score]
                                 for user in self.previous_leaderboard]
 
         promoted_users = self.genPromotedUsers(
@@ -255,6 +255,9 @@ def handle_start_game(code: str) -> None:
 @socketio.on("nextQuestion")
 def handle_next_question(res) -> None:
     code, question_number = res["passcode"], res["question_count"]
+    if len(client_list) == 0:
+        emit('error', "Aucun joueur connecté")
+        return
     if code == passcode:
         if question_number == len(config["questions"]):
             ...
@@ -273,7 +276,6 @@ def handle_next_question(res) -> None:
             client.time_begin = time.time()
             client.expected_response = question["correct_answers"]
             client.question_type = question["type"]
-            client.one_try = question["onetry"]
             client.timer_time = question["duration"]
         # 2sec for progress bar to appear and first delay,
         # question["duration"] seconds for the game,
