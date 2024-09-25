@@ -71,6 +71,9 @@ function Display() {
     document.getElementById("loader").style.opacity = 0;
     document.getElementById("loader").style.display = "none";
     document.getElementById("loader-text").style.display = "none";
+    document.getElementById("leaderboard-container").style.opacity = 0;
+    document.getElementById("leaderboard_top").style.opacity = 0;
+    document.getElementById("promoted-list").style.opacity = 0;
 
     question_title = res["question_title"]
     .split('\n')
@@ -166,31 +169,28 @@ function Display() {
 
   socket.on('leaderboard', (res) => {
     // {'promoted_users': [], 'game_lead': [('username16', 980), ('username16', 980), ('username17', 973), ('username17', 973), ('username19', 938)]}
+    document.getElementById("leaderboard-container").style.opacity = 1;
+    document.getElementById("leaderboard_top").style.opacity = 1;
+    document.getElementById("promoted-list").style.opacity = 1;
+    document.getElementById("loader").style.opacity = 0;
     const promoted_users = res["promoted_users"];
     const game_lead = res["game_lead"];
-    const leaderboardTop = document.getElementById("leaderboard_top");
-    leaderboardTop.style.display = "block";
-    leaderboardTop.style.opacity = 1;
-
-    const lead_list = document.getElementById("top5");
-    lead_list.innerHTML = ""; 
-    for (const [username, score] of Object.entries(game_lead)) {
+    
+    const leaderboard_top_items = document.getElementById("leaderboard-top-items");
+    leaderboard_top_items.innerHTML = ""; 
+    game_lead.forEach(element => {
       const list_item = document.createElement("li");
-      list_item.innerHTML = `<span class="username">${username}</span> - <span class="score">${score}</span>`;
-      lead_list.appendChild(list_item);
-    }
-
-    const promoted_list = document.getElementById("promoted-list");
-    promoted_list.style.display = "block";
-    promoted_list.style.opacity = 1;
+      list_item.innerHTML = `<span class="username">${element[0]}</span> - <span class="score">${element[1]}</span>`;
+      leaderboard_top_items.appendChild(list_item);
+    });
 
     const promoted_list_items = document.getElementById("promoted-list-items");
     promoted_list_items.innerHTML = ""; 
-    for (const [username, places] of Object.entries(promoted_users)) {
+    promoted_users.forEach(element => {
       const listItem = document.createElement("li");
-      listItem.innerHTML = `<span class="username">${username}</span> <span class="arrow">↑ ${places}</span>`;
+      listItem.innerHTML = `<span class="username">${element[0]}</span> <span class="arrow">↑ ${element[1]}</span>`;
       promoted_list_items.appendChild(listItem);
-    }
+    });
   });
 
   socket.on("questionEnd", (res) => {

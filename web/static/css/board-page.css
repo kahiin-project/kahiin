@@ -166,13 +166,11 @@ ul {
 }
 
 #leaderboard-container {
-  display: none; /* Hide initially */
   flex-direction: column;
   align-items: center;
 }
 
 #leaderboard_top {
-  display: none; /* Hide initially */
   display: grid;
   background-color: #dfe6e9;
   border-radius: 15px;
@@ -182,11 +180,12 @@ ul {
   max-width: 500px;
   max-height: 80%;
   overflow-y: auto;
-  margin-bottom: 30px; /* Add margin-bottom to create space */
+  margin-bottom: 30px;
+  opacity: 0;
+  transition: 1s;
 }
 
 #promoted-list {
-  display: none; /* Hide initially */
   display: grid;
   background-color: #dfe6e9;
   border-radius: 15px;
@@ -195,6 +194,8 @@ ul {
   width: 80%;
   max-width: 500px;
   max-height: 80%;
+  opacity: 0;
+  transition: 1s;
 }
 
 .username {

@@ -77,6 +77,7 @@ class Client(GameTab):
         self.response_time = self.time_begin - self.time_end
         if type(self.user_answer) != list:
             self.score = 0
+            return
         match self.question_type:
             case "uniqueanswer":
                 self.score = 0
@@ -120,22 +121,14 @@ class Host(GameTab):
 
 class Game:
     def __init__(self) -> None:
-        self.previous_leaderboard = {}
-        self.current_leaderboard = {}
-        self.promoted_users = {}
+        self.previous_leaderboard = []
+        self.current_leaderboard = []
+        self.promoted_users = []
         self.running = False
 
     def handleFirstLeaderboard(self):
         self.current_leaderboard = sorted(
             client_list, key=lambda x: x.score, reverse=True)
-
-    def handlePromotedUsers(self):
-        for user in self.current_leaderboard:
-            if user in self.previous_leaderboard:
-                place = self.previous_leaderboard.index(
-                    user) - self.current_leaderboard.index(user)
-                if place >= 2:
-                    self.promoted_users[user] = place
 
     def handleNextLeaderboard(self):
         self.previous_leaderboard = self.current_leaderboard
@@ -147,14 +140,16 @@ class Game:
         previous_ranks = {k: i+1 for i, (k, _) in enumerate(previous)}
         current_ranks = {k: i+1 for i, (k, _) in enumerate(current)}
 
-        promoted_users = []
+        self.promoted_users = []
         for username, current_rank in current_ranks.items():
             previous_rank = previous_ranks.get(username, float('inf'))
             if current_rank < previous_rank:
-                promoted_users.append([username, previous_rank - current_rank])
-
-        promoted_users.sort(key=lambda x: x[1], reverse=True)
-        return promoted_users
+                self.promoted_users.append(
+                    [username, previous_rank - current_rank])
+        for promoted_user in self.promoted_users:
+            if promoted_user[0] in [user.username for user in current]:
+                self.promoted_users.remove(promoted_user)
+        self.promoted_users.sort(key=lambda x: x[1], reverse=True)
 
     def display(self):
         if not self.current_leaderboard:
@@ -172,15 +167,6 @@ class Game:
     def reset(self):
         self.previous_leaderboard = {}
         self.current_leaderboard = {}
-
-    def generateDemoLeaderboard(self):
-        # generate 30 random clients
-        for i in range(30):
-            client = Client(sid=f"sid{i}", username=f"username{i}",
-                            connections=client_list)
-            client_list.append(client)
-        for client in client_list:
-            client.score = round(1000 * __import__("random").random())
 
 
 game = Game()
@@ -231,9 +217,6 @@ def handle_board_connect(code: str) -> None:
 
 @socketio.on('hostConnect')
 def handle_host_connect(code: str) -> None:
-    if game.running:
-        emit('error', "La partie est déjà en cours")
-        return
     if code == passcode:
         session = Host(sid=request.sid, connections=host_list)
     else:
@@ -242,12 +225,16 @@ def handle_host_connect(code: str) -> None:
 
 @socketio.on('startSession')
 def handle_start_game(code: str) -> None:
+    if len(client_list) == 0:
+        emit('error', "Aucun joueur connecté")
+        return
     if game.running:
         emit('error', "La partie est déjà en cours")
         return
     if code == passcode:
         for client in client_list + board_list + host_list:
             emit('startGame', to=client.sid)
+        game.running = True
     else:
         emit('error', "Code incorrect")
 
@@ -255,9 +242,6 @@ def handle_start_game(code: str) -> None:
 @socketio.on("nextQuestion")
 def handle_next_question(res) -> None:
     code, question_number = res["passcode"], res["question_count"]
-    if len(client_list) == 0:
-        emit('error', "Aucun joueur connecté")
-        return
     if code == passcode:
         if question_number == len(config["questions"]):
             ...
@@ -286,14 +270,14 @@ def handle_next_question(res) -> None:
             for client in client_list + board_list + host_list:
                 for client in client_list:
                     client.evalScore()
-
+        # Generate random game_lead and promoted_users
         game_lead, promoted_users = game.display()
         data = {
             "promoted_users": promoted_users,
             "game_lead": game_lead
         }
         for board in board_list:
-            emit("leaderboard", data, to=board)
+            emit("leaderboard", data, to=board.sid)
     else:
         emit('error', "Code incorrect")
 

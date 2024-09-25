@@ -13,17 +13,17 @@ function Submit() {
 function Game() {
   socket.on("questionStart", (res) => {
     question_number = res["question_number"]
-    if (res["type"] == "mqc") {
+    if (res["question_type"] == "mqc") {
       document.getElementById("buttons").style.display = "block";
-      res["shown_answers"].forEach(answer => {
+      res["question_possible_answers"].forEach(answer => {
         document.getElementById("button_"+answer).onclick = function() {editAnswer(res[answer])}
         document.getElementById("button_"+answer).display = "block";
       document.getElementById("send").style.display = "block";
       });
 
-    } else if (res["type"] == "uniqueanswer") {
+    } else if (res["question_type"] == "uniqueanswer") {
       document.getElementById("buttons").style.display = "block";
-      res["shown_answers"].forEach(answer => {
+      res["question_possible_answers"].forEach(answer => {
         document.getElementById("button_"+answer).display = "block";
       });
     }   
