@@ -17,8 +17,10 @@ for question in root.findall('question'):
     title = question.find('title').text
     duration = question.find('duration').text
     question_type = question.find('type').text
-    shown_answers = [answer.text for answer in question.find('shown_answers').findall('answer')]
-    correct_answers = [answer.text for answer in question.find('correct_answers').findall('answer')]
+    shown_answers = [answer.text for answer in question.find(
+        'shown_answers').findall('answer')]
+    correct_answers = [answer.text for answer in question.find(
+        'correct_answers').findall('answer')]
 
     config["questions"].append({
         "title": title,
@@ -36,9 +38,6 @@ socketio = SocketIO(app)
 # Set static and template folders
 app.static_folder = 'web/static'
 app.template_folder = 'web/templates'
-
-# List to keep track of connected client_list
-gamerun = False
 
 
 class GameTab:
@@ -99,9 +98,6 @@ class Client(GameTab):
                         (1 - self.response_time / self.timer_time) / 500)
             case _:
                 print("Unsupported question type")
-        print(self.score)
-        print(self.__dict__)
-        print("-"*10)
 
 
 # List to keep track of board connections
@@ -127,6 +123,7 @@ class Game:
         self.previous_leaderboard = {}
         self.current_leaderboard = {}
         self.promoted_users = {}
+        self.running = False
 
     def handleFirstLeaderboard(self):
         self.current_leaderboard = sorted(
@@ -146,20 +143,44 @@ class Game:
             client_list, key=lambda x: x.score, reverse=True)
         self.handlePromotedUsers()
 
+    def genPromotedUsers(self, previous: list[tuple], current: list[tuple]) -> list[tuple]:
+        previous_ranks = {k: i+1 for i, (k, _) in enumerate(previous)}
+        current_ranks = {k: i+1 for i, (k, _) in enumerate(current)}
+
+        promoted_users = []
+        for username, current_rank in current_ranks.items():
+            previous_rank = previous_ranks.get(username, float('inf'))
+            if current_rank < previous_rank:
+                promoted_users.append((username, previous_rank - current_rank))
+
+        promoted_users.sort(key=lambda x: x[1], reverse=True)
+        return promoted_users
+
     def display(self):
         if not self.current_leaderboard:
             self.handleFirstLeaderboard()
         self.handleNextLeaderboard()
-        leaderboard = {
-            user.username: user.score for user in self.current_leaderboard}
-        promoted_users = {user.username: place for user,
-                          place in self.promoted_users.items()}
-        return leaderboard[:5], promoted_users
+        current_leaderboard = [(user.username, user.score)
+                               for user in self.current_leaderboard]
+        previous_leaderboard = [(user.username, user.score)
+                                for user in self.previous_leaderboard]
+
+        promoted_users = self.genPromotedUsers(
+            current_leaderboard, previous_leaderboard)
+        return current_leaderboard[:5], promoted_users
 
     def reset(self):
         self.previous_leaderboard = {}
         self.current_leaderboard = {}
-        self.promoted_users = {}
+
+    def generateDemoLeaderboard(self):
+        # generate 30 random clients
+        for i in range(30):
+            client = Client(sid=f"sid{i}", username=f"username{i}",
+                            connections=client_list)
+            client_list.append(client)
+        for client in client_list:
+            client.score = round(1000 * __import__("random").random())
 
 
 game = Game()
@@ -196,7 +217,7 @@ def handle_board_connect(code: str) -> None:
 
     :param code: Passcode provided by the board
     """
-    if gamerun:
+    if game.running:
         emit('error', "La partie est déjà en cours")
         return
     if code == passcode:
@@ -210,7 +231,7 @@ def handle_board_connect(code: str) -> None:
 
 @socketio.on('hostConnect')
 def handle_host_connect(code: str) -> None:
-    if gamerun:
+    if game.running:
         emit('error', "La partie est déjà en cours")
         return
     if code == passcode:
@@ -221,7 +242,7 @@ def handle_host_connect(code: str) -> None:
 
 @socketio.on('startSession')
 def handle_start_game(code: str) -> None:
-    if gamerun:
+    if game.running:
         emit('error', "La partie est déjà en cours")
         return
     if code == passcode:
@@ -257,22 +278,20 @@ def handle_next_question(res) -> None:
         # 2sec for progress bar to appear and first delay,
         # question["duration"] seconds for the game,
         time.sleep(2 + question["duration"])
+
         for client in client_list+board_list+host_list:
             emit("questionEnd", to=client.sid)
             for client in client_list + board_list + host_list:
                 for client in client_list:
                     client.evalScore()
-                promoted_users, game_lead = game.display()
 
-                for user in promoted_users, game_lead:
-                    print(user.username, user.score)
-                data = {
-                    "promoted_users": promoted_users,
-                    "game_lead": game_lead
-                }
-                print(data)
-                for board in board_list:
-                    emit("leaderboard", data, to=board)
+        game_lead, promoted_users = game.display()
+        data = {
+            "promoted_users": promoted_users,
+            "game_lead": game_lead
+        }
+        for board in board_list:
+            emit("leaderboard", data, to=board)
     else:
         emit('error', "Code incorrect")
 
@@ -286,7 +305,7 @@ def handle_connect(username: str) -> None:
     """
     sessid = request.sid
     # Check if the username is already taken
-    if gamerun:
+    if game.running:
         emit('error', "La partie est déjà en cours")
         return
     if any(c.username == username for c in client_list):
