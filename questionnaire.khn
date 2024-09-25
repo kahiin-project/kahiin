@@ -21,10 +21,9 @@
     <question>
         <title>Test Question Answer B</title>
         <shown_answers>
-            <answer>a</answer>
-            <answer>b</answer>
-            <answer>c</answer>
-            <answer>d</answer>
+            <answer>Seulement</answer>
+            <answer>Trois</answer>
+            <answer>Réponses</answer>
         </shown_answers>
         <correct_answers>
             <answer>a</answer>
@@ -36,10 +35,8 @@
     <question>
         <title>Test Question Answer C</title>
         <shown_answers>
-            <answer>a</answer>
-            <answer>b</answer>
-            <answer>c</answer>
-            <answer>d</answer>
+            <answer>Vrai</answer>
+            <answer>Faux</answer>
         </shown_answers>
         <correct_answers>
             <answer>a</answer>
