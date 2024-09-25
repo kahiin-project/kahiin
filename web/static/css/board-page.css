@@ -22,7 +22,7 @@ ul {
   text-align: right;
   font-size: 20px;
   border-radius: 15px;
-  background-color: #68e0f8;
+  background-color: #585858;
   width: 25px;
   font-family: 'Bagnard', sans-serif;
   transition: 1s;
@@ -95,7 +95,8 @@ ul {
   position: absolute;
   left: 30px;
   right: 30px;
-  top: 30px;
+  top: 80px;
+  bottom: 100%;
   margin: 0;
   padding-top: 15px;
   padding-bottom: 10px;
@@ -117,7 +118,7 @@ ul {
   position: absolute;
   left: 30px;
   right: 30px;
-  top: 145px;
+  top: 10px;
   margin: 0;
   padding-top: 15px;
   color: gray;
@@ -162,14 +163,6 @@ ul {
   text-align: center;
   color: gray;
   font-size: 20px;
-}
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 #leaderboard-container {
@@ -223,4 +216,29 @@ html, body {
 @keyframes pulse {
   0% , 60% , 100%{ transform:  scale(1) }
   80% { transform:  scale(1.2)}
+}
+
+#answers_div{
+  opacity: 0;
+  position: absolute;
+  left: 30px;
+  right: 30px;
+  bottom: 110px;
+  height: 200px;
+  transition: 1s;
+}
+.answer-block svg{
+  position: absolute;
+  top: 25px;
+  left: 30px;
+}
+.answer-block{
+  position: absolute;
+  width: calc(50% - 10px);
+  height: 90px;
+  border: none;
+  border-radius: 15px;
+  font-family: 'Bagnard';
+  font-size: 20px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
