@@ -15,11 +15,18 @@ function Game() {
     question_number = res["question_number"]
     if (res["type"] == "mqc") {
       document.getElementById("buttons").style.display = "block";
-      for (res["shown_answers"]; res["shown_answers"] < res["answers"].length; res["shown_answers"]++) {
-        document.getElementById("button"+res["shown_answers"]).onclick = function() {editAnswer(res["shown_answers"])}
+      res["shown_answers"].forEach(answer => {
+        document.getElementById("button_"+answer).onclick = function() {editAnswer(res[answer])}
+        document.getElementById("button_"+answer).display = "block";
       document.getElementById("send").style.display = "block";
-      }
-    }       
+      });
+
+    } else if (res["type"] == "uniqueanswer") {
+      document.getElementById("buttons").style.display = "block";
+      res["shown_answers"].forEach(answer => {
+        document.getElementById("button_"+answer).display = "block";
+      });
+    }   
                                 
   });
 

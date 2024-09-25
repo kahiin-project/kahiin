@@ -88,33 +88,31 @@ function Display() {
   });
 
   socket.on('leaderboard', (res) => {
-    const promotedUsers = res["promoted_users"];
-    const gameLead = res["game_lead"];
-
-    // Display leaderboard
+    // {'promoted_users': [], 'game_lead': [('username16', 980), ('username16', 980), ('username17', 973), ('username17', 973), ('username19', 938)]}
+    const promoted_users = res["promoted_users"];
+    const game_lead = res["game_lead"];
     const leaderboardTop = document.getElementById("leaderboard_top");
     leaderboardTop.style.display = "block";
     leaderboardTop.style.opacity = 1;
 
-    const top5List = document.getElementById("top5");
-    top5List.innerHTML = ""; // Clear previous content
-    for (const [username, score] of Object.entries(gameLead)) {
-      const listItem = document.createElement("li");
-      listItem.innerHTML = `<span class="username">${username}</span> - <span class="score">${score}</span>`;
-      top5List.appendChild(listItem);
+    const lead_list = document.getElementById("top5");
+    lead_list.innerHTML = ""; 
+    for (const [username, score] of Object.entries(game_lead)) {
+      const list_item = document.createElement("li");
+      list_item.innerHTML = `<span class="username">${username}</span> - <span class="score">${score}</span>`;
+      lead_list.appendChild(list_item);
     }
 
-    // Display promoted users
-    const promotedList = document.getElementById("promoted-list");
-    promotedList.style.display = "block";
-    promotedList.style.opacity = 1;
+    const promoted_list = document.getElementById("promoted-list");
+    promoted_list.style.display = "block";
+    promoted_list.style.opacity = 1;
 
-    const promotedListItems = document.getElementById("promoted-list-items");
-    promotedListItems.innerHTML = ""; // Clear previous content
-    for (const [username, places] of Object.entries(promotedUsers)) {
+    const promoted_list_items = document.getElementById("promoted-list-items");
+    promoted_list_items.innerHTML = ""; 
+    for (const [username, places] of Object.entries(promoted_users)) {
       const listItem = document.createElement("li");
       listItem.innerHTML = `<span class="username">${username}</span> <span class="arrow">↑ ${places}</span>`;
-      promotedListItems.appendChild(listItem);
+      promoted_list_items.appendChild(listItem);
     }
   });
 
