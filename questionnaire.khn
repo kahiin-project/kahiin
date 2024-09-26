@@ -26,8 +26,8 @@
             <answer>Réponses</answer>
         </shown_answers>
         <correct_answers>
-            <answer>a</answer>
-            <answer>b</answer>
+            <answer>Seulement</answer>
+            <answer>Réponses</answer>
         </correct_answers>
         <duration>20</duration>
         <type>mcq</type>
@@ -39,8 +39,8 @@
             <answer>Faux</answer>
         </shown_answers>
         <correct_answers>
-            <answer>a</answer>
-            <answer>b</answer>
+            <answer>Vrai</answer>
+            <answer>Faux</answer>
         </correct_answers>
         <duration>20</duration>
         <type>mcq</type>

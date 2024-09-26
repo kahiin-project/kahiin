@@ -134,7 +134,7 @@ class Game:
         self.previous_leaderboard = self.current_leaderboard
         self.current_leaderboard = sorted(
             client_list, key=lambda x: x.score, reverse=True)
-        self.handlePromotedUsers()
+        self.getPromotedUsers()
 
     def genPromotedUsers(self, previous: list[list], current: list[list]) -> list[list]:
         previous_ranks = {k: i+1 for i, (k, _) in enumerate(previous)}
