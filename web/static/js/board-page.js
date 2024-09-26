@@ -70,15 +70,10 @@ function Display() {
   socket.on("questionStart", (res) => {
     document.getElementById("question").style.bottom = "340px";
     document.getElementById("question").style.opacity = 1;
-    // document.getElementById("question_number").style.display = "block";
     document.getElementById("question_number").style.opacity = 1;
-    // document.getElementById("timer").style.display = "block";
     document.getElementById("timer").style.opacity = 1;
-    // document.getElementById("timerbar").style.display = "block";
     document.getElementById("timerbar").style.opacity = 1;
-    // document.getElementById("answers_div").style.display = "block";
     document.getElementById("answers_div").style.opacity = 1;
-    // document.getElementById("answers_div").style.display = "block";
     document.getElementById("answers_div").style.opacity = 1;
     document.getElementById("loader").style.opacity = 0;
     document.getElementById("loader").style.display = "none";
@@ -100,7 +95,6 @@ function Display() {
       ]
     });
 
-    // document.getElementById('answers_div').style.display = "block";
     switch (res["question_possible_answers"].length) {
       case 2:
         document.getElementById('answers_div').innerHTML = `
@@ -208,13 +202,9 @@ function Display() {
   socket.on("questionEnd", (res) => {
     document.getElementById("question").style.opacity = 0;
     document.getElementById("question_number").style.opacity = 0;
-    // document.getElementById("question_number").style.display = "none";
     document.getElementById("timer").style.opacity = 0;
-    // document.getElementById("timer").style.display = "none";
     document.getElementById("timerbar").style.opacity = 0;
-    // document.getElementById("timerbar").style.display = "none";
     document.getElementById("answers_div").style.opacity = 0;
-    // document.getElementById("answers_div").style.display = "none";
     document.getElementById("loader").style.opacity = 1;
     document.getElementById("loader").style.display = "block";
     document.getElementById("loader-text").style.display = "block";
