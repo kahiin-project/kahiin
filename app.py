@@ -81,16 +81,9 @@ class Client(GameTab):
         match self.question_type:
             case "uniqueanswer":
                 self.score = 0
-                if self.user_answer == self.expected_response:
+                if self.user_answer in self.expected_response:
                     self.score = round(
                         (1 - self.response_time / self.timer_time) / 500)
-            case "truefalse":
-                if len(self.user_answer) != 1:
-                    self.score = 0
-                else:
-                    if self.user_answer == self.expected_response:
-                        self.score = round(
-                            (1 - self.response_time / self.timer_time) / 500)
             case "mcq":
                 self.user_answer.sort()
                 self.expected_response.sort()
@@ -134,7 +127,6 @@ class Game:
         self.previous_leaderboard = self.current_leaderboard
         self.current_leaderboard = sorted(
             client_list, key=lambda x: x.score, reverse=True)
-        self.genPromotedUsers()
 
     def genPromotedUsers(self, previous: list[list], current: list[list]) -> list[list]:
         previous_ranks = {k: i+1 for i, (k, _) in enumerate(previous)}
@@ -345,8 +337,6 @@ def handle_edit(message: dict) -> None:
 @socketio.on('sendAnswer')
 def handle_answer(res) -> None:
     user_answer = res["answers"]
-    print(user_answer)
-    question_number = res["question_number"]
     sessid = request.sid
     for client in client_list:
         if client.sid == sessid:
