@@ -74,22 +74,20 @@ class Client(GameTab):
         self.question_type = ""
 
     def evalScore(self) -> None:
-        self.response_time = self.time_begin - self.time_end
         if type(self.user_answer) != list:
-            self.score = 0
             return
         match self.question_type:
             case "uniqueanswer":
-                self.score = 0
-                if self.user_answer in self.expected_response:
-                    self.score = round(
-                        (1 - self.response_time / self.timer_time) / 500)
+                if self.user_answer[0] in self.expected_response:
+                    self.score += round(
+                        (1 - self.response_time / self.timer_time) * 500)
             case "mcq":
                 self.user_answer.sort()
                 self.expected_response.sort()
                 if self.user_answer == self.expected_response:
-                    self.score = round(
-                        (1 - self.response_time / self.timer_time) / 500)
+                    self.score += round(
+                        (1 - self.response_time / self.timer_time) * 500)
+
             case _:
                 print("Unsupported question type")
 
@@ -259,9 +257,8 @@ def handle_next_question(res) -> None:
 
         for client in client_list+board_list+host_list:
             emit("questionEnd", to=client.sid)
-            for client in client_list + board_list + host_list:
-                for client in client_list:
-                    client.evalScore()
+        for client in client_list:
+            client.evalScore()
         # Generate random game_lead and promoted_users
         game_lead, promoted_users = game.display()
         data = {
