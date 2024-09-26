@@ -30,7 +30,7 @@
             <answer>Réponses</answer>
         </correct_answers>
         <duration>20</duration>
-        <type>mcq</type>
+        <type>uniqueanswer</type>
     </question>
     <question>
         <title>Test Question Answer C</title>
