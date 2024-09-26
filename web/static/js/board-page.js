@@ -1,5 +1,14 @@
 const socket = io();
 
+function generatePastelColor() {
+  const r = Math.floor(Math.random() * 128 + 127);
+  const g = Math.floor(Math.random() * 128 + 127);
+  const b = Math.floor(Math.random() * 128 + 127);
+
+  const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
+  return hex;
+}
+
 function Submit() {
   const passcode = document.getElementById("passcode").value;
 
@@ -10,6 +19,9 @@ function Submit() {
   socket.on("newUser", (res) => {
     const li = document.createElement("li");
     li.appendChild(document.createTextNode(res.username));
+    const pastel_color = generatePastelColor();
+    li.style.background = pastel_color;
+    li.style.boxShadow = `${pastel_color} 0px 1px 4px`;
     document.getElementById("users").appendChild(li);
   });
 
