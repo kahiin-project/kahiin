@@ -78,7 +78,7 @@ function editAnswer(answer) {
   }};
 
 
-function sendMQC() {
+function sendMCQ() {
   socket.emit("sendAnswer", {"answers":answer_list, "question_number": question_number});
   for (let i = 0; i < 4; i++) {
     document.getElementById(`button_${i}`).style.display = "none";
