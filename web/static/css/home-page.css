@@ -1,3 +1,56 @@
+#form{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    display: grid;
+    z-index: 1;
+}
+
+#username{
+    height: 50px;
+    border-radius: 10px;
+    border: solid 1px #bbbbbb;
+    text-align: center;
+    font-size: 20px;
+    padding: 0;
+    width: 250px;
+}
+  
+#submit{
+    position: relative;
+    background: #ebebeb;
+    display: block;
+    width: 250px;
+    height: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: none;
+    color: black;
+    text-align: center;
+    font-family: 'Bagnard', sans-serif;
+    font-size: 40px;
+    border-radius: 10px;
+    box-shadow: 0px 5px #888888;
+    cursor: pointer;
+    margin-top: 20px;
+    padding: 10px;
+}
+#submit:hover{
+    background: #e5e5e5;
+}
+#submit:active{
+    transform: translateX(-50%) translateY(5px);
+    box-shadow: none;
+}
+
+#error{
+    display: none;
+    color: red;
+    text-align: center;
+    margin-bottom: 0;
+}
+
 #loader {
     display: none;
     width: 48px;
