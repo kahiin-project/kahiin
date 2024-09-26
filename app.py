@@ -76,7 +76,7 @@ class Client(GameTab):
     def evalScore(self) -> None:
         if type(self.user_answer) != list:
             return
-	self.response_time = self.time_end - time_begin
+        self.response_time = self.time_end - time_begin
         match self.question_type:
             case "uniqueanswer":
                 if self.user_answer[0] in self.expected_response:
