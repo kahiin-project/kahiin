@@ -4,7 +4,7 @@
 if [[ "$(uname)" == "Linux" ]]; then
     if [[ -f /data/data/com.termux/files/usr/bin/bash ]]; then
         # Termux
-        pkg update
+        yes | pkg update
         yes | pkg upgrade
         yes | pkg install python3
         pip install flask
@@ -16,7 +16,7 @@ if [[ "$(uname)" == "Linux" ]]; then
         echo Welcome to $(grep -oP '^NAME="\K[^"]+' /etc/os-release).
         echo To run this script, you need to be root.
         echo
-        sudo apt update
+        yes | sudo apt update
         yes | sudo apt install python3 
         yes | sudo apt install python3-pip
         yes | sudo apt install python$(python3 -V 2>&1 | awk -F'[ .]' '{print $2"."$3}')-venv
@@ -33,7 +33,7 @@ if [[ "$(uname)" == "Linux" ]]; then
     echo To run this script, you need to be root.
     echo
         # Arch Based
-        sudo pacman -Syu
+        yes | sudo pacman -Syu
         yes | sudo pacman -S python3
         yes | sudo pacman -S python-pip
         yes | sudo pacman -S python-virtualenv
