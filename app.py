@@ -217,12 +217,11 @@ def handle_host_connect(code: str) -> None:
 @socketio.on('startSession')
 def handle_start_game(code: str) -> None:
     if len(client_list) == 0:
-        emit('error', "Aucun joueur connecté")
         return
-    if game.running:
+    elif game.running:
         emit('error', "La partie est déjà en cours")
         return
-    if code == passcode:
+    elif code == passcode:
         for client in client_list + board_list + host_list:
             emit('startGame', to=client.sid)
         game.running = True
@@ -233,6 +232,9 @@ def handle_start_game(code: str) -> None:
 @socketio.on("nextQuestion")
 def handle_next_question(res) -> None:
     code, question_number = res["passcode"], res["question_count"]
+    if len(client_list) == 0:
+        emit('error', "Aucun joueur connecté")
+        return
     if code == passcode:
         if question_number == len(config["questions"]):
             ...
