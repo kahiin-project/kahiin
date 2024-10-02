@@ -14,49 +14,71 @@ function Game() {
     question_number = res["question_number"]
     const possible_answer = res["question_possible_answers"];
     document.getElementById("buttons").style.display = "block";
-    switch (possible_answer.length) {
-      case 2:
-        document.getElementById("buttons").innerHTML = `
-          <button id="button_0" onclick="sendAnswer('a')" class="b1" style="height: calc(100% - 40px);">A</button>
-          <button id="button_1" onclick="sendAnswer('b')" class="b3" style="height: calc(100% - 40px); top: 20px; left: calc(50% + 10px);">B</button>
-        `;
-        break;
-      case 3:
-        document.getElementById("buttons").innerHTML = `
-          <button id="button_0" onclick="sendAnswer('a')" class="b1">A</button>
-          <button id="button_1" onclick="sendAnswer('b')" class="b2">B</button>
-          <button id="button_2" onclick="sendAnswer('c')" class="b3">C</button>
-          <button class="b0"></button>
-        `;
-        break;
-      case 4:
-        document.getElementById("buttons").innerHTML = `
-          <button id="button_0" onclick="sendAnswer('a')" class="b1">A</button>
-          <button id="button_1" onclick="sendAnswer('b')" class="b2">B</button>
-          <button id="button_2" onclick="sendAnswer('c')" class="b3">C</button>
-          <button id="button_3" onclick="sendAnswer('d')" class="b4">D</button>
-        `;
-        break;
-      default:
-        console.log("Invalid answers incoming");
-    }
-    if(possible_answer.length == 2){
-      
-    }
     if (res["question_type"] == "mcq") {
+      switch (possible_answer.length) {
+        case 2:
+          document.getElementById("buttons").innerHTML = `
+            <button id="button_0" class="mcqButton b1" style="height: calc(100% - 40px);">A</button>
+            <button id="button_1" class="mcqButton b3" style="height: calc(100% - 40px); top: 20px; left: calc(50% + 10px);">B</button>
+          `;
+          break;
+        case 3:
+          document.getElementById("buttons").innerHTML = `
+            <button id="button_0" class="mcqButton b1">A</button>
+            <button id="button_1" class="mcqButton b2">B</button>
+            <button id="button_2" class="mcqButton b3">C</button>
+            <button class="b0"></button>
+          `;
+          break;
+        case 4:
+          document.getElementById("buttons").innerHTML = `
+            <button id="button_0" class="mcqButton b1">A</button>
+            <button id="button_1" class="mcqButton b2">B</button>
+            <button id="button_2" class="mcqButton b3">C</button>
+            <button id="button_3" class="mcqButton b4">D</button>
+          `;
+          break;
+        default:
+          console.log("Invalid answers incoming");
+      }
       for (let i = 0; i < possible_answer.length; i++) {
-        console.log(res[possible_answer[i]]);
-        document.getElementById(`button_${i}`).onclick = function() {editAnswer(possible_answer[i])}
+        document.getElementById(`button_${i}`).onclick = function() {
+          editAnswer(possible_answer[i]);
+        }
         document.getElementById(`button_${i}`).innerHTML = possible_answer[i];
-        document.getElementById(`button_${i}`).style.display = "block";
-        document.getElementById("send_button").style.display = "block";
       }
     } else if (res["question_type"] == "uniqueanswer") {
+      switch (possible_answer.length) {
+        case 2:
+          document.getElementById("buttons").innerHTML = `
+            <button id="button_0" class="uaButton b1" style="height: calc(100% - 40px);">A</button>
+            <button id="button_1" class="uaButton b3" style="height: calc(100% - 40px); top: 20px; left: calc(50% + 10px);">B</button>
+          `;
+          break;
+        case 3:
+          document.getElementById("buttons").innerHTML = `
+            <button id="button_0" class="uaButton b1">A</button>
+            <button id="button_1" class="uaButton b2">B</button>
+            <button id="button_2" class="uaButton b3">C</button>
+            <button class="b0"></button>
+          `;
+          break;
+        case 4:
+          document.getElementById("buttons").innerHTML = `
+            <button id="button_0" class="uaButton b1">A</button>
+            <button id="button_1" class="uaButton b2">B</button>
+            <button id="button_2" class="uaButton b3">C</button>
+            <button id="button_3" class="uaButton b4">D</button>
+          `;
+          break;
+        default:
+          console.log("Invalid answers incoming");
+      }
       for (let i = 0; i < possible_answer.length; i++) {
-        console.log(possible_answer[i]);
-        document.getElementById(`button_${i}`).onclick = function() {sendAnswer(possible_answer[i])}
+        document.getElementById(`button_${i}`).onclick = function() {
+          sendAnswer(possible_answer[i]);
+        }
         document.getElementById(`button_${i}`).innerHTML = possible_answer[i];
-        document.getElementById(`button_${i}`).style.display = "block";
       }
     }
   });
