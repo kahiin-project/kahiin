@@ -175,10 +175,10 @@ def handle_message(message: str) -> None:
     emit('message', message)
 
 
-@app.route('/homepage')
+@app.route('/guest')
 def route_homepage() -> str:
     """Render the homepage."""
-    return render_template('home-page.html')
+    return render_template('guest-page.html')
 
 
 @app.route('/board')
