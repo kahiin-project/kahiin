@@ -114,6 +114,12 @@
     cursor: pointer;
     border: none;
 }
+#buttons .b0{
+    background: #DFE6E9;
+    box-shadow: 0px 5px #adb2b4; 
+    top: calc(50% + 10px); 
+    left: calc(50% + 10px);
+}
 #buttons .b1{
     background: #99eeff; 
     box-shadow: 0px 5px #64bcce; 
