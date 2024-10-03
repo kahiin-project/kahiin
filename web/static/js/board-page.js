@@ -9,8 +9,13 @@ function generatePastelColor() {
   return hex;
 }
 
+function hashSHA256(message) {
+  const hash = CryptoJS.SHA256(message);
+  return hash.toString(CryptoJS.enc.Hex);
+}
+
 function Submit() {
-  const passcode = document.getElementById("passcode").value;
+  const passcode = hashSHA256(document.getElementById("passcode").value);
 
   socket.emit("boardConnect", passcode);
   document.getElementById("form").style.display = "none";
