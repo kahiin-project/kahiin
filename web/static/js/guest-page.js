@@ -18,8 +18,8 @@ function Game() {
       switch (possible_answer.length) {
         case 2:
           document.getElementById("buttons").innerHTML = `
-            <button id="button_0" class="mcqButton b1" style="height: calc(100% - 40px);">A</button>
-            <button id="button_1" class="mcqButton b3" style="height: calc(100% - 40px); top: 20px; left: calc(50% + 10px);">B</button>
+            <button id="button_0" class="mcqButton b1" style="height: calc(100% - 100px);">A</button>
+            <button id="button_1" class="mcqButton b3" style="height: calc(100% - 100px); top: 20px; left: calc(50% + 10px);">B</button>
           `;
           break;
         case 3:
@@ -27,7 +27,7 @@ function Game() {
             <button id="button_0" class="mcqButton b1">A</button>
             <button id="button_1" class="mcqButton b2">B</button>
             <button id="button_2" class="mcqButton b3">C</button>
-            <button class="b0"></button>
+            <button class="mcqButton b0"></button>
           `;
           break;
         case 4:
@@ -60,7 +60,7 @@ function Game() {
             <button id="button_0" class="uaButton b1">A</button>
             <button id="button_1" class="uaButton b2">B</button>
             <button id="button_2" class="uaButton b3">C</button>
-            <button class="b0"></button>
+            <button class="uaButton b0"></button>
           `;
           break;
         case 4:

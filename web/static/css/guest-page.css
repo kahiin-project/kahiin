@@ -114,35 +114,53 @@
     cursor: pointer;
     border: none;
 }
+#buttons .mcqButton{
+    height: calc(50% - 70px);
+}
 #buttons .b0{
     background: #DFE6E9;
     box-shadow: 0px 5px #adb2b4; 
-    top: calc(50% + 10px); 
     left: calc(50% + 10px);
+}
+#buttons .uaButton.b0{
+    top: calc(50% + 10px); 
+}
+#buttons .mcqButton.b0{
+    top: calc(50% - 20px);
 }
 #buttons .b1{
     background: #99eeff; 
-    box-shadow: 0px 5px #64bcce; 
-    top: 20px; 
+    box-shadow: 0px 5px #64bcce;
     left: 20px;
+    top: 20px;
 }
 #buttons .b2{
     background: #ABD95B; 
-    box-shadow: 0px 5px #7aa82b; 
-    top: 20px; 
+    box-shadow: 0px 5px #7aa82b;
     left: calc(50% + 10px);
+    top: 20px;
 }
 #buttons .b3{
     background: #BC5BD9; 
-    box-shadow: 0px 5px #a246be; 
-    top: calc(50% + 10px); 
+    box-shadow: 0px 5px #a246be;
     left: 20px;
+}
+#buttons .uaButton.b3{
+    top: calc(50% + 10px); 
+}
+#buttons .mcqButton.b3{
+    top: calc(50% - 20px); 
 }
 #buttons .b4{
     background: #D9955B; 
-    box-shadow: 0px 5px #c97e3d; 
-    top: calc(50% + 10px); 
+    box-shadow: 0px 5px #c97e3d;
     left: calc(50% + 10px);
+}
+#buttons .uaButton.b4{
+    top: calc(50% + 10px); 
+}
+#buttons .mcqButton.b4{
+    top: calc(50% - 20px);
 }
 #buttons button:active{
     transform: translateY(5px);
@@ -158,6 +176,23 @@
     80% { transform:  scale(1.2)}
 }
 
-#buttons {
-    display: none;
+#send_button{
+    position: absolute;
+    background: #ebebeb;
+    display: block;
+    bottom: 15px;
+    left: 20px;
+    right: 30px;
+    height: 60px;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    color: black;
+    text-decoration: none;
+    text-align: center;
+    font-family: 'Bagnard', sans-serif;
+    font-size: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 5px #888888;
+    cursor: pointer;
+    border: none;
 }
