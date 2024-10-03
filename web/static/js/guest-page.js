@@ -15,11 +15,12 @@ function Game() {
     const possible_answer = res["question_possible_answers"];
     document.getElementById("buttons").style.display = "block";
     if (res["question_type"] == "mcq") {
+      document.getElementById("send_button").style.display = "block";
       switch (possible_answer.length) {
         case 2:
           document.getElementById("buttons").innerHTML = `
-            <button id="button_0" class="mcqButton b1" style="height: calc(100% - 100px);">A</button>
-            <button id="button_1" class="mcqButton b3" style="height: calc(100% - 100px); top: 20px; left: calc(50% + 10px);">B</button>
+            <button id="button_0" class="mcqButton b1" style="height: calc(100% - 110px);">A</button>
+            <button id="button_1" class="mcqButton b3" style="height: calc(100% - 110px); top: 20px; left: calc(50% + 10px);">B</button>
           `;
           break;
         case 3:
@@ -129,6 +130,7 @@ function editAnswer(answer) {
 
 
 function sendMCQ() {
+  document.getElementById("send_button").style.display = "none";
   socket.emit("sendAnswer", {"answers":answer_list, "question_number": question_number});
   for (let i = 0; i < 4; i++) {
     document.getElementById(`button_${i}`).style.display = "none";

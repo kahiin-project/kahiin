@@ -196,3 +196,10 @@
     cursor: pointer;
     border: none;
 }
+#send_button:hover{
+    background: #e4e4e4;
+}
+#send_button:active{
+    transform: translateY(5px);
+    box-shadow: none;
+}
