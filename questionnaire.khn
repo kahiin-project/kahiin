@@ -16,7 +16,7 @@
             <answer>b</answer>
         </correct_answers>
         <duration>20</duration>
-        <type>uniqueanswer</type>
+        <type>mcq</type>
     </question>
     <question>
         <title>Test Question Answer B</title>
