@@ -317,19 +317,20 @@ def handle_disconnect() -> None:
             board_list.remove(board)
 
 
-@socketio.on('edit')
-def handle_edit(message: dict) -> None:
+@socketio.on('edit_question')
+def handle_edit_question(message: dict) -> None:
     """
     Handle configuration edit requests.
 
     :param message: Dictionary containing the key, value, and passcode
     """
     if message['passcode'] == passcode:
-        config[message['key']] = message['value']
-        # Save updated configuration to the JSON file
-        with open('config.json', 'w') as config_file:
-            json.dump(config, config_file)
-        emit('edit', message)
+        for question in root.findall('question'):
+            if question.find('title').text == message['key']:
+                question.find('title').text = message['value']
+                break
+        tree.write('questionnaire.khn')
+        # emit('edit', message)
     else:
         emit('error', 'Invalid passcode')
 
@@ -351,5 +352,4 @@ def route_landing_page() -> str:
 
 
 if __name__ == '__main__':
-    # Run the Flask application with SocketIO
     socketio.run(app, debug=True, port=8080, host="0.0.0.0")
