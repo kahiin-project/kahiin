@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
-import json
+from hashlib import sha256
 import time
 import sqlite3
 import xml.etree.ElementTree as ET
 # Passcode for authentication (hardcoded for now)
-passcode = 'a'
+passcode = "a"
+passcode = str(sha256(passcode.encode('UTF-8')).hexdigest())
 
 # Load KHN (XML) file
 tree = ET.parse('questionnaire.khn')

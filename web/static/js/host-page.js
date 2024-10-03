@@ -1,7 +1,13 @@
 const socket = io();
 var question_count = 0;
+
+function hashSHA256(message) {
+  const hash = CryptoJS.SHA256(message);
+  return hash.toString(CryptoJS.enc.Hex);
+}
+
 function Submit() {
-    const passcode = document.getElementById("passcode").value;
+    const passcode = hashSHA256(document.getElementById("passcode").value);
     document.getElementById("form").style.display = "none";
     document.getElementById("start").style.display = "block"
     socket.emit("hostConnect", passcode);
@@ -16,7 +22,7 @@ function Submit() {
 }
 
 function startSession() {
-  const passcode = document.getElementById("passcode").value;
+  const passcode = hashSHA256(document.getElementById("passcode").value);
   document.getElementById("start").style.display = "none";
   document.getElementById("next").style.display = "block";
   socket.emit("startSession", passcode);
@@ -24,7 +30,7 @@ function startSession() {
   socket.emit("nextQuestion", {passcode, question_count});
 }
 function nextQuestion() {
-  const passcode = document.getElementById("passcode").value;
+  const passcode = hashSHA256(document.getElementById("passcode").value);
   question_count += 1;
   socket.emit("nextQuestion", {passcode, question_count});
 }
