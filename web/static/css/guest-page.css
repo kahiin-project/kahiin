@@ -162,7 +162,7 @@
 #buttons .mcqButton.b4{
     top: calc(50% - 20px);
 }
-#buttons button:active{
+#buttons .uaButton:active, #buttons .activeButton{
     transform: translateY(5px);
     box-shadow: none;
 }
