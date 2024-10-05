@@ -45,6 +45,7 @@ function Game() {
       for (let i = 0; i < possible_answer.length; i++) {
         document.getElementById(`button_${i}`).onclick = function() {
           editAnswer(possible_answer[i]);
+          document.getElementById(`button_${i}`).classList.toggle('activeButton');
         }
         document.getElementById(`button_${i}`).innerHTML = possible_answer[i];
       }
