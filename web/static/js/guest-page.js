@@ -19,24 +19,42 @@ function Game() {
       switch (possible_answer.length) {
         case 2:
           document.getElementById("buttons").innerHTML = `
-            <button id="button_0" class="mcqButton b1" style="height: calc(100% - 110px);">A</button>
-            <button id="button_1" class="mcqButton b3" style="height: calc(100% - 110px); top: 20px; left: calc(50% + 10px);">B</button>
+            <button id="button_0" class="mcqButton b1" style="height: calc(100% - 110px);">
+              <svg width="100" height="100"><rect width="100" height="100" fill="white" /></svg>
+            </button>
+            <button id="button_1" class="mcqButton b3" style="height: calc(100% - 110px); top: 20px; left: calc(50% + 10px);">
+              <svg width="100" height="100"><circle cx="50" cy="50" r="50" fill="white" /></svg>
+            </button>
           `;
           break;
         case 3:
           document.getElementById("buttons").innerHTML = `
-            <button id="button_0" class="mcqButton b1">A</button>
-            <button id="button_1" class="mcqButton b2">B</button>
-            <button id="button_2" class="mcqButton b3">C</button>
+            <button id="button_0" class="mcqButton b1">
+              <svg width="100" height="100"><rect width="100" height="100" fill="white" /></svg>
+            </button>
+            <button id="button_1" class="mcqButton b2">
+              <svg width="100" height="100"><circle cx="50" cy="50" r="50" fill="white" /></svg>
+            </button>
+            <button id="button_2" class="mcqButton b3">
+              <svg width="100" height="100"><polygon points="50,5 95,95 5,95" fill="white" /></svg>
+            </button>
             <button class="mcqButton b0"></button>
           `;
           break;
         case 4:
           document.getElementById("buttons").innerHTML = `
-            <button id="button_0" class="mcqButton b1">A</button>
-            <button id="button_1" class="mcqButton b2">B</button>
-            <button id="button_2" class="mcqButton b3">C</button>
-            <button id="button_3" class="mcqButton b4">D</button>
+            <button id="button_0" class="mcqButton b1">
+              <svg width="100" height="100"><rect width="100" height="100" fill="white" /></svg>
+            </button>
+            <button id="button_1" class="mcqButton b2">
+              <svg width="100" height="100"><circle cx="50" cy="50" r="50" fill="white" /></svg>
+            </button>
+            <button id="button_2" class="mcqButton b3">
+              <svg width="100" height="100"><polygon points="50,5 95,95 5,95" fill="white" /></svg>
+            </button>
+            <button id="button_3" class="mcqButton b4">
+              <svg width="100" height="100"><polygon points="50,5 61,35 98,35 68,57 79,90 50,70 21,90 32,57 2,35 39,35" fill="white" /></svg>
+            </button>
           `;
           break;
         default:
@@ -47,30 +65,47 @@ function Game() {
           editAnswer(possible_answer[i]);
           document.getElementById(`button_${i}`).classList.toggle('activeButton');
         }
-        document.getElementById(`button_${i}`).innerHTML = possible_answer[i];
       }
     } else if (res["question_type"] == "uniqueanswer") {
       switch (possible_answer.length) {
         case 2:
           document.getElementById("buttons").innerHTML = `
-            <button id="button_0" class="uaButton b1" style="height: calc(100% - 40px);">A</button>
-            <button id="button_1" class="uaButton b3" style="height: calc(100% - 40px); top: 20px; left: calc(50% + 10px);">B</button>
+            <button id="button_0" class="uaButton b1" style="height: calc(100% - 40px);">
+              <svg width="100" height="100"><rect width="100" height="100" fill="white" /></svg>
+            </button>
+            <button id="button_1" class="uaButton b3" style="height: calc(100% - 40px); top: 20px; left: calc(50% + 10px);">
+              <svg width="100" height="100"><circle cx="50" cy="50" r="50" fill="white" /></svg>
+            </button>
           `;
           break;
         case 3:
           document.getElementById("buttons").innerHTML = `
-            <button id="button_0" class="uaButton b1">A</button>
-            <button id="button_1" class="uaButton b2">B</button>
-            <button id="button_2" class="uaButton b3">C</button>
+            <button id="button_0" class="uaButton b1">
+              <svg width="100" height="100"><rect width="100" height="100" fill="white" /></svg>
+            </button>
+            <button id="button_1" class="uaButton b2">
+              <svg width="100" height="100"><circle cx="50" cy="50" r="50" fill="white" /></svg>
+            </button>
+            <button id="button_2" class="uaButton b3">
+              <svg width="100" height="100"><polygon points="50,5 95,95 5,95" fill="white" /></svg>
+            </button>
             <button class="uaButton b0"></button>
           `;
           break;
         case 4:
           document.getElementById("buttons").innerHTML = `
-            <button id="button_0" class="uaButton b1">A</button>
-            <button id="button_1" class="uaButton b2">B</button>
-            <button id="button_2" class="uaButton b3">C</button>
-            <button id="button_3" class="uaButton b4">D</button>
+            <button id="button_0" class="uaButton b1">
+              <svg width="100" height="100"><rect width="100" height="100" fill="white" /></svg>
+            </button>
+            <button id="button_1" class="uaButton b2">
+              <svg width="100" height="100"><circle cx="50" cy="50" r="50" fill="white" /></svg>
+            </button>
+            <button id="button_2" class="uaButton b3">
+              <svg width="100" height="100"><polygon points="50,5 95,95 5,95" fill="white" /></svg>
+            </button>
+            <button id="button_3" class="uaButton b4">
+              <svg width="100" height="100"><polygon points="50,5 61,35 98,35 68,57 79,90 50,70 21,90 32,57 2,35 39,35" fill="white" /></svg>
+            </button>
           `;
           break;
         default:
@@ -80,7 +115,6 @@ function Game() {
         document.getElementById(`button_${i}`).onclick = function() {
           sendAnswer(possible_answer[i]);
         }
-        document.getElementById(`button_${i}`).innerHTML = possible_answer[i];
       }
     }
   });
