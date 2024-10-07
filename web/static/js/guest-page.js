@@ -11,6 +11,8 @@ function Submit() {
 }
 function Game() {
   socket.on("questionStart", (res) => {
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("loader-text").style.display = "none";
     question_number = res["question_number"]
     const possible_answer = res["question_possible_answers"];
     document.getElementById("buttons").style.display = "block";
@@ -38,7 +40,7 @@ function Game() {
             <button id="button_2" class="mcqButton b3">
               <svg width="100" height="100"><polygon points="50,5 95,95 5,95" fill="white" /></svg>
             </button>
-            <button class="mcqButton b0"></button>
+            <button id="button_3" class="mcqButton b0"></button>
           `;
           break;
         case 4:
@@ -89,7 +91,7 @@ function Game() {
             <button id="button_2" class="uaButton b3">
               <svg width="100" height="100"><polygon points="50,5 95,95 5,95" fill="white" /></svg>
             </button>
-            <button class="uaButton b0"></button>
+            <button id="button_3" class="uaButton b0"></button>
           `;
           break;
         case 4:
@@ -137,7 +139,8 @@ function Game() {
   });
 
 function sendAnswer(answer) {
-  console.log(answer);
+  document.getElementById("loader").style.display = "block";
+  document.getElementById("loader-text").style.display = "block";
   socket.emit("sendAnswer", {"answers":[answer], "question_number": question_number});
   document.getElementById("send_button").style.display = "none";
   document.getElementById("buttons").style.display = "none";
@@ -166,6 +169,8 @@ function editAnswer(answer) {
 
 function sendMCQ() {
   document.getElementById("send_button").style.display = "none";
+  document.getElementById("loader").style.display = "block";
+  document.getElementById("loader-text").style.display = "block";
   socket.emit("sendAnswer", {"answers":answer_list, "question_number": question_number});
   for (let i = 0; i < 4; i++) {
     document.getElementById(`button_${i}`).style.display = "none";
