@@ -14,7 +14,7 @@ function hashSHA256(message) {
   return hash.toString(CryptoJS.enc.Hex);
 }
 
-function Submit() {
+function submitPasscode() {
   const passcode = hashSHA256(document.getElementById("passcode").value);
 
   socket.emit("boardConnect", passcode);
@@ -86,6 +86,12 @@ function Display() {
     document.getElementById("leaderboard-container").style.opacity = 0;
     document.getElementById("leaderboard_top").style.opacity = 0;
     document.getElementById("promoted-list").style.opacity = 0;
+
+    const answer_blocks = document.getElementById("answers_div").getElementsByClassName("answer-block");
+    for (let i = 0; i < answer_blocks.length; i++) {
+      answer_blocks[i].style.opacity = 1;
+      answer_blocks[i].style.boxShadow = "rgba(0, 0, 0, 0.16) 0px 1px 4px";
+    }
 
     question_title = res["question_title"]
     .split('\n')
@@ -180,6 +186,9 @@ function Display() {
 
   socket.on('leaderboard', (res) => {
     // {'promoted_users': [], 'game_lead': [('username16', 980), ('username16', 980), ('username17', 973), ('username17', 973), ('username19', 938)]}
+    document.getElementById("question").style.opacity = 0;
+    document.getElementById("question_number").style.opacity = 0;
+    document.getElementById("answers_div").style.opacity = 0;
     document.getElementById("leaderboard-container").style.opacity = 1;
     document.getElementById("leaderboard_top").style.opacity = 1;
     document.getElementById("promoted-list").style.opacity = 1;
@@ -205,14 +214,19 @@ function Display() {
   });
 
   socket.on("questionEnd", (res) => {
-    document.getElementById("question").style.opacity = 0;
-    document.getElementById("question_number").style.opacity = 0;
+    const question_correct_answer = res["question_correct_answer"].map((x) => x.trim());
+    // Gray out the incorrect answers
+    const answers_div = document.getElementById("answers_div");
+    const answer_blocks = answers_div.getElementsByClassName("answer-block");
+    for (let i = 0; i < answer_blocks.length; i++) {
+      if (!question_correct_answer.includes(answer_blocks[i].innerText.trim())) {
+        answer_blocks[i].style.opacity = 0.2;
+        answer_blocks[i].style.boxShadow = "none";
+      }
+    }
+    
     document.getElementById("timer").style.opacity = 0;
     document.getElementById("timerbar").style.opacity = 0;
-    document.getElementById("answers_div").style.opacity = 0;
-    document.getElementById("loader").style.opacity = 1;
-    document.getElementById("loader").style.display = "block";
-    document.getElementById("loader-text").style.display = "block";
 
   }
 );

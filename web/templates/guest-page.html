@@ -17,9 +17,9 @@
   </head>
   <body id="body">
     <div id="form">
-      <input type="text" id="username" placeholder="username" />
+      <input type="text" id="username" placeholder="username" onchange="submitUsername()" />
       <p id="error">incorrect password</p>
-      <button id="submit" onclick="Submit()">Submit</button>
+      <button id="submit" onclick="submitUsername()">Submit</button>
     </div>
     <span id="loader" style="display: none"></span>
     <p id="loader-text">Waiting for the host...</p>

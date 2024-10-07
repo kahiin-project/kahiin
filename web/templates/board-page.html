@@ -27,9 +27,9 @@
   </head>
   <body>
     <div id="form">
-      <input type="password" id="passcode" placeholder="passcode" />
+      <input type="password" id="passcode" placeholder="passcode" onchange="submitPasscode()" />
       <p id="error"></p>
-      <button id="submit" onclick="Submit()">Submit</button>
+      <button id="submit" onclick="submitPasscode()">Submit</button>
     </div>
     <div id="list">
       <h1>Players list</h1>
