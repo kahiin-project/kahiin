@@ -19,13 +19,16 @@
     <div id="form">
       <input type="password" id="passcode" placeholder="passcode" />
       <p id="error"></p>
-      <button id="submit" onclick="Submit()">Submit</button>
+      <button id="submit" onclick="submitPasscode()">Submit</button>
     </div>
-    <button id="start" style="display: none" onclick="startSession()">
+    <button id="start_game" style="display: none" onclick="startSession()">
       Demarrer le jeu
     </button>
-    <button id="next" style="display: none" onclick="nextQuestion()">
+    <button id="next_question" style="display: none" onclick="nextQuestion()">
       Prochaine question
+    </button>
+    <button id="show_leaderboard" style="display: none" onclick="showLeaderboard()">
+      Afficher le classement
     </button>
   </body>
 </html>

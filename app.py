@@ -291,7 +291,7 @@ def handle_next_question(res) -> None:
         return
     if code == passcode:
         if question_number == len(config["questions"]):
-            ...
+            ...  # End of game
         question = config["questions"][question_number]
         data = {
             "question_title": question["title"],
@@ -311,19 +311,24 @@ def handle_next_question(res) -> None:
         # 2sec for progress bar to appear and first delay,
         # question["duration"] seconds for the game,
         time.sleep(2 + question["duration"])
-
-        for client in client_list+board_list+host_list:
-            emit("questionEnd", to=client.sid)
+        data = {
+            "question_correct_answer": question["correct_answers"]
+        }
         for client in client_list:
             client.evalScore()
-        # Generate random game_lead and promoted_users
+        for client in client_list+board_list+host_list:
+            emit("questionEnd", data, to=client.sid)
+    else:
+        emit('error', "Code incorrect")
+
+
+@socketio.on('showLeaderboard')
+def handle_show_leaderboard(code: str) -> None:
+    if code == passcode:
         game_lead, promoted_users = game.display()
-        data = {
-            "promoted_users": promoted_users,
-            "game_lead": game_lead
-        }
-        for board in board_list:
-            emit("leaderboard", data, to=board.sid)
+        for client in client_list + board_list + host_list:
+            emit('leaderboard', {
+                "promoted_users": promoted_users, "game_lead": game_lead}, to=client.sid)
     else:
         emit('error', "Code incorrect")
 
@@ -356,6 +361,15 @@ def handle_edit_question(message: dict) -> None:
         # emit('edit', message)
     else:
         emit('error', 'Invalid passcode')
+
+
+@socketio.on("getQuestions")
+def handle_get_questions(res) -> None:
+    """Handle requests for the list of questions."""
+    if res.get("passcode") == passcode:
+        emit("questions", {"questions": config["questions"]})
+    else:
+        emit("error", "Invalid passcode")
 
 
 if __name__ == '__main__':
