@@ -1,7 +1,7 @@
 const socket = io();
 var answer_list= [];
 var question_number;
-function Submit() {
+function submitUsername() {
   const Username = document.getElementById("username").value;
   socket.emit("addUser", Username);
 
