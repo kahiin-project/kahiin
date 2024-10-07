@@ -12,6 +12,8 @@ passcode = str(sha256(passcode.encode('UTF-8')).hexdigest())
 tree = ET.parse('questionnaire.khn')
 root = tree.getroot()
 
+
+# Parse XML file and store questions in config
 config = {"questions": []}
 # Add each question to config
 for question in root.findall('question'):
@@ -39,6 +41,8 @@ socketio = SocketIO(app)
 # Set static and template folders
 app.static_folder = 'web/static'
 app.template_folder = 'web/templates'
+
+## ----------------- Class ----------------- ##
 
 
 class GameTab:
@@ -163,17 +167,13 @@ class Game:
 
 game = Game()
 
+## ----------------- Routes ----------------- ##
+
 
 @app.route('/host')
 def route_host() -> str:
     """Render the host page."""
     return render_template('host-page.html')
-
-
-@socketio.on('message')
-def handle_message(message: str) -> None:
-    """Handle incoming messages and emit them back to the client."""
-    emit('message', message)
 
 
 @app.route('/guest')
@@ -186,6 +186,14 @@ def route_homepage() -> str:
 def route_board_page() -> str:
     """Render the board page."""
     return render_template('board-page.html')
+
+
+@app.route('/')
+def route_landing_page() -> str:
+    """Render the landing page."""
+    return render_template('landing-page.html')
+
+## ----------------- SocketIO Connections ----------------- ##
 
 
 @socketio.on('boardConnect')
@@ -213,6 +221,51 @@ def handle_host_connect(code: str) -> None:
         session = Host(sid=request.sid, connections=host_list)
     else:
         emit('error', "Vous n'avez pas entré le bon passcode")
+
+
+@socketio.on('disconnect')
+def handle_disconnect() -> None:
+    """Handle client disconnection events."""
+    sessid = request.sid
+    for client in client_list:
+        if client.sid == sessid:
+            for board in board_list:
+                emit('rmUser', {'username': client.username,
+                     'passcode': passcode}, to=board.sid)
+
+            client_list.remove(client)  # Remove the client
+
+    # Remove board if it is disconnected
+    for board in board_list:
+        if board.sid == sessid:
+            board_list.remove(board)
+
+
+@socketio.on('addUser')
+def handle_connect(username: str) -> None:
+    """
+    Handle new user connection requests.
+
+    :param username: Username provided by the new user
+    """
+    sessid = request.sid
+    # Check if the username is already taken
+    if game.running:
+        emit('error', "La partie est déjà en cours")
+        return
+    if any(c.username == username for c in client_list):
+        emit('error', 'Nom d\'utilisateur déjà pris')
+        return
+    elif any(c.sid == sessid for c in client_list):
+        emit('error', 'Vous êtes déjà connecté')
+        return
+
+    # Create a new client session
+    session = Client(sid=sessid, username=username, connections=client_list)
+    for board in board_list:
+        emit('newUser', {'username': username, 'sid': sessid}, to=board.sid)
+
+## ----------------- SocketIO Game Events ----------------- ##
 
 
 @socketio.on('startSession')
@@ -275,50 +328,19 @@ def handle_next_question(res) -> None:
         emit('error', "Code incorrect")
 
 
-@socketio.on('addUser')
-def handle_connect(username: str) -> None:
-    """
-    Handle new user connection requests.
-
-    :param username: Username provided by the new user
-    """
-    sessid = request.sid
-    # Check if the username is already taken
-    if game.running:
-        emit('error', "La partie est déjà en cours")
-        return
-    if any(c.username == username for c in client_list):
-        emit('error', 'Nom d\'utilisateur déjà pris')
-        return
-    elif any(c.sid == sessid for c in client_list):
-        emit('error', 'Vous êtes déjà connecté')
-        return
-
-    # Create a new client session
-    session = Client(sid=sessid, username=username, connections=client_list)
-    for board in board_list:
-        emit('newUser', {'username': username, 'sid': sessid}, to=board.sid)
-
-
-@socketio.on('disconnect')
-def handle_disconnect() -> None:
-    """Handle client disconnection events."""
+@socketio.on('sendAnswer')
+def handle_answer(res) -> None:
+    user_answer = res["answers"]
     sessid = request.sid
     for client in client_list:
         if client.sid == sessid:
-            for board in board_list:
-                emit('rmUser', {'username': client.username,
-                     'passcode': passcode}, to=board.sid)
+            client.time_end = time.time()
+            client.user_answer = user_answer
 
-            client_list.remove(client)  # Remove the client
-
-    # Remove board if it is disconnected
-    for board in board_list:
-        if board.sid == sessid:
-            board_list.remove(board)
+## ----------------- SocketIO Configuration Events ----------------- ##
 
 
-@socketio.on('edit_question')
+@socketio.on('editQuestion')
 def handle_edit_question(message: dict) -> None:
     """
     Handle configuration edit requests.
@@ -334,22 +356,6 @@ def handle_edit_question(message: dict) -> None:
         # emit('edit', message)
     else:
         emit('error', 'Invalid passcode')
-
-
-@socketio.on('sendAnswer')
-def handle_answer(res) -> None:
-    user_answer = res["answers"]
-    sessid = request.sid
-    for client in client_list:
-        if client.sid == sessid:
-            client.time_end = time.time()
-            client.user_answer = user_answer
-
-
-@app.route('/')
-def route_landing_page() -> str:
-    """Render the landing page."""
-    return render_template('landing-page.html')
 
 
 if __name__ == '__main__':
