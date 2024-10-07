@@ -12,6 +12,8 @@ passcode = str(sha256(passcode.encode('UTF-8')).hexdigest())
 tree = ET.parse('questionnaire.khn')
 root = tree.getroot()
 
+
+# Parse XML file and store questions in config
 config = {"questions": []}
 # Add each question to config
 for question in root.findall('question'):
@@ -39,6 +41,8 @@ socketio = SocketIO(app)
 # Set static and template folders
 app.static_folder = 'web/static'
 app.template_folder = 'web/templates'
+
+## ----------------- Class ----------------- ##
 
 
 class GameTab:
@@ -163,17 +167,13 @@ class Game:
 
 game = Game()
 
+## ----------------- Routes ----------------- ##
+
 
 @app.route('/host')
 def route_host() -> str:
     """Render the host page."""
     return render_template('host-page.html')
-
-
-@socketio.on('message')
-def handle_message(message: str) -> None:
-    """Handle incoming messages and emit them back to the client."""
-    emit('message', message)
 
 
 @app.route('/guest')
@@ -186,6 +186,14 @@ def route_homepage() -> str:
 def route_board_page() -> str:
     """Render the board page."""
     return render_template('board-page.html')
+
+
+@app.route('/')
+def route_landing_page() -> str:
+    """Render the landing page."""
+    return render_template('landing-page.html')
+
+## ----------------- SocketIO Connections ----------------- ##
 
 
 @socketio.on('boardConnect')
@@ -215,64 +223,22 @@ def handle_host_connect(code: str) -> None:
         emit('error', "Vous n'avez pas entré le bon passcode")
 
 
-@socketio.on('startSession')
-def handle_start_game(code: str) -> None:
-    if len(client_list) == 0:
-        return
-    elif game.running:
-        emit('error', "La partie est déjà en cours")
-        return
-    elif code == passcode:
-        for client in client_list + board_list + host_list:
-            emit('startGame', to=client.sid)
-        game.running = True
-    else:
-        emit('error', "Code incorrect")
+@socketio.on('disconnect')
+def handle_disconnect() -> None:
+    """Handle client disconnection events."""
+    sessid = request.sid
+    for client in client_list:
+        if client.sid == sessid:
+            for board in board_list:
+                emit('rmUser', {'username': client.username,
+                     'passcode': passcode}, to=board.sid)
 
+            client_list.remove(client)  # Remove the client
 
-@socketio.on("nextQuestion")
-def handle_next_question(res) -> None:
-    code, question_number = res["passcode"], res["question_count"]
-    if len(client_list) == 0:
-        emit('error', "Aucun joueur connecté")
-        return
-    if code == passcode:
-        if question_number == len(config["questions"]):
-            ...
-        question = config["questions"][question_number]
-        data = {
-            "question_title": question["title"],
-            "question_type": question["type"],
-            "question_possible_answers": question["shown_answers"],
-            "question_duration": question["duration"],
-            "question_number": config["questions"].index(question) + 1,
-            "question_count": len(config["questions"]),
-        }
-        for client in client_list + board_list + host_list:
-            emit("questionStart", data, to=client.sid)
-        for client in client_list:
-            client.time_begin = time.time()
-            client.expected_response = question["correct_answers"]
-            client.question_type = question["type"]
-            client.timer_time = question["duration"]
-        # 2sec for progress bar to appear and first delay,
-        # question["duration"] seconds for the game,
-        time.sleep(2 + question["duration"])
-
-        for client in client_list+board_list+host_list:
-            emit("questionEnd", to=client.sid)
-        for client in client_list:
-            client.evalScore()
-        # Generate random game_lead and promoted_users
-        game_lead, promoted_users = game.display()
-        data = {
-            "promoted_users": promoted_users,
-            "game_lead": game_lead
-        }
-        for board in board_list:
-            emit("leaderboard", data, to=board.sid)
-    else:
-        emit('error', "Code incorrect")
+    # Remove board if it is disconnected
+    for board in board_list:
+        if board.sid == sessid:
+            board_list.remove(board)
 
 
 @socketio.on('addUser')
@@ -299,26 +265,87 @@ def handle_connect(username: str) -> None:
     for board in board_list:
         emit('newUser', {'username': username, 'sid': sessid}, to=board.sid)
 
+## ----------------- SocketIO Game Events ----------------- ##
 
-@socketio.on('disconnect')
-def handle_disconnect() -> None:
-    """Handle client disconnection events."""
+
+@socketio.on('startSession')
+def handle_start_game(code: str) -> None:
+    if len(client_list) == 0:
+        return
+    elif game.running:
+        emit('error', "La partie est déjà en cours")
+        return
+    elif code == passcode:
+        for client in client_list + board_list + host_list:
+            emit('startGame', to=client.sid)
+        game.running = True
+    else:
+        emit('error', "Code incorrect")
+
+
+@socketio.on("nextQuestion")
+def handle_next_question(res) -> None:
+    code, question_number = res["passcode"], res["question_count"]
+    if len(client_list) == 0:
+        emit('error', "Aucun joueur connecté")
+        return
+    if code == passcode:
+        if question_number == len(config["questions"]):
+            ...  # End of game
+        question = config["questions"][question_number]
+        data = {
+            "question_title": question["title"],
+            "question_type": question["type"],
+            "question_possible_answers": question["shown_answers"],
+            "question_duration": question["duration"],
+            "question_number": config["questions"].index(question) + 1,
+            "question_count": len(config["questions"]),
+        }
+        for client in client_list + board_list + host_list:
+            emit("questionStart", data, to=client.sid)
+        for client in client_list:
+            client.time_begin = time.time()
+            client.expected_response = question["correct_answers"]
+            client.question_type = question["type"]
+            client.timer_time = question["duration"]
+        # 2sec for progress bar to appear and first delay,
+        # question["duration"] seconds for the game,
+        time.sleep(2 + question["duration"])
+        data = {
+            "question_correct_answer": question["correct_answers"]
+        }
+        for client in client_list:
+            client.evalScore()
+        for client in client_list+board_list+host_list:
+            emit("questionEnd", data, to=client.sid)
+    else:
+        emit('error', "Code incorrect")
+
+
+@socketio.on('showLeaderboard')
+def handle_show_leaderboard(code: str) -> None:
+    if code == passcode:
+        game_lead, promoted_users = game.display()
+        for client in client_list + board_list + host_list:
+            emit('leaderboard', {
+                "promoted_users": promoted_users, "game_lead": game_lead}, to=client.sid)
+    else:
+        emit('error', "Code incorrect")
+
+
+@socketio.on('sendAnswer')
+def handle_answer(res) -> None:
+    user_answer = res["answers"]
     sessid = request.sid
     for client in client_list:
         if client.sid == sessid:
-            for board in board_list:
-                emit('rmUser', {'username': client.username,
-                     'passcode': passcode}, to=board.sid)
+            client.time_end = time.time()
+            client.user_answer = user_answer
 
-            client_list.remove(client)  # Remove the client
-
-    # Remove board if it is disconnected
-    for board in board_list:
-        if board.sid == sessid:
-            board_list.remove(board)
+## ----------------- SocketIO Configuration Events ----------------- ##
 
 
-@socketio.on('edit_question')
+@socketio.on('editQuestion')
 def handle_edit_question(message: dict) -> None:
     """
     Handle configuration edit requests.
@@ -336,20 +363,13 @@ def handle_edit_question(message: dict) -> None:
         emit('error', 'Invalid passcode')
 
 
-@socketio.on('sendAnswer')
-def handle_answer(res) -> None:
-    user_answer = res["answers"]
-    sessid = request.sid
-    for client in client_list:
-        if client.sid == sessid:
-            client.time_end = time.time()
-            client.user_answer = user_answer
-
-
-@app.route('/')
-def route_landing_page() -> str:
-    """Render the landing page."""
-    return render_template('landing-page.html')
+@socketio.on("getQuestions")
+def handle_get_questions(res) -> None:
+    """Handle requests for the list of questions."""
+    if res.get("passcode") == passcode:
+        emit("questions", {"questions": config["questions"]})
+    else:
+        emit("error", "Invalid passcode")
 
 
 if __name__ == '__main__':
