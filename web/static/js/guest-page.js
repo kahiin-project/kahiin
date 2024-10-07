@@ -40,7 +40,7 @@ function Game() {
             <button id="button_2" class="mcqButton b3">
               <svg width="100" height="100"><polygon points="50,5 95,95 5,95" fill="white" /></svg>
             </button>
-            <button class="mcqButton b0"></button>
+            <button id="button_3" class="mcqButton b0"></button>
           `;
           break;
         case 4:
@@ -91,7 +91,7 @@ function Game() {
             <button id="button_2" class="uaButton b3">
               <svg width="100" height="100"><polygon points="50,5 95,95 5,95" fill="white" /></svg>
             </button>
-            <button class="uaButton b0"></button>
+            <button id="button_3" class="uaButton b0"></button>
           `;
           break;
         case 4:
