@@ -1,5 +1,6 @@
 const socket = io();
 var question_count = 0;
+var passcode = "";
 
 function hashSHA256(message) {
   const hash = CryptoJS.SHA256(message);
@@ -7,7 +8,7 @@ function hashSHA256(message) {
 }
 
 function submitPasscode() {
-    const passcode = hashSHA256(document.getElementById("passcode").value);
+    passcode = hashSHA256(document.getElementById("passcode").value);
     document.getElementById("form").style.display = "none";
     document.getElementById("start_game").style.display = "block";
     document.getElementById("nav").style.display = "block";
@@ -23,7 +24,6 @@ function submitPasscode() {
 }
 
 function startSession() {
-  const passcode = hashSHA256(document.getElementById("passcode").value);
   document.getElementById("start_game").style.display = "none";
   document.getElementById("next_question").style.display = "block";
   socket.emit("startSession", passcode);
@@ -32,12 +32,10 @@ function startSession() {
   document.getElementById("next_question").style.display = "none";
 }
 function nextQuestion() {
-  const passcode = hashSHA256(document.getElementById("passcode").value);
   question_count += 1;
   socket.emit("nextQuestion", {passcode, question_count});
 }
 function showLeaderboard() {
-  const passcode = hashSHA256(document.getElementById("passcode").value);
   socket.emit("showLeaderboard", passcode);
 }
 
@@ -74,24 +72,7 @@ function navigate(index){
       `;
       break;
     case 3:
-      document.getElementById("nav_content").innerHTML = `
-        <h1>Settings</h1>
-        <h2>Language</h2>
-        <select id="language">
-          <option value="en">🇬🇧 English</option>
-          <option value="fr">🇫🇷 Français</option>
-          <option value="es">🇪🇸 Español</option>
-          <option value="it">🇪🇸 Italiano</option>
-          <option value="al">🇩🇪 Deutsch</option>
-        </select>
-        <h2>Dyslexic mode</h2>
-        <button>OFF</button>
-        <h2>Admin password</h2>
-        <input type="password" id="actual_password" placeholder="Actual Password">
-        <input type="password" id="repeat_password" placeholder="New Password">
-        <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
-        <button class="apply-button">APPLY</button>
-      `;
+      socket.emit("getSettings", "");
       break;
     case 4:
       document.getElementById("nav_content").innerHTML = `
@@ -101,4 +82,37 @@ function navigate(index){
     default:
       console.log("Invalid index incoming.");
   }
+}
+
+socket.on("settings", (res) => {
+  if(res.adminPassword != passcode){
+    passcode = res.adminPassword;
+    alert("Password modified");
+  }
+  document.getElementById("nav_content").innerHTML = `
+    <h1>Settings</h1>
+    <h2>Language</h2>
+    <select id="language" onchange="socket.emit('setSettings', {passcode: '${passcode}', settings: {language: document.getElementById('language').value}});">
+      <option value="en">🇬🇧 English</option>
+      <option value="fr">🇫🇷 Français</option>
+      <option value="es">🇪🇸 Español</option>
+      <option value="it">🇮🇹 Italiano</option>
+      <option value="al">🇩🇪 Deutsch</option>
+    </select>
+    <h2>Dyslexic mode</h2>
+    ${res.dyslexicMode ? `<button class="on" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: false}});">ON</button>` : `<button class="off" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: true}});">OFF</button>`}
+    <h2>Admin password</h2>
+    <input type="password" id="new_password" placeholder="New Password">
+    <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
+    <button class="apply-button" onclick="applyNewPassword()">APPLY</button>
+  `;
+  document.getElementById("language").value = res.language;
+});
+
+function applyNewPassword() {
+  if(document.getElementById('new_password').value == document.getElementById('repeat_new_password').value) {
+    socket.emit('setSettings', {passcode: passcode, settings: {adminPassword: hashSHA256(document.getElementById('new_password').value)}});
+  }
+  document.getElementById('new_password').value = "";
+  document.getElementById('repeat_new_password').value = "";
 }

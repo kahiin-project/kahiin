@@ -130,17 +130,17 @@ nav button img{
     color: white;
 }
 /* ON */
-#nav_content button{
+#nav_content button.on{
     background: #49cf38;
 }
-#nav_content button:hover{
+#nav_content button.on:hover{
     background: #47c037;
 }
 /* OFF */
-#nav_content button{
+#nav_content button.off{
     background: #cf3838;
 }
-#nav_content button:hover{
+#nav_content button.off:hover{
     background: #c03737;
 }
 

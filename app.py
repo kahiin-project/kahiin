@@ -2,11 +2,11 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 from hashlib import sha256
 import time
-import sqlite3
+import json
 import xml.etree.ElementTree as ET
-# Passcode for authentication (hardcoded for now)
-passcode = "a"
-passcode = str(sha256(passcode.encode('UTF-8')).hexdigest())
+# Passcode for authentication
+with open("settings.json", "r") as f:
+    passcode = json.load(f)["adminPassword"]
 
 # Load KHN (XML) file
 tree = ET.parse('questionnaire.khn')
@@ -206,6 +206,8 @@ def handle_board_connect(code: str) -> None:
 
     :param code: Passcode provided by the board
     """
+    with open("settings.json", "r") as f:
+        passcode = json.load(f)["adminPassword"]
     if game.running:
         emit('error', "La partie est déjà en cours")
         return
@@ -220,6 +222,8 @@ def handle_board_connect(code: str) -> None:
 
 @socketio.on('hostConnect')
 def handle_host_connect(code: str) -> None:
+    with open("settings.json", "r") as f:
+        passcode = json.load(f)["adminPassword"]
     if code == passcode:
         session = Host(sid=request.sid, connections=host_list)
     else:
@@ -229,6 +233,8 @@ def handle_host_connect(code: str) -> None:
 @socketio.on('disconnect')
 def handle_disconnect() -> None:
     """Handle client disconnection events."""
+    with open("settings.json", "r") as f:
+        passcode = json.load(f)["adminPassword"]
     sessid = request.sid
     for client in client_list:
         if client.sid == sessid:
@@ -273,6 +279,8 @@ def handle_connect(username: str) -> None:
 
 @socketio.on('startSession')
 def handle_start_game(code: str) -> None:
+    with open("settings.json", "r") as f:
+        passcode = json.load(f)["adminPassword"]
     if len(client_list) == 0:
         return
     elif game.running:
@@ -288,6 +296,8 @@ def handle_start_game(code: str) -> None:
 
 @socketio.on("nextQuestion")
 def handle_next_question(res) -> None:
+    with open("settings.json", "r") as f:
+        passcode = json.load(f)["adminPassword"]
     code, question_number = res["passcode"], res["question_count"]
     if len(client_list) == 0:
         emit('error', "Aucun joueur connecté")
@@ -334,6 +344,8 @@ def handle_next_question(res) -> None:
 
 @socketio.on('showLeaderboard')
 def handle_show_leaderboard(code: str) -> None:
+    with open("settings.json", "r") as f:
+        passcode = json.load(f)["adminPassword"]
     if code == passcode:
         game_lead, promoted_users = game.display()
         for client in client_list + board_list + host_list:
@@ -362,6 +374,8 @@ def handle_edit_question(message: dict) -> None:
 
     :param message: Dictionary containing the key, value, and passcode
     """
+    with open("settings.json", "r") as f:
+        passcode = json.load(f)["adminPassword"]
     if message['passcode'] == passcode:
         for question in root.findall('question'):
             if question.find('title').text == message['key']:
@@ -376,8 +390,43 @@ def handle_edit_question(message: dict) -> None:
 @socketio.on("getQuestions")
 def handle_get_questions(res) -> None:
     """Handle requests for the list of questions."""
+    with open("settings.json", "r") as f:
+        passcode = json.load(f)["adminPassword"]
     if res.get("passcode") == passcode:
         emit("questions", {"questions": config["questions"]})
+    else:
+        emit("error", "Invalid passcode")
+
+@socketio.on("getSettings")
+def handle_get_settings(res) -> None:
+    """Handle requests to get settings."""
+    with open("settings.json", "r") as f:
+        emit("settings", json.load(f))
+        print(json.load(f))
+
+@socketio.on("setSettings")
+def handle_set_settings(res) -> None:
+    """Handle requests to set a specific setting."""
+    with open("settings.json", "r") as f:
+        passcode = json.load(f)["adminPassword"]
+    if res.get("passcode") == passcode:
+        try:
+            with open("settings.json", "r") as f:
+                content = f.read().strip()
+                if content:
+                    settings = json.loads(content)
+                else:
+                    settings = {}
+        except FileNotFoundError:
+            settings = {}
+
+        # Update the specific setting
+        settings.update(res["settings"])
+
+        with open("settings.json", "w") as f:
+            json.dump(settings, f)
+
+        emit("settings", settings)
     else:
         emit("error", "Invalid passcode")
 
