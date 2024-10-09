@@ -202,6 +202,9 @@ function Display() {
       const list_item = document.createElement("li");
       list_item.innerHTML = `<span class="username">${element[0]}</span> - <span class="score">${element[1]}</span>`;
       leaderboard_top_items.appendChild(list_item);
+      const pastel_color = generatePastelColor();
+      list_item.style.background = pastel_color;
+      list_item.style.boxShadow = `${pastel_color} 0px 1px 4px`;
     });
 
     const promoted_list_items = document.getElementById("promoted-list-items");
@@ -210,6 +213,9 @@ function Display() {
       const listItem = document.createElement("li");
       listItem.innerHTML = `<span class="username">${element[0]}</span> <span class="arrow">↑ ${element[1]}</span>`;
       promoted_list_items.appendChild(listItem);
+      const pastel_color = generatePastelColor();
+      listItem.style.background = pastel_color;
+      listItem.style.boxShadow = `${pastel_color} 0px 1px 4px`;
     });
   });
 
