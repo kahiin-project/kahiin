@@ -138,6 +138,12 @@ function Game() {
     document.getElementById("loader-text").style.display = "none";
   });
 
+  socket.on("gameEnd", (res) => {
+    document.getElementById("form").style.display = "block";
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("loader-text").style.display = "none";
+  });
+
 function sendAnswer(answer) {
   document.getElementById("loader").style.display = "block";
   document.getElementById("loader-text").style.display = "block";

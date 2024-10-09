@@ -44,3 +44,10 @@ socket.on("questionEnd", (res) => {
   document.getElementById("next_question").style.display = "block";
   document.getElementById("show_leaderboard").style.display = "block";
 });
+
+socket.on("gameEnd", (res) => {
+  document.getElementById("next_question").style.display = "none";
+  document.getElementById("show_leaderboard").style.display = "none";
+  question_count = 0;
+  document.getElementById("start_game").style.display = "block";
+});
