@@ -154,3 +154,11 @@ nav button img{
 #nav_content .apply-button:hover{
     background: #3473bb;
 }
+
+#in_game_div{
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
