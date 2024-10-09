@@ -276,3 +276,74 @@
   font-size: 20px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
+
+body {
+  font-family: sans-serif;
+}
+
+.container {
+  display: flex;
+  align-items: flex-end;
+}
+
+.podium {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 800px;
+  opacity: 0;
+}
+
+.podium__item {
+  width: 200px;
+}
+
+.podium__rank {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 35px;
+  color: #fff;
+}
+
+.podium__name {
+  text-align: center;
+  padding: 0 .5rem;
+}
+
+.podium__number {
+  width: 27px;
+  height: 75px;
+}
+
+.podium .first {
+  min-height: 300px;
+  background: #FBE870;
+  border-radius: 20px 20px 0px 0px;
+}
+
+.podium .second {
+  min-height: 250px;
+  background: #99eeff;
+  border-radius: 20px 20px 0px 0px;
+}
+
+.podium .fourth {
+  min-height: 150px;
+  background: #ca9ee6;
+  border-radius: 20px 20px 0px 0px;
+}
+
+.podium .third {
+  min-height: 200px;
+  background: #ABD95B;
+  border-radius: 20px 20px 0px 0px;
+}
+
+.podium .fifth {
+  min-height: 100px;
+  background: #81c8be;
+  border-radius: 20px 20px 0px 0px;
+}
