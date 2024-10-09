@@ -9,7 +9,8 @@ function hashSHA256(message) {
 function submitPasscode() {
     const passcode = hashSHA256(document.getElementById("passcode").value);
     document.getElementById("form").style.display = "none";
-    document.getElementById("start_game").style.display = "block"
+    document.getElementById("start_game").style.display = "block";
+    document.getElementById("nav").style.display = "block";
     socket.emit("hostConnect", passcode);
     socket.on("error", (res) => {
       document.getElementById("passcode").value = "";
@@ -44,3 +45,39 @@ socket.on("questionEnd", (res) => {
   document.getElementById("next_question").style.display = "block";
   document.getElementById("show_leaderboard").style.display = "block";
 });
+
+function navigate(index){
+  for(let i = 0; i < 5; i++){
+    document.getElementById(`nav_button_${i}`).style.borderLeft = "none";
+  }
+  document.getElementById(`nav_button_${index}`).style.borderLeft = "solid #494949 5px";
+  switch (index) {
+    case 0:
+      document.getElementById("nav_content").innerHTML = `
+        
+      `;
+      break;
+    case 1:
+      document.getElementById("nav_content").innerHTML = `
+        
+      `;
+      break;
+    case 2:
+      document.getElementById("nav_content").innerHTML = `
+        <h1>Kahiin DB</h1>
+      `;
+      break;
+    case 3:
+      document.getElementById("nav_content").innerHTML = `
+        <h1>Settings</h1>
+      `;
+      break;
+    case 4:
+      document.getElementById("nav_content").innerHTML = `
+        <h1>Account</h1>
+      `;
+      break;
+    default:
+      console.log("Invalid index incoming.");
+  }
+}
