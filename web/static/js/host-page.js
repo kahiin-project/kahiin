@@ -9,7 +9,8 @@ function hashSHA256(message) {
 function submitPasscode() {
     const passcode = hashSHA256(document.getElementById("passcode").value);
     document.getElementById("form").style.display = "none";
-    document.getElementById("start_game").style.display = "block"
+    document.getElementById("start_game").style.display = "block";
+    document.getElementById("nav").style.display = "block";
     socket.emit("hostConnect", passcode);
     socket.on("error", (res) => {
       document.getElementById("passcode").value = "";
@@ -51,3 +52,53 @@ socket.on("gameEnd", (res) => {
   question_count = 0;
   document.getElementById("start_game").style.display = "block";
 });
+function navigate(index){
+  for(let i = 0; i < 5; i++){
+    document.getElementById(`nav_button_${i}`).style.borderLeft = "none";
+  }
+  document.getElementById(`nav_button_${index}`).style.borderLeft = "solid #494949 5px";
+  switch (index) {
+    case 0:
+      document.getElementById("nav_content").innerHTML = `
+        
+      `;
+      break;
+    case 1:
+      document.getElementById("nav_content").innerHTML = `
+        
+      `;
+      break;
+    case 2:
+      document.getElementById("nav_content").innerHTML = `
+        <h1>Kahiin DB</h1>
+      `;
+      break;
+    case 3:
+      document.getElementById("nav_content").innerHTML = `
+        <h1>Settings</h1>
+        <h2>Language</h2>
+        <select id="language">
+          <option value="en">🇬🇧 English</option>
+          <option value="fr">🇫🇷 Français</option>
+          <option value="es">🇪🇸 Español</option>
+          <option value="it">🇪🇸 Italiano</option>
+          <option value="al">🇩🇪 Deutsch</option>
+        </select>
+        <h2>Dyslexic mode</h2>
+        <button>OFF</button>
+        <h2>Admin password</h2>
+        <input type="password" id="actual_password" placeholder="Actual Password">
+        <input type="password" id="repeat_password" placeholder="New Password">
+        <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
+        <button class="apply-button">APPLY</button>
+      `;
+      break;
+    case 4:
+      document.getElementById("nav_content").innerHTML = `
+        <h1>Account</h1>
+      `;
+      break;
+    default:
+      console.log("Invalid index incoming.");
+  }
+}
