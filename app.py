@@ -150,6 +150,9 @@ class Game:
     def display(self):
         if not self.current_leaderboard:
             self.handleFirstLeaderboard()
+            current_leaderboard = [[user.username, user.score]
+                                   for user in self.current_leaderboard]
+            return current_leaderboard[:5], []
         self.handleNextLeaderboard()
         current_leaderboard = [[user.username, user.score]
                                for user in self.current_leaderboard]
@@ -291,33 +294,40 @@ def handle_next_question(res) -> None:
         return
     if code == passcode:
         if question_number == len(config["questions"]):
-            ...  # End of game
-        question = config["questions"][question_number]
-        data = {
-            "question_title": question["title"],
-            "question_type": question["type"],
-            "question_possible_answers": question["shown_answers"],
-            "question_duration": question["duration"],
-            "question_number": config["questions"].index(question) + 1,
-            "question_count": len(config["questions"]),
-        }
-        for client in client_list + board_list + host_list:
-            emit("questionStart", data, to=client.sid)
-        for client in client_list:
-            client.time_begin = time.time()
-            client.expected_response = question["correct_answers"]
-            client.question_type = question["type"]
-            client.timer_time = question["duration"]
-        # 2sec for progress bar to appear and first delay,
-        # question["duration"] seconds for the game,
-        time.sleep(2 + question["duration"])
-        data = {
-            "question_correct_answer": question["correct_answers"]
-        }
-        for client in client_list:
-            client.evalScore()
-        for client in client_list+board_list+host_list:
-            emit("questionEnd", data, to=client.sid)
+            data = {
+                "game_lead": game.display()[0],
+            }
+            for client in client_list+board_list+host_list:
+                emit("gameEnd", data, to=client.sid)
+            game.reset()
+            return
+        else:
+            question = config["questions"][question_number]
+            data = {
+                "question_title": question["title"],
+                "question_type": question["type"],
+                "question_possible_answers": question["shown_answers"],
+                "question_duration": question["duration"],
+                "question_number": config["questions"].index(question) + 1,
+                "question_count": len(config["questions"]),
+            }
+            for client in client_list + board_list + host_list:
+                emit("questionStart", data, to=client.sid)
+            for client in client_list:
+                client.time_begin = time.time()
+                client.expected_response = question["correct_answers"]
+                client.question_type = question["type"]
+                client.timer_time = question["duration"]
+            # 2sec for progress bar to appear and first delay,
+            # question["duration"] seconds for the game,
+            time.sleep(2 + question["duration"])
+            data = {
+                "question_correct_answer": question["correct_answers"]
+            }
+            for client in client_list:
+                client.evalScore()
+            for client in client_list+board_list+host_list:
+                emit("questionEnd", data, to=client.sid)
     else:
         emit('error', "Code incorrect")
 

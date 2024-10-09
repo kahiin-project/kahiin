@@ -228,6 +228,39 @@ function Display() {
     document.getElementById("timer").style.opacity = 0;
     document.getElementById("timerbar").style.opacity = 0;
 
+  });
+  socket.on("gameEnd", (res) => { 
+    document.getElementById("question").style.opacity = 0;
+    document.getElementById("question_number").style.opacity = 0;
+    document.getElementById("answers_div").style.opacity = 0;
+    document.getElementById("promoted-list").style.opacity = 0;
+    document.getElementById("loader").style.opacity = 0;
+    document.getElementById("podium").style.opacity = 1;
+    const game_lead = res["game_lead"];
+    document.getElementById("podium").innerHTML = "";
+    document.getElementById("podium").style.opacity = 1;
+    podium = document.getElementById("podium");
+    const podium_ranks = [4, 2, 1, 3, 5];
+    const podium_rank_names = ["fourth", "second","first","third", "fifth"];
+    if (game_lead.length % 2 == 0) {
+      document.getElementById("podium").style.transform = "translateX(-100px)";
+    }
+    for (let i = 0; i < game_lead.length; i++) {
+      if (i >= podium_ranks.length) break;
+      const podium_item = document.createElement("div");
+      podium_item.classList.add("podium__item");
+      const podium_name = document.createElement("p");
+      podium_name.classList.add("podium__name");
+      podium_name.innerText = game_lead[i][0];
+      podium_item.appendChild(podium_name);
+      const podium_rank_div = document.createElement("div");
+      podium_rank_div.classList.add("podium__rank");
+      podium_rank_div.innerText = podium_ranks[i];
+      podium_rank_div.classList.add(podium_rank_names[i]);
+      podium_item.appendChild(podium_rank_div);
+      podium.appendChild(podium_item);
+    }
+  
   }
-);
+  );
 }

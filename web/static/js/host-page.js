@@ -46,6 +46,12 @@ socket.on("questionEnd", (res) => {
   document.getElementById("show_leaderboard").style.display = "block";
 });
 
+socket.on("gameEnd", (res) => {
+  document.getElementById("next_question").style.display = "none";
+  document.getElementById("show_leaderboard").style.display = "none";
+  question_count = 0;
+  document.getElementById("start_game").style.display = "block";
+});
 function navigate(index){
   for(let i = 0; i < 5; i++){
     document.getElementById(`nav_button_${i}`).style.borderLeft = "none";
