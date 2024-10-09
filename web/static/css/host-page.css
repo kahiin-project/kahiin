@@ -104,3 +104,53 @@ nav button img{
     padding-left: 50px;
     margin-top: 50px;
 }
+#nav_content h2{
+    font-size: 30px;
+    padding-left: 50px;
+    margin-top: 50px;
+    font-weight: normal;
+}
+#nav_content select, #nav_content button, #nav_content input{
+    margin-left: 50px;
+    width: calc(100% - 100px);
+    font-size: 20px;
+    background: #f0f0f0;
+    border: solid .5px #a7a7a7;
+    padding-bottom: 5px;
+    padding-top: 8px;
+    padding-left: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#nav_content select:hover, #nav_content button:hover{
+    background: #e8e8e8;
+}
+#nav_content button{
+    border: none;
+    color: white;
+}
+/* ON */
+#nav_content button{
+    background: #49cf38;
+}
+#nav_content button:hover{
+    background: #47c037;
+}
+/* OFF */
+#nav_content button{
+    background: #cf3838;
+}
+#nav_content button:hover{
+    background: #c03737;
+}
+
+#nav_content input{
+    margin-bottom: 5px;
+    cursor: text;
+}
+#nav_content .apply-button{
+    background: #387fcf;
+}
+#nav_content .apply-button:hover{
+    background: #3473bb;
+}

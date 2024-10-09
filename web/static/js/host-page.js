@@ -70,6 +70,21 @@ function navigate(index){
     case 3:
       document.getElementById("nav_content").innerHTML = `
         <h1>Settings</h1>
+        <h2>Language</h2>
+        <select id="language">
+          <option value="en">🇬🇧 English</option>
+          <option value="fr">🇫🇷 Français</option>
+          <option value="es">🇪🇸 Español</option>
+          <option value="it">🇪🇸 Italiano</option>
+          <option value="al">🇩🇪 Deutsch</option>
+        </select>
+        <h2>Dyslexic mode</h2>
+        <button>OFF</button>
+        <h2>Admin password</h2>
+        <input type="password" id="actual_password" placeholder="Actual Password">
+        <input type="password" id="repeat_password" placeholder="New Password">
+        <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
+        <button class="apply-button">APPLY</button>
       `;
       break;
     case 4:
