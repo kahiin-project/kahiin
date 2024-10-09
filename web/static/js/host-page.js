@@ -9,7 +9,7 @@ function hashSHA256(message) {
 function submitPasscode() {
     const passcode = hashSHA256(document.getElementById("passcode").value);
     document.getElementById("form").style.display = "none";
-    document.getElementById("start_game").style.display = "block";
+    // document.getElementById("start_game").style.display = "block";
     document.getElementById("nav").style.display = "block";
     socket.emit("hostConnect", passcode);
     socket.on("error", (res) => {
@@ -17,14 +17,14 @@ function submitPasscode() {
       document.getElementById("error").style.display = "block";
       document.getElementById("error").innerHTML = res;
       document.getElementById("form").style.display = "block";
-      document.getElementById("start_game").style.display = "none";
+      // document.getElementById("start_game").style.display = "none";
       document.getElementById("next_question").style.display = "none";
     });
 }
 
 function startSession() {
   const passcode = hashSHA256(document.getElementById("passcode").value);
-  document.getElementById("start_game").style.display = "none";
+  // document.getElementById("start_game").style.display = "none";
   document.getElementById("next_question").style.display = "block";
   socket.emit("startSession", passcode);
   question_count = 0;
@@ -54,7 +54,15 @@ function navigate(index){
   switch (index) {
     case 0:
       document.getElementById("nav_content").innerHTML = `
-        
+        <button id="start_game" style="background: grey; margin-bottom: 10px;" "onclick="startSession()">
+          Demarrer le jeu
+        </button>
+        <button id="next_question" style="background: grey; margin-bottom: 10px;" onclick="nextQuestion()">
+          Prochaine question
+        </button>
+        <button id="show_leaderboard" style="background: grey; margin-bottom: 10px;" onclick="showLeaderboard()">
+          Afficher le classement
+        </button>
       `;
       break;
     case 1:
