@@ -51,3 +51,106 @@
     transform: translateX(-50%) translateY(5px);
     box-shadow: none;
 }
+
+nav{
+    position: absolute;
+    height: 100%;
+    width: 300px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    display: none;
+}
+nav .header{
+    background: #494949;
+    height: 150px;
+}
+nav button{
+    position: absolute;
+    right: 0;
+    left: 0;
+    height: 80px;
+    text-align: left;
+    padding-left: 70px;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    background: #f0f0f0;
+}
+nav button:hover{
+    background: #e8e8e8;
+}
+nav button:active{
+    background: #e0e0e0;
+}
+nav button img{
+    position: absolute;
+    left: 15px;
+    top: 20px;
+    height: 40px;
+    width: 40px;
+}
+
+#nav_content{
+    position: absolute;
+    left: 300px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: -1;
+}
+#nav_content h1{
+    font-size: 50px;
+    padding-left: 50px;
+    margin-top: 50px;
+}
+#nav_content h2{
+    font-size: 30px;
+    padding-left: 50px;
+    margin-top: 50px;
+    font-weight: normal;
+}
+#nav_content select, #nav_content button, #nav_content input{
+    margin-left: 50px;
+    width: calc(100% - 100px);
+    font-size: 20px;
+    background: #f0f0f0;
+    border: solid .5px #a7a7a7;
+    padding-bottom: 5px;
+    padding-top: 8px;
+    padding-left: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#nav_content select:hover, #nav_content button:hover{
+    background: #e8e8e8;
+}
+#nav_content button{
+    border: none;
+    color: white;
+}
+/* ON */
+#nav_content button{
+    background: #49cf38;
+}
+#nav_content button:hover{
+    background: #47c037;
+}
+/* OFF */
+#nav_content button{
+    background: #cf3838;
+}
+#nav_content button:hover{
+    background: #c03737;
+}
+
+#nav_content input{
+    margin-bottom: 5px;
+    cursor: text;
+}
+#nav_content .apply-button{
+    background: #387fcf;
+}
+#nav_content .apply-button:hover{
+    background: #3473bb;
+}
