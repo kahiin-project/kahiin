@@ -26,5 +26,47 @@
         "Account": "Account",
         "Play": "Play",
         "Create": "Create"
+    },
+    "es": {
+        "GameAlreadyRunning": "Ya hay un juego en curso.",
+        "InvalidPasscode": "No ingresaste el código de acceso correcto.",
+        "UsernameAlreadyTaken": "Este nombre de usuario ya está tomado.",
+        "UserAlreadyConnected": "Ya estás conectado.",
+        "NoUsersConnected": "No hay usuarios conectados.",
+        "Settings": "Ajustes",
+        "Language": "Idioma",
+        "DyslexicMode": "Modo dislexia",
+        "AdminPassword": "Contraseña de administrador",
+        "Account": "Cuenta",
+        "Play": "Jugar",
+        "Create": "Crear"
+    },
+    "it": {
+        "GameAlreadyRunning": "È già in corso una partita.",
+        "InvalidPasscode": "Non hai inserito il codice di accesso corretto.",
+        "UsernameAlreadyTaken": "Questo nome utente è già stato preso.",
+        "UserAlreadyConnected": "Sei già connesso.",
+        "NoUsersConnected": "Nessun utente connesso.",
+        "Settings": "Impostazioni",
+        "Language": "Lingua",
+        "DyslexicMode": "Modalità dislessia",
+        "AdminPassword": "Password amministratore",
+        "Account": "Account",
+        "Play": "Gioca",
+        "Create": "Crea"
+    },
+    "de": {
+        "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
+        "InvalidPasscode": "Sie haben den falschen Zugangscode eingegeben.",
+        "UsernameAlreadyTaken": "Dieser Benutzername ist bereits vergeben.",
+        "UserAlreadyConnected": "Sie sind bereits verbunden.",
+        "NoUsersConnected": "Es sind keine Benutzer verbunden.",
+        "Settings": "Einstellungen",
+        "Language": "Sprache",
+        "DyslexicMode": "Dyslexie-Modus",
+        "AdminPassword": "Administratorpasswort",
+        "Account": "Konto",
+        "Play": "Spielen",
+        "Create": "Erstellen"
     }
 }
