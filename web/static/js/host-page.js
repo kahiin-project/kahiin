@@ -138,7 +138,7 @@ socket.on("settings", (res) => {
         <option value="fr">🇫🇷 Français</option>
         <option value="es">🇪🇸 Español</option>
         <option value="it">🇮🇹 Italiano</option>
-        <option value="al">🇩🇪 Deutsch</option>
+        <option value="de">🇩🇪 Deutsch</option>
       </select>
       <h2>${glossary["DyslexicMode"]}</h2>
       ${res.dyslexicMode ? `<button class="on" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: false}});">ON</button>` : `<button class="off" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: true}});">OFF</button>`}
