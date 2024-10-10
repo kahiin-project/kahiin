@@ -213,23 +213,23 @@ function Display() {
     const leaderboard_top_items = document.getElementById("leaderboard-top-items");
     leaderboard_top_items.innerHTML = ""; 
     game_lead.forEach(element => {
-      const list_item = document.createElement("li");
-      list_item.innerHTML = `<span class="username">${element[0]}</span> - <span class="score">${element[1]}</span>`;
-      leaderboard_top_items.appendChild(list_item);
+      const list_leaderboard_top_item = document.createElement("li");
+      list_leaderboard_top_item.innerHTML = `<span class="username">${element[0]}</span> - <span class="score">${element[1]}</span>`;
+      leaderboard_top_items.appendChild(list_leaderboard_top_item);
       const pastel_color = generatePastelColor();
-      list_item.style.background = pastel_color;
-      list_item.style.boxShadow = `${pastel_color} 0px 1px 4px`;
+      list_leaderboard_top_item.style.background = pastel_color;
+      list_leaderboard_top_item.style.boxShadow = `${pastel_color} 0px 1px 4px`;
     });
 
-    const promoted_list_items = document.getElementById("promoted-list-items");
-    promoted_list_items.innerHTML = ""; 
+    const promoted_items = document.getElementById("promoted-list-items");
+    promoted_items.innerHTML = ""; 
     promoted_users.forEach(element => {
-      const listItem = document.createElement("li");
-      listItem.innerHTML = `<span class="username">${element[0]}</span> <span class="arrow">↑ ${element[1]}</span>`;
-      promoted_list_items.appendChild(listItem);
+      const list_promoted_item = document.createElement("li");
+      list_promoted_item.innerHTML = `<span class="username">${element[0]}</span> <span class="arrow">↑ ${element[1]}</span>`;
+      promoted_list_items.appendChild(list_promoted_item);
       const pastel_color = generatePastelColor();
-      listItem.style.background = pastel_color;
-      listItem.style.boxShadow = `${pastel_color} 0px 1px 4px`;
+      list_promoted_item.style.background = pastel_color;
+      list_promoted_item.style.boxShadow = `${pastel_color} 0px 1px 4px`;
     });
 
     socket.emit("getSettings", "");
