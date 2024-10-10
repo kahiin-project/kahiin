@@ -5,12 +5,22 @@ import time
 import json
 import xml.etree.ElementTree as ET
 # Passcode for authentication
-with open("settings.json", "r") as f:
-    passcode = json.load(f)["adminPassword"]
 
-# Load KHN (XML) file
+
+def get_glossary():
+    with open("glossary.json", "r") as g:
+        with open("settings.json", "r") as s:
+            return json.load(g)[json.load(s)["language"]]
+
+
+# Load KHN (XML) fil
 tree = ET.parse('questionnaire.khn')
 root = tree.getroot()
+
+
+def get_passcode():
+    with open("settings.json", "r") as f:
+        return json.load(f)["adminPassword"]
 
 
 # Parse XML file and store questions in config
@@ -93,9 +103,6 @@ class Client(GameTab):
                 if self.user_answer == self.expected_response:
                     self.score += round(
                         (1 - self.response_time / self.timer_time) * 500)
-
-            case _:
-                print("Unsupported question type")
 
 
 # List to keep track of board connections
@@ -199,6 +206,13 @@ def route_landing_page() -> str:
 ## ----------------- SocketIO Connections ----------------- ##
 
 
+@socketio.on('connect')
+def handle_connect() -> None:
+    """Handle client connection events."""
+    glossary = get_glossary()
+    emit("language", glossary)
+
+
 @socketio.on('boardConnect')
 def handle_board_connect(code: str) -> None:
     """
@@ -206,35 +220,36 @@ def handle_board_connect(code: str) -> None:
 
     :param code: Passcode provided by the board
     """
-    with open("settings.json", "r") as f:
-        passcode = json.load(f)["adminPassword"]
+    glossary = get_glossary()
+    passcode = get_passcode()
     if game.running:
-        emit('error', "La partie est déjà en cours")
+        emit('error', glossary["GameAlreadyRunning"])
         return
     if code == passcode:
         session = Board(sid=request.sid, connections=board_list)
+
         # Notify all client_list about the new board connection
         for c in client_list:
             emit('newUser', {'username': c.username, 'sid': c.sid})
     else:
-        emit('error', "Vous n'avez pas entré le bon passcode")
+        emit('error', glossary["InvalidPasscode"])
 
 
 @socketio.on('hostConnect')
 def handle_host_connect(code: str) -> None:
-    with open("settings.json", "r") as f:
-        passcode = json.load(f)["adminPassword"]
+    passcode = get_passcode()
+    glossary = get_glossary()
     if code == passcode:
         session = Host(sid=request.sid, connections=host_list)
+
     else:
-        emit('error', "Vous n'avez pas entré le bon passcode")
+        emit('error', glossary["InvalidPasscode"])
 
 
 @socketio.on('disconnect')
 def handle_disconnect() -> None:
     """Handle client disconnection events."""
-    with open("settings.json", "r") as f:
-        passcode = json.load(f)["adminPassword"]
+    passcode = get_passcode()
     sessid = request.sid
     for client in client_list:
         if client.sid == sessid:
@@ -250,23 +265,24 @@ def handle_disconnect() -> None:
             board_list.remove(board)
 
 
-@socketio.on('addUser')
+@socketio.on('guestConnect')
 def handle_connect(username: str) -> None:
     """
     Handle new user connection requests.
 
     :param username: Username provided by the new user
     """
+    glossary = get_glossary()
     sessid = request.sid
     # Check if the username is already taken
     if game.running:
-        emit('error', "La partie est déjà en cours")
+        emit('error', glossary["GameAlreadyRunning"])
         return
     if any(c.username == username for c in client_list):
-        emit('error', 'Nom d\'utilisateur déjà pris')
+        emit('error', glossary["UsernameAlreadyTaken"])
         return
     elif any(c.sid == sessid for c in client_list):
-        emit('error', 'Vous êtes déjà connecté')
+        emit('error', glossary["UserAlreadyConnected"])
         return
 
     # Create a new client session
@@ -279,28 +295,28 @@ def handle_connect(username: str) -> None:
 
 @socketio.on('startSession')
 def handle_start_game(code: str) -> None:
-    with open("settings.json", "r") as f:
-        passcode = json.load(f)["adminPassword"]
+    passcode = get_passcode()
+    glossary = get_glossary()
     if len(client_list) == 0:
         return
     elif game.running:
-        emit('error', "La partie est déjà en cours")
+        emit('error', glossary["GameAlreadyRunning"])
         return
     elif code == passcode:
         for client in client_list + board_list + host_list:
             emit('startGame', to=client.sid)
         game.running = True
     else:
-        emit('error', "Code incorrect")
+        emit('error', glossary["InvalidPasscode"])
 
 
 @socketio.on("nextQuestion")
 def handle_next_question(res) -> None:
-    with open("settings.json", "r") as f:
-        passcode = json.load(f)["adminPassword"]
+    passcode = get_passcode()
+    glossary = get_glossary()
     code, question_number = res["passcode"], res["question_count"]
     if len(client_list) == 0:
-        emit('error', "Aucun joueur connecté")
+        emit('error', glossary["NoUsersConnected"])
         return
     if code == passcode:
         if question_number == len(config["questions"]):
@@ -339,20 +355,20 @@ def handle_next_question(res) -> None:
             for client in client_list+board_list+host_list:
                 emit("questionEnd", data, to=client.sid)
     else:
-        emit('error', "Code incorrect")
+        emit('error', glossary["InvalidPasscode"])
 
 
 @socketio.on('showLeaderboard')
 def handle_show_leaderboard(code: str) -> None:
-    with open("settings.json", "r") as f:
-        passcode = json.load(f)["adminPassword"]
+    passcode = get_passcode()
+    glossary = get_glossary()
     if code == passcode:
         game_lead, promoted_users = game.display()
         for client in client_list + board_list + host_list:
             emit('leaderboard', {
                 "promoted_users": promoted_users, "game_lead": game_lead}, to=client.sid)
     else:
-        emit('error', "Code incorrect")
+        emit('error', glossary["InvalidPasscode"])
 
 
 @socketio.on('sendAnswer')
@@ -374,8 +390,8 @@ def handle_edit_question(message: dict) -> None:
 
     :param message: Dictionary containing the key, value, and passcode
     """
-    with open("settings.json", "r") as f:
-        passcode = json.load(f)["adminPassword"]
+    passcode = get_passcode()
+    glossary = get_glossary()
     if message['passcode'] == passcode:
         for question in root.findall('question'):
             if question.find('title').text == message['key']:
@@ -384,31 +400,38 @@ def handle_edit_question(message: dict) -> None:
         tree.write('questionnaire.khn')
         # emit('edit', message)
     else:
-        emit('error', 'Invalid passcode')
+        emit('error', glossary["InvalidPasscode"])
 
 
 @socketio.on("getQuestions")
 def handle_get_questions(res) -> None:
     """Handle requests for the list of questions."""
-    with open("settings.json", "r") as f:
-        passcode = json.load(f)["adminPassword"]
+    passcode = get_passcode()
+    glossary = get_glossary()
     if res.get("passcode") == passcode:
         emit("questions", {"questions": config["questions"]})
     else:
-        emit("error", "Invalid passcode")
+        emit("error", glossary["InvalidPasscode"])
+
 
 @socketio.on("getSettings")
-def handle_get_settings(res) -> None:
+def handle_get_settings(code: str) -> None:
     """Handle requests to get settings."""
-    with open("settings.json", "r") as f:
-        emit("settings", json.load(f))
-        print(json.load(f))
+    passcode = get_passcode()
+    if passcode == code:
+        with open("settings.json", "r") as f:
+            emit("settings", json.load(f))
+    else:
+        with open("settings.json", "r") as f:
+            data = json.load(f)
+            del data["adminPassword"]
+            emit("settings", data)
+
 
 @socketio.on("setSettings")
 def handle_set_settings(res) -> None:
     """Handle requests to set a specific setting."""
-    with open("settings.json", "r") as f:
-        passcode = json.load(f)["adminPassword"]
+    passcode = get_passcode()
     if res.get("passcode") == passcode:
         try:
             with open("settings.json", "r") as f:
@@ -426,9 +449,11 @@ def handle_set_settings(res) -> None:
         with open("settings.json", "w") as f:
             json.dump(settings, f)
 
+        glossary = get_glossary()
+        emit("language", glossary)
         emit("settings", settings)
     else:
-        emit("error", "Invalid passcode")
+        emit("error", glossary["InvalidPasscode"])
 
 
 if __name__ == '__main__':

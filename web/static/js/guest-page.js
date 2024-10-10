@@ -3,7 +3,7 @@ var answer_list= [];
 var question_number;
 function submitUsername() {
   const Username = document.getElementById("username").value;
-  socket.emit("addUser", Username);
+  socket.emit("guestConnect", Username);
 
   document.getElementById("form").style.display = "none";
   document.getElementById("loader").style.display = "block";
