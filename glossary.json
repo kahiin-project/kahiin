@@ -1,0 +1,30 @@
+{
+    "fr": {
+        "GameAlreadyRunning": "Une partie est déjà en cours.",
+        "InvalidPasscode": "Vous n'avez pas entré le bon code.",
+        "UsernameAlreadyTaken": "Ce nom d'utilisateur est déjà pris.",
+        "UserAlreadyConnected": "Vous êtes déjà connecté.",
+        "NoUsersConnected": "Aucun utilisateur n'est connecté.",
+        "Settings": "Paramètres",
+        "Language": "Langue",
+        "DyslexicMode": "Mode dyslexique",
+        "AdminPassword": "Mot de passe administrateur",
+        "Account": "Compte",
+        "Play": "Jouer",
+        "Create": "Créer"
+    },
+    "en": {
+        "GameAlreadyRunning": "A game is already running.",
+        "InvalidPasscode": "You did not enter the right passcode.",
+        "UsernameAlreadyTaken": "This username is already taken.",
+        "UserAlreadyConnected": "You are already connected.",
+        "NoUsersConnected": "No users are connected.",
+        "Settings": "Settings",
+        "Language": "Language",
+        "DyslexicMode": "Dyslexic mode",
+        "AdminPassword": "Admin password",
+        "Account": "Account",
+        "Play": "Play",
+        "Create": "Create"
+    }
+}

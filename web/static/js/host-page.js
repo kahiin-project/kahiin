@@ -1,7 +1,7 @@
 const socket = io();
 var question_count = 0;
 var passcode = "";
-
+var glossary = {};
 function hashSHA256(message) {
   const hash = CryptoJS.SHA256(message);
   return hash.toString(CryptoJS.enc.Hex);
@@ -72,17 +72,50 @@ function navigate(index){
       `;
       break;
     case 3:
-      socket.emit("getSettings", "");
+      socket.emit("getSettings", passcode);
       break;
     case 4:
       document.getElementById("nav_content").innerHTML = `
-        <h1>Account</h1>
+        <h1>${glossary["Account"]}</h1>
       `;
       break;
     default:
       console.log("Invalid index incoming.");
   }
 }
+socket.on("language", (res) => {
+  glossary = res;
+  console.log("Glossary received:", glossary);
+  replaceAllGlossaryVariables();
+
+  function replaceAllGlossaryVariables() {
+    // Fonction pour remplacer les variables dans le HTML
+    
+    document.getElementById("nav").innerHTML = `
+      <div class="header"></div>
+      <button id="nav_button_0" style="top: 160px;" onclick="navigate(0);">
+        <img src="static/icon/play.svg">
+        ${glossary["Play"]}
+      </button>
+      <button id="nav_button_1" style="top: 250px;" onclick="navigate(1);">
+        <img src="static/icon/create.svg">
+        ${glossary["Create"]}
+      </button>
+      <button id="nav_button_2" style="top: 340px;" onclick="navigate(2);">
+        <img src="static/icon/database.svg">
+        Kahiin DB
+      </button>
+      <button id="nav_button_3" style="top: 430px;" onclick="navigate(3);">
+        <img src="static/icon/settings.svg">
+        ${glossary["Settings"]}
+      </button>
+      <button id="nav_button_4" style="bottom: 10px;" onclick="navigate(4);">
+        <img src="static/icon/account.svg">
+        ${glossary["Account"]}
+      </button>
+    `;
+   
+}});
 
 socket.on("settings", (res) => {
   if(res.adminPassword != passcode){
@@ -90,8 +123,8 @@ socket.on("settings", (res) => {
     alert("Password modified");
   }
   document.getElementById("nav_content").innerHTML = `
-    <h1>Settings</h1>
-    <h2>Language</h2>
+    <h1>${glossary["Settings"]}</h1>
+    <h2>${glossary["Language"]}</h2>
     <select id="language" onchange="socket.emit('setSettings', {passcode: '${passcode}', settings: {language: document.getElementById('language').value}});">
       <option value="en">🇬🇧 English</option>
       <option value="fr">🇫🇷 Français</option>
@@ -99,9 +132,9 @@ socket.on("settings", (res) => {
       <option value="it">🇮🇹 Italiano</option>
       <option value="al">🇩🇪 Deutsch</option>
     </select>
-    <h2>Dyslexic mode</h2>
+    <h2>${glossary["DyslexicMode"]}</h2>
     ${res.dyslexicMode ? `<button class="on" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: false}});">ON</button>` : `<button class="off" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: true}});">OFF</button>`}
-    <h2>Admin password</h2>
+    <h2>${glossary["AdminPassword"]}</h2>
     <input type="password" id="new_password" placeholder="New Password">
     <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
     <button class="apply-button" onclick="applyNewPassword()">APPLY</button>
