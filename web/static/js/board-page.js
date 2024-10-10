@@ -1,5 +1,17 @@
 const socket = io();
 
+socket.emit("getSettings", "");
+socket.on("settings", (res) => {
+  let elements = document.querySelectorAll('*');
+  elements.forEach(element => {
+    if (res.dyslexicMode) {
+      element.classList.add('dyslexic');
+    } else {
+      element.classList.remove('dyslexic');
+    }
+  });
+});
+
 function generatePastelColor() {
   const r = Math.floor(Math.random() * 128 + 127);
   const g = Math.floor(Math.random() * 128 + 127);
@@ -28,6 +40,7 @@ function submitPasscode() {
     li.style.background = pastel_color;
     li.style.boxShadow = `${pastel_color} 0px 1px 4px`;
     document.getElementById("users").appendChild(li);
+    socket.emit("getSettings", "");
   });
 
   socket.on("rmUser", (res) => {
@@ -181,6 +194,7 @@ function Display() {
     document.getElementById("timer").innerText = "0";
     document.getElementById("question_number").innerText = `Question ${res["question_number"]}/${res["question_count"]}`;
     duration = res["question_duration"];
+    socket.emit("getSettings", "");
     Count(duration, duration);
   });
 
@@ -217,6 +231,8 @@ function Display() {
       listItem.style.background = pastel_color;
       listItem.style.boxShadow = `${pastel_color} 0px 1px 4px`;
     });
+
+    socket.emit("getSettings", "");
   });
 
   socket.on("questionEnd", (res) => {
@@ -267,6 +283,7 @@ function Display() {
       podium.appendChild(podium_item);
     }
   
+    socket.emit("getSettings", "");
   }
   );
 }
