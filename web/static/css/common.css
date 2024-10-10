@@ -27,6 +27,10 @@
   font-family: 'Bagnard', sans-serif;
 }
 
+.dyslexic{
+  font-family: 'Open Dyslexic', sans-serif;
+}
+
 html, body{
     margin: 0;
     padding: 0;

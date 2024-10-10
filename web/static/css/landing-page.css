@@ -42,6 +42,10 @@
     transform: translateY(5px);
     box-shadow: none;
 }
+.main-container a.dyslexic{
+    padding-top: 0;
+    padding-bottom: 25px;
+}
 
 @media only screen and (max-height : 750px) {
     .main-container{
