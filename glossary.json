@@ -11,7 +11,10 @@
         "AdminPassword": "Mot de passe administrateur",
         "Account": "Compte",
         "Play": "Jouer",
-        "Create": "Créer"
+        "Create": "Créer",
+        "Host":"Héberger",
+        "Join":"Rejoindre",
+        "Board":"Tableau"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -25,7 +28,10 @@
         "AdminPassword": "Admin password",
         "Account": "Account",
         "Play": "Play",
-        "Create": "Create"
+        "Create": "Create",
+        "Host":"Host",
+        "Join":"Join",
+        "Board":"Board"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -39,7 +45,10 @@
         "AdminPassword": "Contraseña de administrador",
         "Account": "Cuenta",
         "Play": "Jugar",
-        "Create": "Crear"
+        "Create": "Crear",
+        "Host":"Alojar",
+        "Join":"Unirse",
+        "Board":"Pizarra"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -53,7 +62,10 @@
         "AdminPassword": "Password amministratore",
         "Account": "Account",
         "Play": "Gioca",
-        "Create": "Crea"
+        "Create": "Crea",
+        "Host":"Ospitare",
+        "Join":"Giuntura",
+        "Board":"Lavagna"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -67,6 +79,9 @@
         "AdminPassword": "Administratorpasswort",
         "Account": "Konto",
         "Play": "Spielen",
-        "Create": "Erstellen"
+        "Create": "Erstellen",
+        "Host":"Beherbergen",
+        "Join":"Verbinden",
+        "Board":"Kreidetafel"
     }
 }
