@@ -78,6 +78,7 @@ function navigate(index){
       `;
       break;
     case 3:
+      inSettingsTab = true;
       socket.emit("getSettings", passcode);
       break;
     case 4:
@@ -128,25 +129,26 @@ socket.on("settings", (res) => {
     passcode = res.adminPassword;
     alert("Password modified");
   }
-  document.getElementById("nav_content").innerHTML = `
-    <h1>${glossary["Settings"]}</h1>
-    <h2>${glossary["Language"]}</h2>
-    <select id="language" onchange="socket.emit('setSettings', {passcode: '${passcode}', settings: {language: document.getElementById('language').value}});">
-      <option value="en">🇬🇧 English</option>
-      <option value="fr">🇫🇷 Français</option>
-      <option value="es">🇪🇸 Español</option>
-      <option value="it">🇮🇹 Italiano</option>
-      <option value="al">🇩🇪 Deutsch</option>
-    </select>
-    <h2>${glossary["DyslexicMode"]}</h2>
-    ${res.dyslexicMode ? `<button class="on" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: false}});">ON</button>` : `<button class="off" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: true}});">OFF</button>`}
-    <h2>${glossary["AdminPassword"]}</h2>
-    <input type="password" id="new_password" placeholder="New Password">
-    <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
-    <button class="apply-button" onclick="applyNewPassword()">APPLY</button>
+  if(inSettingsTab){
+    document.getElementById("nav_content").innerHTML = `
+      <h1>${glossary["Settings"]}</h1>
+      <h2>${glossary["Language"]}</h2>
+      <select id="language" onchange="socket.emit('setSettings', {passcode: '${passcode}', settings: {language: document.getElementById('language').value}});">
+        <option value="en">🇬🇧 English</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="al">🇩🇪 Deutsch</option>
+      </select>
+      <h2>${glossary["DyslexicMode"]}</h2>
+      ${res.dyslexicMode ? `<button class="on" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: false}});">ON</button>` : `<button class="off" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: true}});">OFF</button>`}
+      <h2>${glossary["AdminPassword"]}</h2>
+      <input type="password" id="new_password" placeholder="New Password">
+      <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
+      <button class="apply-button" onclick="applyNewPassword()">APPLY</button>
     `;
     document.getElementById("language").value = res.language;
-  });
+  }
   const elements = document.querySelectorAll('*');
   elements.forEach(element => {
     if (res.dyslexicMode) {
@@ -155,6 +157,7 @@ socket.on("settings", (res) => {
       element.classList.remove('dyslexic');
     }
   });
+});
 
 function applyNewPassword() {
   if(document.getElementById('new_password').value == document.getElementById('repeat_new_password').value) {

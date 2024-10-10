@@ -13,7 +13,7 @@ def get_glossary():
             return json.load(g)[json.load(s)["language"]]
 
 
-# Load KHN (XML) fil
+# Load KHN (XML) file
 tree = ET.parse('questionnaire.khn')
 root = tree.getroot()
 
