@@ -1,4 +1,7 @@
 const socket = io();
+
+socket.emit("getSettings", "");
+
 var question_count = 0;
 var passcode = "";
 var glossary = {};
@@ -50,6 +53,8 @@ socket.on("gameEnd", (res) => {
   question_count = 0;
   document.getElementById("start_game").style.display = "block";
 });
+
+let inSettingsTab = false;
 function navigate(index){
   for(let i = 0; i < 5; i++){
     document.getElementById(`nav_button_${i}`).style.borderLeft = "none";
@@ -57,6 +62,7 @@ function navigate(index){
   document.getElementById(`nav_button_${index}`).style.borderLeft = "solid #494949 5px";
   document.getElementById("nav_content").innerHTML = ``;
   document.getElementById("in_game_div").style.display = "none";
+  inSettingsTab = false;
   switch (index) {
     case 0:
       document.getElementById("in_game_div").style.display = "block";
@@ -138,9 +144,17 @@ socket.on("settings", (res) => {
     <input type="password" id="new_password" placeholder="New Password">
     <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
     <button class="apply-button" onclick="applyNewPassword()">APPLY</button>
-  `;
-  document.getElementById("language").value = res.language;
-});
+    `;
+    document.getElementById("language").value = res.language;
+  });
+  const elements = document.querySelectorAll('*');
+  elements.forEach(element => {
+    if (res.dyslexicMode) {
+      element.classList.add('dyslexic');
+    } else {
+      element.classList.remove('dyslexic');
+    }
+  });
 
 function applyNewPassword() {
   if(document.getElementById('new_password').value == document.getElementById('repeat_new_password').value) {

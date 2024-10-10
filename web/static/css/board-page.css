@@ -108,6 +108,10 @@
   transform: translateX(-50%) translateY(5px);
   box-shadow: none;
 }
+#submit.dyslexic{
+  font-size: 35px;
+  padding: 0;
+}
 
 #question{
   opacity: 0;
@@ -142,6 +146,9 @@
   text-align: center;
   font-size: 35px;
   transition: 1s;
+}
+#question_number.dyslexic{
+  padding: 0;
 }
 
 #loader {
@@ -305,12 +312,8 @@
   height: 90px;
   border: none;
   border-radius: 15px;
-  font-size: 20px;
+  font-size: 25px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-}
-
-body {
-  font-family: sans-serif;
 }
 
 .container {

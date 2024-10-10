@@ -51,6 +51,10 @@
     transform: translateX(-50%) translateY(5px);
     box-shadow: none;
 }
+#submit.dyslexic{
+    font-size: 35px;
+    padding: 0;
+}
 
 nav{
     position: absolute;
@@ -82,6 +86,9 @@ nav button:hover{
 }
 nav button:active{
     background: #e0e0e0;
+}
+nav button.dyslexic{
+    padding-bottom: 15px;
 }
 nav button img{
     position: absolute;
