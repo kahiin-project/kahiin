@@ -402,7 +402,6 @@ def handle_get_settings(res) -> None:
     """Handle requests to get settings."""
     with open("settings.json", "r") as f:
         emit("settings", json.load(f))
-        print(json.load(f))
 
 @socketio.on("setSettings")
 def handle_set_settings(res) -> None:

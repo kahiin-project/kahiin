@@ -1,4 +1,18 @@
 const socket = io();
+
+socket.emit("getSettings", "");
+socket.on("settings", (res) => {
+  console.log(res);
+  const elements = document.querySelectorAll('*');
+  elements.forEach(element => {
+    if (res.dyslexicMode) {
+      element.classList.add('dyslexic');
+    } else {
+      element.classList.remove('dyslexic');
+    }
+  });
+});
+
 var answer_list= [];
 var question_number;
 function submitUsername() {
@@ -119,6 +133,7 @@ function Game() {
         }
       }
     }
+    socket.emit("getSettings", "");
   });
 }
 
