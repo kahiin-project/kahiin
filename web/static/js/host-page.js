@@ -1,6 +1,5 @@
 const socket = io();
 
-socket.emit("getSettings", "");
 
 var question_count = 0;
 var passcode = "";
@@ -92,30 +91,9 @@ function navigate(index){
 }
 socket.on("language", (res) => {
   glossary = res;
-  console.log("Glossary received:", glossary);
-  document.getElementById("nav").innerHTML = `
-    <div class="header"></div>
-    <button id="nav_button_0" style="top: 160px;" onclick="navigate(0);">
-      <img src="static/icon/play.svg">
-      ${glossary["Play"]}
-    </button>
-    <button id="nav_button_1" style="top: 250px;" onclick="navigate(1);">
-      <img src="static/icon/create.svg">
-      ${glossary["Create"]}
-    </button>
-    <button id="nav_button_2" style="top: 340px;" onclick="navigate(2);">
-      <img src="static/icon/database.svg">
-      Kahiin DB
-    </button>
-    <button id="nav_button_3" style="top: 430px;" onclick="navigate(3);">
-      <img src="static/icon/settings.svg">
-      ${glossary["Settings"]}
-    </button>
-    <button id="nav_button_4" style="bottom: 10px;" onclick="navigate(4);">
-      <img src="static/icon/account.svg">
-      ${glossary["Account"]}
-    </button>
-  `
+  for (const key in glossary) {
+    document.getElementById("body").innerHTML = document.getElementById("body").innerHTML.replace(`\${glossary["${key}"]}`, glossary[key]);
+  }
 });
 
 socket.on("settings", (res) => {
@@ -141,7 +119,6 @@ socket.on("settings", (res) => {
       <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
       <button class="apply-button" onclick="applyNewPassword()">APPLY</button>
     `;
-    document.getElementById("language").value = res.language;
   }
   const elements = document.querySelectorAll('*');
   elements.forEach(element => {

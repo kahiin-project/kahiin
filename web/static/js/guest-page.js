@@ -1,6 +1,5 @@
 const socket = io();
 
-socket.emit("getSettings", "");
 socket.on("settings", (res) => {
   console.log(res);
   const elements = document.querySelectorAll('*');
