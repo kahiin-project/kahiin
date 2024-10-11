@@ -12,6 +12,13 @@ socket.on("settings", (res) => {
   });
 });
 
+socket.on("language", (res) => {
+  glossary = res;
+  for (const key in glossary) {
+    document.getElementById("body").innerHTML = document.getElementById("body").innerHTML.replace(`\${glossary["${key}"]}`, glossary[key]);
+  }
+});
+
 var answer_list= [];
 var question_number;
 function submitUsername() {
@@ -168,15 +175,7 @@ function sendAnswer(answer) {
     document.getElementById(`button_${i}`).style.display = "none";
     document.getElementById(`button_${i}`).onclick = null;
   }
-  // if (["a", "b", "c", "d"].includes(answer)) {
-  //   if (answer_list.includes(answer)) {
-  //     answer_list.splice(answer_list.indexOf(answer), 1);
-  //   } else { 
-  //     answer_list.push(answer);
-  //   socket.emit("sendAnswer", {"answers":answer_list, "question_number": question_number});}
-  // } else {
-  //   socket.alert("Erreur au niveau de la reponse, veuillez réesayer");
-  // }
+
 };
 
 function editAnswer(answer) {

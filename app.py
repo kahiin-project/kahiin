@@ -454,8 +454,8 @@ def handle_set_settings(res) -> None:
             json.dump(settings, f)
 
         glossary = get_glossary()
-        emit("language", glossary)
-        emit("settings", settings)
+        for client in client_list+board_list+host_list:
+            emit("settings", settings, to=client.sid)
     else:
         emit("error", glossary["InvalidPasscode"])
 
