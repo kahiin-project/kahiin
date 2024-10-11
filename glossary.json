@@ -5,6 +5,9 @@
         "UsernameAlreadyTaken": "Ce nom d'utilisateur est déjà pris.",
         "UserAlreadyConnected": "Vous êtes déjà connecté.",
         "NoUsersConnected": "Aucun utilisateur n'est connecté.",
+        "WaitingForHost": "En attente de l'hôte",
+        "PlayerList": "Liste des joueurs",
+        "WonPlaces": "Places gagnées",
         "Settings": "Paramètres",
         "Language": "Langue",
         "DyslexicMode": "Mode dyslexique",
@@ -14,7 +17,9 @@
         "Create": "Créer",
         "Host": "Héberger",
         "Join": "Rejoindre",
-        "Board": "Tableau"
+        "Board": "Tableau",
+        "Submit": "Soumettre",
+        "Guest": "Client"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -35,7 +40,8 @@
         "Host": "Host",
         "Join": "Join",
         "Board": "Board",
-        "Submit": "Submit"
+        "Submit": "Submit",
+        "Guest": "Guest"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -43,6 +49,9 @@
         "UsernameAlreadyTaken": "Este nombre de usuario ya está tomado.",
         "UserAlreadyConnected": "Ya estás conectado.",
         "NoUsersConnected": "No hay usuarios conectados.",
+        "WaitingForHost": "Esperando al anfitrión",
+        "PlayerList": "Lista de jugadores",
+        "WonPlaces": "Lugares ganados",
         "Settings": "Ajustes",
         "Language": "Idioma",
         "DyslexicMode": "Modo dislexia",
@@ -52,7 +61,9 @@
         "Create": "Crear",
         "Host": "Alojar",
         "Join": "Unirse",
-        "Board": "Pizarra"
+        "Board": "Pizarra",
+        "Submit": "Enviar",
+        "Guest": "Cliente"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -60,6 +71,9 @@
         "UsernameAlreadyTaken": "Questo nome utente è già stato preso.",
         "UserAlreadyConnected": "Sei già connesso.",
         "NoUsersConnected": "Nessun utente connesso.",
+        "WaitingForHost": "In attesa dell'host",
+        "PlayerList": "Elenco dei giocatori",
+        "WonPlaces": "Posti vinti",
         "Settings": "Impostazioni",
         "Language": "Lingua",
         "DyslexicMode": "Modalità dislessia",
@@ -69,7 +83,9 @@
         "Create": "Crea",
         "Host": "Ospitare",
         "Join": "Giuntura",
-        "Board": "Lavagna"
+        "Board": "Lavagna",
+        "Submit": "Invia",
+        "Guest": "Cliente"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -77,6 +93,9 @@
         "UsernameAlreadyTaken": "Dieser Benutzername ist bereits vergeben.",
         "UserAlreadyConnected": "Sie sind bereits verbunden.",
         "NoUsersConnected": "Es sind keine Benutzer verbunden.",
+        "WaitingForHost": "Warten auf den Gastgeber",
+        "PlayerList": "Spielerliste",
+        "WonPlaces": "Gewonnene Plätze",
         "Settings": "Einstellungen",
         "Language": "Sprache",
         "DyslexicMode": "Dyslexie-Modus",
@@ -86,6 +105,8 @@
         "Create": "Erstellen",
         "Host": "Beherbergen",
         "Join": "Verbinden",
-        "Board": "Kreidetafel"
+        "Board": "Kreidetafel",
+        "Submit": "Einreichen",
+        "Guest": "Gast"
     }
 }
