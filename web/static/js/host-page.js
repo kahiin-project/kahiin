@@ -4,6 +4,14 @@ const socket = io();
 var question_count = 0;
 var passcode = "";
 var glossary = {};
+
+socket.on("language", (res) => {
+  glossary = res;
+  for (const key in glossary) {
+    document.getElementById("body").innerHTML = document.getElementById("body").innerHTML.replace(`\${glossary["${key}"]}`, glossary[key]);
+  }
+});
+
 function hashSHA256(message) {
   const hash = CryptoJS.SHA256(message);
   return hash.toString(CryptoJS.enc.Hex);
@@ -89,18 +97,11 @@ function navigate(index){
       console.log("Invalid index incoming.");
   }
 }
-socket.on("language", (res) => {
-  glossary = res;
-  for (const key in glossary) {
-    document.getElementById("body").innerHTML = document.getElementById("body").innerHTML.replace(`\${glossary["${key}"]}`, glossary[key]);
-  }
-});
-
 socket.on("settings", (res) => {
-  if(res.adminPassword != passcode){
-    passcode = res.adminPassword;
-    alert("Password modified");
-  }
+  // if(res.adminPassword != passcode){
+  //   passcode = res.adminPassword;
+  //   alert("Password modified");
+  // }
   if(inSettingsTab){
     document.getElementById("nav_content").innerHTML = `
       <h1>${glossary["Settings"]}</h1>

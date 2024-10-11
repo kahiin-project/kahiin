@@ -12,9 +12,9 @@
         "Account": "Compte",
         "Play": "Jouer",
         "Create": "Créer",
-        "Host":"Héberger",
-        "Join":"Rejoindre",
-        "Board":"Tableau"
+        "Host": "Héberger",
+        "Join": "Rejoindre",
+        "Board": "Tableau"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -22,6 +22,9 @@
         "UsernameAlreadyTaken": "This username is already taken.",
         "UserAlreadyConnected": "You are already connected.",
         "NoUsersConnected": "No users are connected.",
+        "WaitingForHost": "Waiting for the host",
+        "PlayerList": "Player list",
+        "WonPlaces": "Won places",
         "Settings": "Settings",
         "Language": "Language",
         "DyslexicMode": "Dyslexic mode",
@@ -29,9 +32,10 @@
         "Account": "Account",
         "Play": "Play",
         "Create": "Create",
-        "Host":"Host",
-        "Join":"Join",
-        "Board":"Board"
+        "Host": "Host",
+        "Join": "Join",
+        "Board": "Board",
+        "Submit": "Submit"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -46,9 +50,9 @@
         "Account": "Cuenta",
         "Play": "Jugar",
         "Create": "Crear",
-        "Host":"Alojar",
-        "Join":"Unirse",
-        "Board":"Pizarra"
+        "Host": "Alojar",
+        "Join": "Unirse",
+        "Board": "Pizarra"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -63,9 +67,9 @@
         "Account": "Account",
         "Play": "Gioca",
         "Create": "Crea",
-        "Host":"Ospitare",
-        "Join":"Giuntura",
-        "Board":"Lavagna"
+        "Host": "Ospitare",
+        "Join": "Giuntura",
+        "Board": "Lavagna"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -80,8 +84,8 @@
         "Account": "Konto",
         "Play": "Spielen",
         "Create": "Erstellen",
-        "Host":"Beherbergen",
-        "Join":"Verbinden",
-        "Board":"Kreidetafel"
+        "Host": "Beherbergen",
+        "Join": "Verbinden",
+        "Board": "Kreidetafel"
     }
 }

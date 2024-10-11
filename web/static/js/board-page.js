@@ -6,6 +6,7 @@ socket.on("language", (res) => {
     document.getElementById("body").innerHTML = document.getElementById("body").innerHTML.replace(`\${glossary["${key}"]}`, glossary[key]);
   }
 });
+
 socket.on("settings", (res) => {
   let elements = document.querySelectorAll('*');
   elements.forEach(element => {
@@ -45,7 +46,6 @@ function submitPasscode() {
     li.style.background = pastel_color;
     li.style.boxShadow = `${pastel_color} 0px 1px 4px`;
     document.getElementById("users").appendChild(li);
-    socket.emit("getSettings", "");
   });
 
   socket.on("rmUser", (res) => {
@@ -199,7 +199,6 @@ function Display() {
     document.getElementById("timer").innerText = "0";
     document.getElementById("question_number").innerText = `Question ${res["question_number"]}/${res["question_count"]}`;
     duration = res["question_duration"];
-    socket.emit("getSettings", "");
     Count(duration, duration);
   });
 
@@ -236,8 +235,6 @@ function Display() {
       list_promoted_item.style.background = pastel_color;
       list_promoted_item.style.boxShadow = `${pastel_color} 0px 1px 4px`;
     });
-
-    socket.emit("getSettings", "");
   });
 
   socket.on("questionEnd", (res) => {
@@ -287,8 +284,6 @@ function Display() {
       podium_item.appendChild(podium_rank_div);
       podium.appendChild(podium_item);
     }
-  
-    socket.emit("getSettings", "");
   }
   );
 }

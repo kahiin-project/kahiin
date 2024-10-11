@@ -18,12 +18,12 @@
   <body id="body">
     <div id="form">
       <input type="text" id="username" placeholder="username" onchange="submitUsername()" />
-      <p id="error">incorrect password</p>
-      <button id="submit" onclick="submitUsername()">Submit</button>
+      <p id="error">${glossary["InvalidPasscode"]}</p>
+      <button id="submit" onclick="submitUsername()">${glossary["Submit"]}</button>
     </div>
     <span id="loader" style="display: none"></span>
-    <p id="loader-text">Waiting for the host...</p>
+    <p id="loader-text">${glossary["WaitingForHost"]}.</p>
     <div id="buttons"></div>
-    <button id="send_button" onclick="sendMCQ()" style="display: none;">Envoyer</button>
+    <button id="send_button" onclick="sendMCQ()" style="display: none;">${glossary["Submit"]}</button>
   </body>
 </html>
