@@ -1,6 +1,11 @@
 const socket = io();
 
-socket.emit("getSettings", "");
+socket.on("language", (res) => {
+  glossary = res;
+  for (const key in glossary) {
+    document.getElementById("body").innerHTML = document.getElementById("body").innerHTML.replace(`\${glossary["${key}"]}`, glossary[key]);
+  }
+});
 socket.on("settings", (res) => {
   let elements = document.querySelectorAll('*');
   elements.forEach(element => {

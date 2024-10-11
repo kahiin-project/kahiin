@@ -211,6 +211,10 @@ def handle_connect() -> None:
     """Handle client connection events."""
     glossary = get_glossary()
     emit("language", glossary)
+    with open("settings.json", "r") as f:
+        data = json.load(f)
+        del data["adminPassword"]
+        emit("settings", data)
 
 
 @socketio.on('boardConnect')
