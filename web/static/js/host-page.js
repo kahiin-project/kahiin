@@ -107,12 +107,13 @@ socket.on("settings", (res) => {
       <h1>${glossary["Settings"]}</h1>
       <h2>${glossary["Language"]}</h2>
       <select id="language" onchange="socket.emit('setSettings', {passcode: '${passcode}', settings: {language: document.getElementById('language').value}});">
-        <option value="en">🇬🇧 English</option>
-        <option value="fr">🇫🇷 Français</option>
-        <option value="es">🇪🇸 Español</option>
-        <option value="it">🇮🇹 Italiano</option>
-        <option value="de">🇩🇪 Deutsch</option>
+        <option value="en" ${res.language == "en" ? "selected" : ""}>🇬🇧 English</option>
+        <option value="fr" ${res.language == "fr" ? "selected" : ""}>🇫🇷 Français</option>
+        <option value="es" ${res.language == "es" ? "selected" : ""}>🇪🇸 Español</option>
+        <option value="it" ${res.language == "it" ? "selected" : ""}>🇮🇹 Italiano</option>
+        <option value="de" ${res.language == "de" ? "selected" : ""}>🇩🇪 Deutsch</option>
       </select>
+      <p style="margin-left: 50px; color: gray;">${glossary["Refresh to apply changes"]}</p>
       <h2>${glossary["DyslexicMode"]}</h2>
       ${res.dyslexicMode ? `<button class="on" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: false}});">ON</button>` : `<button class="off" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: true}});">OFF</button>`}
       <h2>${glossary["AdminPassword"]}</h2>

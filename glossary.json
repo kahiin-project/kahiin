@@ -19,7 +19,8 @@
         "Join": "Rejoindre",
         "Board": "Tableau",
         "Submit": "Soumettre",
-        "Guest": "Client"
+        "Guest": "Client",
+        "Refresh to apply changes": "Rafraîchir pour appliquer les modifications"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -41,7 +42,8 @@
         "Join": "Join",
         "Board": "Board",
         "Submit": "Submit",
-        "Guest": "Guest"
+        "Guest": "Guest",
+        "Refresh to apply changes": "Refresh to apply changes"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -63,7 +65,8 @@
         "Join": "Unirse",
         "Board": "Pizarra",
         "Submit": "Enviar",
-        "Guest": "Cliente"
+        "Guest": "Cliente",
+        "Refresh to apply changes": "Actualizar para aplicar cambios"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -85,7 +88,8 @@
         "Join": "Giuntura",
         "Board": "Lavagna",
         "Submit": "Invia",
-        "Guest": "Cliente"
+        "Guest": "Cliente",
+        "Refresh to apply changes": "Aggiorna per applicare le modifiche"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -107,6 +111,7 @@
         "Join": "Verbinden",
         "Board": "Kreidetafel",
         "Submit": "Einreichen",
-        "Guest": "Gast"
+        "Guest": "Gast",
+        "Refresh to apply changes": "Aktualisieren, um Änderungen zu übernehmen"
     }
 }
