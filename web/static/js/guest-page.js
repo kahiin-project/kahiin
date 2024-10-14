@@ -13,10 +13,14 @@ socket.on("settings", (res) => {
 });
 
 socket.on("language", (res) => {
-  glossary = res;
-  for (const key in glossary) {
-    document.getElementById("body").innerHTML = document.getElementById("body").innerHTML.replace(`\${glossary["${key}"]}`, glossary[key]);
-  }
+  const glossary = res;
+  const body = document.getElementById("body");
+  const regex = /\$\{glossary\["([A-Za-z]+)"\]\}/g;
+  const replaced = body.innerHTML.replace(regex, (match, key) => {
+    return glossary[key] || match;
+  });
+  body.innerHTML = replaced;
+  document.getElementById("body").style.display = "block";
 });
 
 var answer_list= [];

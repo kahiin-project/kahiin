@@ -1,12 +1,5 @@
 const socket = io();
 
-socket.on("language", (res) => {
-  glossary = res;
-  for (const key in glossary) {
-    document.getElementById("body").innerHTML = document.getElementById("body").innerHTML.replace(`\${glossary["${key}"]}`, glossary[key]);
-  }
-});
-
 socket.on("settings", (res) => {
   let elements = document.querySelectorAll('*');
   elements.forEach(element => {
@@ -16,6 +9,17 @@ socket.on("settings", (res) => {
       element.classList.remove('dyslexic');
     }
   });
+});
+
+socket.on("language", (res) => {
+  const glossary = res;
+  const body = document.getElementById("body");
+  const regex = /\$\{glossary\["([A-Za-z]+)"\]\}/g;
+  const replaced = body.innerHTML.replace(regex, (match, key) => {
+    return glossary[key] || match;
+  });
+  body.innerHTML = replaced;
+  document.getElementById("body").style.display = "block";
 });
 
 function generatePastelColor() {
