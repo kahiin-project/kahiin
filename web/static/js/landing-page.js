@@ -19,4 +19,5 @@ socket.on("language", (res) => {
     return glossary[key] || match;
   });
   body.innerHTML = replaced;
+  document.getElementById("body").style.display = "block";
 });
