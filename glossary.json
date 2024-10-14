@@ -18,9 +18,12 @@
         "Host": "Héberger",
         "Join": "Rejoindre",
         "Board": "Tableau",
-        "Submit": "Soumettre",
+        "Submit": "Envoyer",
         "Guest": "Client",
-        "Refresh to apply changes": "Rafraîchir pour appliquer les modifications"
+        "ChangesNeedRefresh": "Rafraîchir pour appliquer les modifications",
+        "StartGame": "Démarrer le jeu",
+        "NextQuestion": "Terminer le jeu",
+        "ShowLeaderboard": "Afficher le classement"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -43,7 +46,10 @@
         "Board": "Board",
         "Submit": "Submit",
         "Guest": "Guest",
-        "Refresh to apply changes": "Refresh to apply changes"
+        "ChangesNeedRefresh": "Refresh to apply changes",
+        "StartGame": "Start game",
+        "NextQuestion": "Next question",
+        "ShowLeaderboard": "Show leaderboard"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -66,7 +72,10 @@
         "Board": "Pizarra",
         "Submit": "Enviar",
         "Guest": "Cliente",
-        "Refresh to apply changes": "Actualizar para aplicar cambios"
+        "ChangesNeedRefresh": "Actualizar para aplicar cambios",
+        "StartGame": "Comenzar el juego",
+        "NextQuestion": "Siguiente pregunta",
+        "ShowLeaderboard": "Mostrar clasificación"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -89,7 +98,10 @@
         "Board": "Lavagna",
         "Submit": "Invia",
         "Guest": "Cliente",
-        "Refresh to apply changes": "Aggiorna per applicare le modifiche"
+        "ChangesNeedRefresh": "Aggiorna per applicare le modifiche",
+        "StartGame": "Inizia il gioco",
+        "NextQuestion": "Prossima domanda",
+        "ShowLeaderboard": "Mostra classifica"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -112,6 +124,9 @@
         "Board": "Kreidetafel",
         "Submit": "Einreichen",
         "Guest": "Gast",
-        "Refresh to apply changes": "Aktualisieren, um Änderungen zu übernehmen"
+        "ChangesNeedRefresh": "Aktualisieren, um Änderungen zu übernehmen",
+        "StartGame": "Spiel starten",
+        "NextQuestion": "Nächste Frage",
+        "ShowLeaderboard": "Bestenliste anzeigen"
     }
 }
