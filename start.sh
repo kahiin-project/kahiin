@@ -7,8 +7,7 @@ if [[ "$(uname)" == "Linux" ]]; then
         yes | pkg update
         yes | pkg upgrade
         yes | pkg install python3
-        pip install flask
-        pip install flask-socketio
+        yes | pip install -r requirements.txt
         python3 app.py 1234
     elif command -v apt >/dev/null 2>&1; then
         # Debian Based
@@ -23,9 +22,7 @@ if [[ "$(uname)" == "Linux" ]]; then
         python3 -m venv venv
         source venv/bin/activate
         yes | sudo apt install python3
-        yes | pip install flask
-        yes | pip install flask-socketio
-        yes | pip install simple-websocket
+        yes | pip install -r requirements.txt
         python3 app.py 1234
     elif command -v pacman >/dev/null 2>&1; then
     echo 
@@ -40,9 +37,7 @@ if [[ "$(uname)" == "Linux" ]]; then
         python3 -m venv venv
         source venv/bin/activate
         yes | sudo pacman -S python3
-        yes | pip install flask
-        yes | pip install flask-socketio
-        yes | pip install simple-websocket
+        yes | pip install -r requirements.txt
         python3 app.py 1234
     else
         echo "OS not supported"

@@ -22,6 +22,10 @@ socket.on("language", (res) => {
   document.getElementById("body").style.display = "block";
 });
 
+socket.on("qrcode", (res) => {
+  document.getElementById("qrcode").src = res;
+});
+
 function generatePastelColor() {
   const r = Math.floor(Math.random() * 128 + 127);
   const g = Math.floor(Math.random() * 128 + 127);

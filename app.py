@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
-from hashlib import sha256
+import qrcode
 import time
 import json
 import xml.etree.ElementTree as ET
@@ -236,6 +236,17 @@ def handle_board_connect(code: str) -> None:
             emit('newUser', {'username': c.username, 'sid': c.sid})
     else:
         emit('error', glossary["InvalidPasscode"])
+
+    qrcode = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qrcode.add_data(f"http://{request.host}/board")
+    qrcode.make(fit=True)
+    qrcode_img = qrcode.make_image(fill_color="black", back_color="white")
+    emit('qrcode', qrcode_img.get_image().tobytes(), to=request.sid)
 
 
 @socketio.on('hostConnect')

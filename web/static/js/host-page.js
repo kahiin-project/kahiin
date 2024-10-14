@@ -112,7 +112,7 @@ socket.on("settings", (res) => {
     document.getElementById("nav_content").innerHTML = `
       <h1>${glossary["Settings"]}</h1>
       <h2>${glossary["Language"]}</h2>
-      <select id="language" onchange="socket.emit('setSettings', {passcode: '${passcode}', settings: {language: document.getElementById('language').value}});">
+      <select id="language" onchange="socket.emit('setSettings', {passcode: '${passcode}', settings: {language: document.getElementById('language').value}}); location.reload();">
         <option value="en" ${res.language == "en" ? "selected" : ""}>🇬🇧 English</option>
         <option value="fr" ${res.language == "fr" ? "selected" : ""}>🇫🇷 Français</option>
         <option value="es" ${res.language == "es" ? "selected" : ""}>🇪🇸 Español</option>
