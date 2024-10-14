@@ -30,6 +30,7 @@ function submitPasscode() {
       document.getElementById("form").style.display = "block";
       document.getElementById("start_game").style.display = "none";
       document.getElementById("next_question").style.display = "none";
+      document.getElementById("nav").style.display = "none";
     });
 }
 
