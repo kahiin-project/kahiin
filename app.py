@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
-import qrcode
+import qrcode as qrcodemaker
+from io import BytesIO
 import time
 import json
 import xml.etree.ElementTree as ET
+from base64 import b64encode
 # Passcode for authentication
 
 
@@ -237,16 +239,18 @@ def handle_board_connect(code: str) -> None:
     else:
         emit('error', glossary["InvalidPasscode"])
 
-    qrcode = qrcode.QRCode(
+    qrcode = qrcodemaker.QRCode(
         version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
+        box_size=3,
         border=4,
     )
     qrcode.add_data(f"http://{request.host}/board")
     qrcode.make(fit=True)
     qrcode_img = qrcode.make_image(fill_color="black", back_color="white")
-    emit('qrcode', qrcode_img.get_image().tobytes(), to=request.sid)
+    buffered = BytesIO()
+    qrcode_img.save(buffered, format="JPEG")
+    qrcode_img_str = b64encode(buffered.getvalue()).decode()
+    emit('qrcode', f"data:image/jpeg;base64,{qrcode_img_str}", to=request.sid)
 
 
 @socketio.on('hostConnect')

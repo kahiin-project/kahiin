@@ -23,7 +23,8 @@
         "ChangesNeedRefresh": "Rafraîchir pour appliquer les modifications",
         "StartGame": "Démarrer le jeu",
         "NextQuestion": "Terminer le jeu",
-        "ShowLeaderboard": "Afficher le classement"
+        "ShowLeaderboard": "Afficher le classement",
+        "ScanMe": "Scannez Moi"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -49,7 +50,8 @@
         "ChangesNeedRefresh": "Refresh to apply changes",
         "StartGame": "Start game",
         "NextQuestion": "Next question",
-        "ShowLeaderboard": "Show leaderboard"
+        "ShowLeaderboard": "Show leaderboard",
+        "ScanMe": "Scan Me"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
