@@ -209,12 +209,11 @@ def route_landing_page() -> str:
 @socketio.on('connect')
 def handle_connect() -> None:
     """Handle client connection events."""
-    glossary = get_glossary()
-    emit("language", glossary)
     with open("settings.json", "r") as f:
         data = json.load(f)
         del data["adminPassword"]
         emit("settings", data)
+    emit("language", get_glossary())
 
 
 @socketio.on('boardConnect')

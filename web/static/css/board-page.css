@@ -1,3 +1,7 @@
+#body {
+  display: none;
+}
+
 .progressbar-wrapper {
   background-color: #dfe6e9;
   color: white;

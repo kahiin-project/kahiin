@@ -6,11 +6,17 @@ var passcode = "";
 var glossary = {};
 
 socket.on("language", (res) => {
-  glossary = res;
-  for (const key in glossary) {
-    document.getElementById("body").innerHTML = document.getElementById("body").innerHTML.replace(`\${glossary["${key}"]}`, glossary[key]);
-  }
+  const glossary = res;
+  const body = document.getElementById("body");
+  const regex = /\$\{glossary\["([A-Za-z]+)"\]\}/g;
+  const replaced = body.innerHTML.replace(regex, (match, key) => {
+    return glossary[key] || match;
+  });
+  body.innerHTML = replaced;
+  console.log(replaced);
+  document.getElementById("body").style.display = "block";
 });
+
 
 function hashSHA256(message) {
   const hash = CryptoJS.SHA256(message);
@@ -114,7 +120,7 @@ socket.on("settings", (res) => {
         <option value="it" ${res.language == "it" ? "selected" : ""}>🇮🇹 Italiano</option>
         <option value="de" ${res.language == "de" ? "selected" : ""}>🇩🇪 Deutsch</option>
       </select>
-      <p style="margin-left: 50px; color: gray;">${glossary["Refresh to apply changes"]}</p>
+      <p style="margin-left: 50px; color: gray;">${glossary["ChangesNeedRefresh"]}</p>
       <h2>${glossary["DyslexicMode"]}</h2>
       ${res.dyslexicMode ? `<button class="on" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: false}});">ON</button>` : `<button class="off" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: true}});">OFF</button>`}
       <h2>${glossary["AdminPassword"]}</h2>
