@@ -143,6 +143,7 @@ nav button img{
 /* ON */
 #nav_content button.on{
     background: #49cf38;
+    padding: 0;
 }
 #nav_content button.on:hover{
     background: #47c037;
@@ -155,6 +156,15 @@ nav button img{
     background: #c03737;
 }
 
+#new_password.dyslexic{
+    padding: 0;
+    padding-left: 10px;
+}
+#repeat_new_password.dyslexic{
+    padding: 0;
+    padding-left: 10px;
+}
+
 #nav_content input{
     margin-bottom: 5px;
     cursor: text;
@@ -165,6 +175,10 @@ nav button img{
 #nav_content .apply-button:hover{
     background: #3473bb;
 }
+#nav_content .apply-button.dyslexic{
+    padding: 0;
+    padding-left: 10px;
+}
 
 #in_game_div{
     display: none;
@@ -172,4 +186,9 @@ nav button img{
     left: 50%;
     top: 50%;
     transform: translateX(-50%) translateY(-50%);
+}
+
+#language.dyslexic{
+    padding: 0;
+    padding-left: 10px;
 }
