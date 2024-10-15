@@ -20,6 +20,7 @@ socket.on("language", (res) => {
   });
   body.innerHTML = replaced;
   document.getElementById("body").style.display = "block";
+  document.getElementById("passcode").placeholder = glossary["Passcode"];
 });
 
 socket.on("qrcode", (res) => {
