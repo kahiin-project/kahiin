@@ -80,16 +80,19 @@ function navigate(index){
   switch (index) {
     case 0:
       document.getElementById("in_game_div").style.display = "block";
+      socket.emit("getSettings", "");
       break;
     case 1:
       document.getElementById("nav_content").innerHTML = `
         
       `;
+      socket.emit("getSettings", "");
       break;
     case 2:
       document.getElementById("nav_content").innerHTML = `
         <h1>Kahiin DB</h1>
       `;
+      socket.emit("getSettings", "");
       break;
     case 3:
       inSettingsTab = true;
@@ -99,6 +102,7 @@ function navigate(index){
       document.getElementById("nav_content").innerHTML = `
         <h1>${glossary["Account"]}</h1>
       `;
+      socket.emit("getSettings", "");
       break;
     default:
       console.log("Invalid index incoming.");
