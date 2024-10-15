@@ -21,6 +21,7 @@ socket.on("language", (res) => {
   });
   body.innerHTML = replaced;
   document.getElementById("body").style.display = "block";
+  document.getElementById("username").placeholder = glossary["Username"];
 });
 
 var answer_list= [];

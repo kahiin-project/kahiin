@@ -25,7 +25,9 @@
         "StartGame": "Démarrer le jeu",
         "NextQuestion": "Terminer le jeu",
         "ShowLeaderboard": "Afficher le classement",
-        "ScanMe": "Scannez Moi"
+        "ScanMe": "Scannez Moi",
+        "Passcode": "code d'accès",
+        "Username": "Nom d'utilisateur"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -53,7 +55,9 @@
         "StartGame": "Start game",
         "NextQuestion": "Next question",
         "ShowLeaderboard": "Show leaderboard",
-        "ScanMe": "Scan Me"
+        "ScanMe": "Scan Me",
+        "Passcode": "passcode",
+        "Username": "Username"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -80,7 +84,10 @@
         "ChangeLanguageWillRefresh": "Cambiar el idioma refrescará la página",
         "StartGame": "Comenzar el juego",
         "NextQuestion": "Siguiente pregunta",
-        "ShowLeaderboard": "Mostrar clasificación"
+        "ShowLeaderboard": "Mostrar clasificación",
+        "ScanMe": "Escanéame",
+        "Passcode": "código de acceso",
+        "Username": "Nombre de usuario"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -107,7 +114,10 @@
         "ChangeLanguageWillRefresh": "Cambiare la lingua aggiornerà la pagina",
         "StartGame": "Inizia il gioco",
         "NextQuestion": "Prossima domanda",
-        "ShowLeaderboard": "Mostra classifica"
+        "ShowLeaderboard": "Mostra classifica",
+        "ScanMe": "Scansionami",
+        "Passcode": "codice di accesso",
+        "Username": "Nome utente"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -134,6 +144,9 @@
         "ChangeLanguageWillRefresh": "Das Ändern der Sprache wird die Seite aktualisieren",
         "StartGame": "Spiel starten",
         "NextQuestion": "Nächste Frage",
-        "ShowLeaderboard": "Bestenliste anzeigen"
+        "ShowLeaderboard": "Bestenliste anzeigen",
+        "ScanMe": "Scannen Sie mich",
+        "Passcode": "Zugangscode",
+        "Username": "Benutzername"
     }
 }
