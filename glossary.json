@@ -21,6 +21,7 @@
         "Submit": "Envoyer",
         "Guest": "Client",
         "ChangesNeedRefresh": "Rafraîchir pour appliquer les modifications",
+        "ChangeLanguageWillRefresh": "Modifier la langue va rafraîchir la page",
         "StartGame": "Démarrer le jeu",
         "NextQuestion": "Terminer le jeu",
         "ShowLeaderboard": "Afficher le classement",
@@ -48,6 +49,7 @@
         "Submit": "Submit",
         "Guest": "Guest",
         "ChangesNeedRefresh": "Refresh to apply changes",
+        "ChangeLanguageWillRefresh": "Changing language will refresh the page",
         "StartGame": "Start game",
         "NextQuestion": "Next question",
         "ShowLeaderboard": "Show leaderboard",
@@ -75,6 +77,7 @@
         "Submit": "Enviar",
         "Guest": "Cliente",
         "ChangesNeedRefresh": "Actualizar para aplicar cambios",
+        "ChangeLanguageWillRefresh": "Cambiar el idioma refrescará la página",
         "StartGame": "Comenzar el juego",
         "NextQuestion": "Siguiente pregunta",
         "ShowLeaderboard": "Mostrar clasificación"
@@ -101,6 +104,7 @@
         "Submit": "Invia",
         "Guest": "Cliente",
         "ChangesNeedRefresh": "Aggiorna per applicare le modifiche",
+        "ChangeLanguageWillRefresh": "Cambiare la lingua aggiornerà la pagina",
         "StartGame": "Inizia il gioco",
         "NextQuestion": "Prossima domanda",
         "ShowLeaderboard": "Mostra classifica"
@@ -127,6 +131,7 @@
         "Submit": "Einreichen",
         "Guest": "Gast",
         "ChangesNeedRefresh": "Aktualisieren, um Änderungen zu übernehmen",
+        "ChangeLanguageWillRefresh": "Das Ändern der Sprache wird die Seite aktualisieren",
         "StartGame": "Spiel starten",
         "NextQuestion": "Nächste Frage",
         "ShowLeaderboard": "Bestenliste anzeigen"
