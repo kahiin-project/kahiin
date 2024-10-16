@@ -16,7 +16,7 @@ def get_glossary():
 
 
 # Load KHN (XML) file
-tree = ET.parse('questionnaire.khn')
+tree = ET.parse('quiz.khn')
 root = tree.getroot()
 
 
@@ -415,7 +415,7 @@ def handle_edit_question(message: dict) -> None:
             if question.find('title').text == message['key']:
                 question.find('title').text = message['value']
                 break
-        tree.write('questionnaire.khn')
+        tree.write('quiz.khn')
         # emit('edit', message)
     else:
         emit('error', glossary["InvalidPasscode"])
