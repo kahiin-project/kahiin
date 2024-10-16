@@ -30,10 +30,12 @@ for question in root.findall('question'):
         "type": question_type
     })
 
-
-def get_passcode():
+def get_settings():
     with open("settings.json", "r") as f:
-        return json.load(f)["adminPassword"]
+        return json.load(f)
+    
+def get_passcode():
+    return get_settings()["adminPassword"]
 
 def get_glossary():
     with open("glossary.json", "r") as g:
@@ -223,10 +225,9 @@ def route_landing_page() -> str:
 @socketio.on('connect')
 def handle_connect() -> None:
     """Handle client connection events."""
-    with open("settings.json", "r") as f:
-        data = json.load(f)
-        del data["adminPassword"]
-        emit("settings", data)
+    data = get_settings()
+    del data["adminPassword"]
+    emit("settings", data)
     emit("language", get_glossary())
 
 
@@ -346,6 +347,7 @@ def handle_start_game(code: str) -> None:
 def handle_next_question(res) -> None:
     passcode = get_passcode()
     glossary = get_glossary()
+    settings = get_settings()
     code, question_number = res["passcode"], res["question_count"]
     if len(client_list) == 0:
         emit('error', glossary["NoUsersConnected"])
@@ -360,14 +362,14 @@ def handle_next_question(res) -> None:
             game.reset()
             return
         else:
-            question_not_answered = list(filter((None).__ne__, config["questions"]))
-            question = random.choice(question_not_answered) if config["randomOrder"] else config["questions"][question_number]
+            question_not_answered = list(filter(lambda q: q is not None, config["questions"]))
+            question = random.choice(question_not_answered) if settings["randomOrder"] else config["questions"][question_number]
             data = {
                 "question_title": question["title"],
                 "question_type": question["type"],
                 "question_possible_answers": question["shown_answers"],
                 "question_duration": question["duration"],
-                "question_number": (len(config["questions"]) - len(question_not_answered)) if config["randomOrder"] else config["questions"].index(question) + 1,
+                "question_number": (len(config["questions"]) - len(question_not_answered) + 1) if settings["randomOrder"] else config["questions"].index(question) + 1,
                 "question_count": len(config["questions"]),
             }
             for client in client_list + board_list + host_list:
@@ -383,7 +385,8 @@ def handle_next_question(res) -> None:
             data = {
                 "question_correct_answer": question["correct_answers"]
             }
-            config["questions"][question] = None
+            if settings["randomOrder"]:
+                config["questions"][config["questions"].index(question)] = None
             for client in client_list:
                 client.evalScore()
             for client in client_list+board_list+host_list:
@@ -454,13 +457,12 @@ def handle_get_settings(code: str) -> None:
     """Handle requests to get settings."""
     passcode = get_passcode()
     if passcode == code:
-        with open("settings.json", "r") as f:
-            emit("settings", json.load(f))
+        emit("settings", get_settings())
     else:
-        with open("settings.json", "r") as f:
-            data = json.load(f)
-            del data["adminPassword"]
-            emit("settings", data)
+        data = get_settings()
+        del data["adminPassword"]
+        emit("settings", data)
+
 
 
 @socketio.on("setSettings")

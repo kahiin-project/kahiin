@@ -28,7 +28,8 @@
         "ScanMe": "Scannez Moi",
         "Passcode": "code d'accès",
         "Username": "Nom d'utilisateur",
-        "InvalidUsername": "Nom d'utilisateur invalide"
+        "InvalidUsername": "Nom d'utilisateur invalide",
+        "RandomOrder": "Ordre aléatoire des questions"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -59,7 +60,8 @@
         "ScanMe": "Scan Me",
         "Passcode": "passcode",
         "Username": "Username",
-        "InvalidUsername": "Invalid username"
+        "InvalidUsername": "Invalid username",
+        "RandomOrder": "Random order of questions"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -90,7 +92,8 @@
         "ScanMe": "Escanéame",
         "Passcode": "código de acceso",
         "Username": "Nombre de usuario",
-        "InvalidUsername": "Nombre de usuario inválido"
+        "InvalidUsername": "Nombre de usuario inválido",
+        "RandomOrder": "Orden aleatorio de preguntas"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -121,7 +124,8 @@
         "ScanMe": "Scansionami",
         "Passcode": "codice di accesso",
         "Username": "Nome utente",
-        "InvalidUsername": "Nome utente non valido"
+        "InvalidUsername": "Nome utente non valido",
+        "RandomOrder": "Ordine casuale delle domande"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -152,6 +156,7 @@
         "ScanMe": "Scannen Sie mich",
         "Passcode": "Zugangscode",
         "Username": "Benutzername",
-        "InvalidUsername": "Ungültiger Benutzername"
+        "InvalidUsername": "Ungültiger Benutzername",
+        "RandomOrder": "Zufällige Reihenfolge der Fragen"
     }
 }
