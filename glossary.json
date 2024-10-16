@@ -27,7 +27,8 @@
         "ShowLeaderboard": "Afficher le classement",
         "ScanMe": "Scannez Moi",
         "Passcode": "code d'accès",
-        "Username": "Nom d'utilisateur"
+        "Username": "Nom d'utilisateur",
+        "InvalidUsername": "Nom d'utilisateur invalide"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -57,7 +58,8 @@
         "ShowLeaderboard": "Show leaderboard",
         "ScanMe": "Scan Me",
         "Passcode": "passcode",
-        "Username": "Username"
+        "Username": "Username",
+        "InvalidUsername": "Invalid username"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -87,7 +89,8 @@
         "ShowLeaderboard": "Mostrar clasificación",
         "ScanMe": "Escanéame",
         "Passcode": "código de acceso",
-        "Username": "Nombre de usuario"
+        "Username": "Nombre de usuario",
+        "InvalidUsername": "Nombre de usuario inválido"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -117,7 +120,8 @@
         "ShowLeaderboard": "Mostra classifica",
         "ScanMe": "Scansionami",
         "Passcode": "codice di accesso",
-        "Username": "Nome utente"
+        "Username": "Nome utente",
+        "InvalidUsername": "Nome utente non valido"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -147,6 +151,7 @@
         "ShowLeaderboard": "Bestenliste anzeigen",
         "ScanMe": "Scannen Sie mich",
         "Passcode": "Zugangscode",
-        "Username": "Benutzername"
+        "Username": "Benutzername",
+        "InvalidUsername": "Ungültiger Benutzername"
     }
 }

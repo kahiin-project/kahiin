@@ -6,26 +6,11 @@ import time
 import json
 import xml.etree.ElementTree as ET
 from base64 import b64encode
+import random
 # Passcode for authentication
 
-
-def get_glossary():
-    with open("glossary.json", "r") as g:
-        with open("settings.json", "r") as s:
-            return json.load(g)[json.load(s)["language"]]
-
-
-# Load KHN (XML) file
 tree = ET.parse('quiz.khn')
 root = tree.getroot()
-
-
-def get_passcode():
-    with open("settings.json", "r") as f:
-        return json.load(f)["adminPassword"]
-
-
-# Parse XML file and store questions in config
 config = {"questions": []}
 # Add each question to config
 for question in root.findall('question'):
@@ -44,6 +29,17 @@ for question in root.findall('question'):
         "duration": int(duration),
         "type": question_type
     })
+
+
+def get_passcode():
+    with open("settings.json", "r") as f:
+        return json.load(f)["adminPassword"]
+
+def get_glossary():
+    with open("glossary.json", "r") as g:
+        with open("settings.json", "r") as s:
+            return json.load(g)[json.load(s)["language"]]
+
 
 
 # Initialize Flask application and SocketIO
@@ -175,7 +171,23 @@ class Game:
     def reset(self):
         self.previous_leaderboard = {}
         self.current_leaderboard = {}
+        config = {"questions": []}
+        for question in root.findall('question'):
+            title = question.find('title').text
+            duration = question.find('duration').text
+            question_type = question.find('type').text
+            shown_answers = [answer.text for answer in question.find(
+                'shown_answers').findall('answer')]
+            correct_answers = [answer.text for answer in question.find(
+                'correct_answers').findall('answer')]
 
+            config["questions"].append({
+                "title": title,
+                "shown_answers": shown_answers,
+                "correct_answers": correct_answers,
+                "duration": int(duration),
+                "type": question_type
+            })
 
 game = Game()
 
@@ -232,7 +244,6 @@ def handle_board_connect(code: str) -> None:
         return
     if code == passcode:
         session = Board(sid=request.sid, connections=board_list)
-
         # Notify all client_list about the new board connection
         for c in client_list:
             emit('newUser', {'username': c.username, 'sid': c.sid})
@@ -241,7 +252,7 @@ def handle_board_connect(code: str) -> None:
 
     qrcode = qrcodemaker.QRCode(
         version=1,
-        box_size=3,
+        box_size=7,
         border=4,
     )
     qrcode.add_data(f"http://{request.host}/board")
@@ -302,6 +313,9 @@ def handle_connect(username: str) -> None:
     elif any(c.sid == sessid for c in client_list):
         emit('error', glossary["UserAlreadyConnected"])
         return
+    if len(username) > 40 or len(username) < 1:
+        emit('error', glossary["InvalidUsername"])
+        return
 
     # Create a new client session
     session = Client(sid=sessid, username=username, connections=client_list)
@@ -346,13 +360,14 @@ def handle_next_question(res) -> None:
             game.reset()
             return
         else:
-            question = config["questions"][question_number]
+            question_not_answered = list(filter((None).__ne__, config["questions"]))
+            question = random.choice(question_not_answered) if config["randomOrder"] else config["questions"][question_number]
             data = {
                 "question_title": question["title"],
                 "question_type": question["type"],
                 "question_possible_answers": question["shown_answers"],
                 "question_duration": question["duration"],
-                "question_number": config["questions"].index(question) + 1,
+                "question_number": (len(config["questions"]) - len(question_not_answered)) if config["randomOrder"] else config["questions"].index(question) + 1,
                 "question_count": len(config["questions"]),
             }
             for client in client_list + board_list + host_list:
@@ -368,10 +383,12 @@ def handle_next_question(res) -> None:
             data = {
                 "question_correct_answer": question["correct_answers"]
             }
+            config["questions"][question] = None
             for client in client_list:
                 client.evalScore()
             for client in client_list+board_list+host_list:
                 emit("questionEnd", data, to=client.sid)
+            
     else:
         emit('error', glossary["InvalidPasscode"])
 
