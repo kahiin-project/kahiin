@@ -86,8 +86,6 @@ function Count(duration, seconds) {
       document.getElementById("timer").style.width = `calc(${
         (100 * (duration - seconds + 1)) / (duration + 1)
       }% - 30px)`;
-      document.getElementById("timer").style.opacity = 1;
-      document.getElementById("timerbar").style.opacity = 1;
       Count(duration, seconds - 1);
     }, 1000);
   }
@@ -247,6 +245,8 @@ function Display() {
   });
 
   socket.on("questionEnd", (res) => {
+    document.getElementById("timer").style.opacity = 0;
+    document.getElementById("timerbar").style.opacity = 0;
     const question_correct_answer = res["question_correct_answer"].map((x) => x.trim());
     // Gray out the incorrect answers
     const answers_div = document.getElementById("answers_div");
@@ -257,10 +257,6 @@ function Display() {
         answer_blocks[i].style.boxShadow = "none";
       }
     }
-    
-    document.getElementById("timer").style.opacity = 0;
-    document.getElementById("timerbar").style.opacity = 0;
-
   });
   socket.on("gameEnd", (res) => { 
     document.getElementById("question").style.opacity = 0;
