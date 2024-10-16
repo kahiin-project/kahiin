@@ -29,7 +29,8 @@
         "Passcode": "code d'accès",
         "Username": "Nom d'utilisateur",
         "InvalidUsername": "Nom d'utilisateur invalide",
-        "RandomOrder": "Ordre aléatoire des questions"
+        "RandomOrder": "Ordre aléatoire des questions",
+        "EndOnAllAnswered": "Terminer le jeu lorsque toutes les questions ont été répondues"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -61,7 +62,8 @@
         "Passcode": "passcode",
         "Username": "Username",
         "InvalidUsername": "Invalid username",
-        "RandomOrder": "Random order of questions"
+        "RandomOrder": "Random order of questions",
+        "EndOnAllAnswered": "End game when all questions have been answered"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -93,7 +95,8 @@
         "Passcode": "código de acceso",
         "Username": "Nombre de usuario",
         "InvalidUsername": "Nombre de usuario inválido",
-        "RandomOrder": "Orden aleatorio de preguntas"
+        "RandomOrder": "Orden aleatorio de preguntas",
+        "EndOnAllAnswered": "Finalizar el juego cuando todas las preguntas hayan sido respondidas"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -125,7 +128,8 @@
         "Passcode": "codice di accesso",
         "Username": "Nome utente",
         "InvalidUsername": "Nome utente non valido",
-        "RandomOrder": "Ordine casuale delle domande"
+        "RandomOrder": "Ordine casuale delle domande",
+        "EndOnAllAnswered": "Termina il gioco quando tutte le domande sono state risposte"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -157,6 +161,7 @@
         "Passcode": "Zugangscode",
         "Username": "Benutzername",
         "InvalidUsername": "Ungültiger Benutzername",
-        "RandomOrder": "Zufällige Reihenfolge der Fragen"
+        "RandomOrder": "Zufällige Reihenfolge der Fragen",
+        "EndOnAllAnswered": "Spiel beenden, wenn alle Fragen beantwortet wurden"
     }
 }

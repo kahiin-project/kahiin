@@ -129,6 +129,8 @@ socket.on("settings", (res) => {
       ${res.dyslexicMode ? `<button class="on" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: false}});">ON</button>` : `<button class="off" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: true}});">OFF</button>`}
       <h2>${glossary["RandomOrder"]}</h2>
       ${res.randomOrder ? `<button class="on" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {randomOrder: false}});">ON</button>` : `<button class="off" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {randomOrder: true}});">OFF</button>`}
+      <h2>${glossary["EndOnAllAnswered"]}</h2>
+      ${res.endOnAllAnswered ? `<button class="on" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {endOnAllAnswered: false}});">ON</button>` : `<button class="off" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {endOnAllAnswered: true}});">OFF</button>`}
       <h2>${glossary["AdminPassword"]}</h2>
       <input type="password" id="new_password" placeholder="New Password">
       <input type="password" id="repeat_new_password" placeholder="Repeat New Password">

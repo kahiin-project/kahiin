@@ -7,6 +7,7 @@ import json
 import xml.etree.ElementTree as ET
 from base64 import b64encode
 import random
+import threading
 # Passcode for authentication
 
 tree = ET.parse('quiz.khn')
@@ -54,7 +55,20 @@ app.template_folder = 'web/templates'
 
 ## ----------------- Class ----------------- ##
 
+class SleepManager:
+    def __init__(self):
+        self._stop_event = threading.Event()
 
+    def sleep(self, duration):
+        self._stop_event.wait(timeout=duration)
+
+    def stop(self):
+        self._stop_event.set()
+
+    def reset(self):
+        self._stop_event.clear()
+
+sleep_manager = SleepManager()
 class GameTab:
     """Class representing a connected client."""
 
@@ -381,7 +395,10 @@ def handle_next_question(res) -> None:
                 client.timer_time = question["duration"]
             # 2sec for progress bar to appear and first delay,
             # question["duration"] seconds for the game,
-            time.sleep(2 + question["duration"])
+            sleep_manager.reset()
+            sleep_thread = threading.Thread(target=sleep_manager.sleep, args=(2 + question["duration"],))
+            sleep_thread.start()
+            sleep_thread.join()
             data = {
                 "question_correct_answer": question["correct_answers"]
             }
@@ -417,6 +434,10 @@ def handle_answer(res) -> None:
         if client.sid == sessid:
             client.time_end = time.time()
             client.user_answer = user_answer
+            
+    if get_settings()["endOnAllAnswered"]:
+        if all(client.user_answer for client in client_list):
+            sleep_manager.stop()
 
 ## ----------------- SocketIO Configuration Events ----------------- ##
 
