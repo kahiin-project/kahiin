@@ -28,11 +28,16 @@ var answer_list= [];
 var question_number;
 function submitUsername() {
   const Username = document.getElementById("username").value;
-  socket.emit("guestConnect", Username);
+  if (40 >= Username.length >= 1) {
+    socket.emit("guestConnect", Username);
 
-  document.getElementById("form").style.display = "none";
-  document.getElementById("loader").style.display = "block";
-  document.getElementById("loader-text").style.display = "block";
+    document.getElementById("form").style.display = "none";
+    document.getElementById("loader").style.display = "block";
+    document.getElementById("loader-text").style.display = "block";
+  } else {
+    alert(glossary["InvalidUsername"]);
+  }
+
 }
 function Game() {
   socket.on("questionStart", (res) => {

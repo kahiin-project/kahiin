@@ -17,7 +17,7 @@
   </head>
   <body id="body">
     <div id="form">
-      <input type="text" id="username" placeholder="username" onchange="submitUsername()" />
+      <input type="text" id="username" placeholder="username" onchange="submitUsername()" maxlength="40" minlength="1"/>
       <p id="error">${glossary["InvalidPasscode"]}</p>
       <button id="submit" onclick="submitUsername()">${glossary["Submit"]}</button>
     </div>
