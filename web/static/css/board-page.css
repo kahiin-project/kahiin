@@ -118,18 +118,20 @@
 }
 
 #qrcode{
+  display: none;
   position : relative ;
-  width: 280px;
-  height: 280px;
-  margin-left: calc(50% - 140px);
+  width: 400px;
+  height: 400px;
+  margin-left: calc(50% - 200px);
 }
 #scan{
+  display: none;
   text-align: center;
-  margin-top: 5;
-  font-size: 20;
+  margin-top: 0px;
+  font-size: 30px;
 }
 #title_player_list{
-  margin-top: 15;
+  margin-top: -50px;
 }
 
 #question{
@@ -343,6 +345,7 @@
 .podium {
   display: flex;
   justify-content: space-around;
+  padding-top : 5% ;
   align-items: flex-end;
   margin: 0 auto;
   width: 100%;

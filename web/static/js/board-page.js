@@ -47,6 +47,8 @@ function submitPasscode() {
   socket.emit("boardConnect", passcode);
   document.getElementById("form").style.display = "none";
   document.getElementById("list").style.display = "block";
+  document.getElementById("qrcode").style.display = "block";
+  document.getElementById("scan").style.display = "block";
 
   socket.on("newUser", (res) => {
     const li = document.createElement("li");
@@ -76,6 +78,8 @@ function submitPasscode() {
     document.getElementById("error").innerHTML = res;
     document.getElementById("list").style.display = "none";
     document.getElementById("form").style.display = "block";
+    document.getElementById("qrcode").style.display = "none";
+    document.getElementById("scan").style.display = "none";
   });
 }
 
@@ -95,6 +99,8 @@ function Display() {
   socket.on("startGame", (res) => {
     document.getElementById("timer").style.display = "block";
     document.getElementById("list").style.display = "none";
+    document.getElementById("qrcode").style.display = "none";
+    document.getElementById("scan").style.display = "none";
   });
 
   socket.on("questionStart", (res) => {
@@ -262,7 +268,7 @@ function Display() {
     document.getElementById("question").style.opacity = 0;
     document.getElementById("question_number").style.opacity = 0;
     document.getElementById("answers_div").style.opacity = 0;
-    document.getElementById("promoted-list").style.opacity = 0;
+    document.getElementById("leaderboard-container").style.opacity = 0;
     document.getElementById("loader").style.opacity = 0;
     document.getElementById("podium").style.opacity = 1;
     const game_lead = res["game_lead"];
