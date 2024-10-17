@@ -135,6 +135,7 @@ socket.on("settings", (res) => {
       <input type="password" id="new_password" placeholder="New Password">
       <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
       <button class="apply-button" onclick="applyNewPassword()">APPLY</button>
+      <div style="height: 50px"></div>
     `;
   }
   const elements = document.querySelectorAll('*');

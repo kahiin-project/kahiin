@@ -109,6 +109,7 @@ nav button img{
     top: 0;
     bottom: 0;
     z-index: -1;
+    overflow-y: scroll;
 }
 #nav_content h1{
     font-size: 50px;
@@ -168,6 +169,7 @@ nav button img{
 #nav_content input{
     margin-bottom: 5px;
     cursor: text;
+    width: calc(100% - 115px);
 }
 #nav_content .apply-button{
     background: #387fcf;
