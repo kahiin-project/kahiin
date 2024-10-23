@@ -337,6 +337,7 @@ def handle_connect(username: str) -> None:
     for board in board_list:
         emit('newUser', {'username': username, 'sid': sessid}, to=board.sid)
         
+
 ## ----------------- SocketIO Game Events ----------------- ##
 
 
@@ -402,8 +403,12 @@ def handle_next_question(res) -> None:
             data = {
                 "question_correct_answer": question["correct_answers"]
             }
-            
-            
+            if settings["randomOrder"]:
+                config["questions"][config["questions"].index(question)] = None
+            for client in client_list:
+                client.evalScore()
+            for client in client_list+board_list+host_list:
+                emit("questionEnd", data, to=client.sid)
     else:
         emit('error', "InvalidPasscode")
 
@@ -414,7 +419,7 @@ def handle_show_leaderboard(code: str) -> None:
     glossary = get_glossary()
     if code == passcode:
         game_lead, promoted_users = game.display()
-        for client in client_list + board_list + host_list:
+        for client in board_list:
             emit('leaderboard', {
                 "promoted_users": promoted_users, "game_lead": game_lead}, to=client.sid)
     else:

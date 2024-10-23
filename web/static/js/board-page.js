@@ -38,99 +38,7 @@ function Count(duration, seconds) {
 }
 
 function Display() {
-    const answer_blocks = document.getElementById("answers_div").getElementsByClassName("answer-block");
-    for (let i = 0; i < answer_blocks.length; i++) {
-      answer_blocks[i].style.opacity = 1;
-      answer_blocks[i].style.boxShadow = "rgba(0, 0, 0, 0.16) 0px 1px 4px";
-    }
-    question_title = res["question_title"]
-    .split('\n')
-    .map(line => line.trim().replace(/\s+/g, ' '))
-    .join('\n');
 
-    document.getElementById("question").innerHTML = marked(question_title);
-    renderMathInElement(document.getElementById("question"), {
-      delimiters: [
-          {left: "\$", right: "\$", display: false},
-          {left: "\$$", right: "\$$", display: true}
-      ]
-    });
-
-    switch (res["question_possible_answers"].length) {
-      case 2:
-        document.getElementById('answers_div').innerHTML = `
-          <button class="answer-block" style="background: #99eeff; top: 0; left: 0; height: 200px;">
-            ${res["question_possible_answers"][0]}
-            <svg width="40" height="40" style="top: 80px;">
-              <rect width="40" height="40" fill="white" />
-            </svg>
-          </button>
-          <button class="answer-block" style="background: #BC5BD9; top: 0; left: calc(50% + 10px); height: 200px;">
-            ${res["question_possible_answers"][1]}
-            <svg width="40" height="40" style="top: 80px;">
-              <circle cx="20" cy="20" r="20" fill="white" />
-            </svg>
-          </button>
-        `;
-        break;
-      case 3:
-        document.getElementById('answers_div').innerHTML = `
-          <button class="answer-block" style="background: #99eeff; top: 0; left: 0;">
-            ${res["question_possible_answers"][0]}
-            <svg width="40" height="40">
-              <rect width="40" height="40" fill="white" />
-            </svg>
-          </button>
-          <button class="answer-block" style="background: #ABD95B; top: 0; left: calc(50% + 10px);">
-            ${res["question_possible_answers"][1]}
-            <svg width="40" height="40">
-              <circle cx="20" cy="20" r="20" fill="white" />
-            </svg>
-          </button>
-          <button class="answer-block" style="background: #BC5BD9; top: 110px; left: 0;">
-            ${res["question_possible_answers"][2]}
-            <svg width="40" height="40">
-              <polygon points="20,2 38,38 2,38" fill="white" />
-            </svg>
-          </button>
-          <button class="answer-block" style="background: #DFE6E9; top: 110px; left: calc(50% + 10px);"></button>
-        `;
-        break;
-      case 4:
-        document.getElementById('answers_div').innerHTML = `
-          <button class="answer-block" style="background: #99eeff; top: 0; left: 0;">
-            ${res["question_possible_answers"][0]}
-            <svg width="40" height="40">
-              <rect width="40" height="40" fill="white" />
-            </svg>
-          </button>
-          <button class="answer-block" style="background: #ABD95B; top: 0; left: calc(50% + 10px);">
-            ${res["question_possible_answers"][1]}
-            <svg width="40" height="40">
-              <circle cx="20" cy="20" r="20" fill="white" />
-            </svg>
-          </button>
-          <button class="answer-block" style="background: #BC5BD9; top: 110px; left: 0;">
-            ${res["question_possible_answers"][2]}
-            <svg width="40" height="40">
-              <polygon points="20,2 38,38 2,38" fill="white" />
-            </svg>
-          </button>
-          <button class="answer-block" style="background: #D9955B; top: 110px; left: calc(50% + 10px);">
-            ${res["question_possible_answers"][3]}
-            <svg width="40" height="40">
-              <polygon points="20,2 24.4,14 39.2,14 27.2,22.8 31.6,36 20,28 8.4,36 12.8,22.8 0.8,14 15.6,14" fill="white" />
-            </svg>
-          </button>
-        `;
-        break;
-      default:
-        console.log("Invalid data incoming");
-    }
-    document.getElementById("timer").innerText = "0";
-    document.getElementById("question_number").innerText = `Question ${res["question_number"]}/${res["question_count"]}`;
-    duration = res["question_duration"];
-    Count(duration, duration);
 }
 
 // ---------------------- Socket.io  Main-------------------------
@@ -223,6 +131,99 @@ socket.on("questionStart", (res) => {
   document.getElementById("leaderboard-container").style.opacity = 0;
   document.getElementById("leaderboard_top").style.opacity = 0;
   document.getElementById("promoted-list").style.opacity = 0;
+  const answer_blocks = document.getElementById("answers_div").getElementsByClassName("answer-block");
+  for (let i = 0; i < answer_blocks.length; i++) {
+    answer_blocks[i].style.opacity = 1;
+    answer_blocks[i].style.boxShadow = "rgba(0, 0, 0, 0.16) 0px 1px 4px";
+  }
+  question_title = res["question_title"]
+  .split('\n')
+  .map(line => line.trim().replace(/\s+/g, ' '))
+  .join('\n');
+
+  document.getElementById("question").innerHTML = marked(question_title);
+  renderMathInElement(document.getElementById("question"), {
+    delimiters: [
+        {left: "\$", right: "\$", display: false},
+        {left: "\$$", right: "\$$", display: true}
+    ]
+  });
+
+  switch (res["question_possible_answers"].length) {
+    case 2:
+      document.getElementById('answers_div').innerHTML = `
+        <button class="answer-block" style="background: #99eeff; top: 0; left: 0; height: 200px;">
+          ${res["question_possible_answers"][0]}
+          <svg width="40" height="40" style="top: 80px;">
+            <rect width="40" height="40" fill="white" />
+          </svg>
+        </button>
+        <button class="answer-block" style="background: #BC5BD9; top: 0; left: calc(50% + 10px); height: 200px;">
+          ${res["question_possible_answers"][1]}
+          <svg width="40" height="40" style="top: 80px;">
+            <circle cx="20" cy="20" r="20" fill="white" />
+          </svg>
+        </button>
+      `;
+      break;
+    case 3:
+      document.getElementById('answers_div').innerHTML = `
+        <button class="answer-block" style="background: #99eeff; top: 0; left: 0;">
+          ${res["question_possible_answers"][0]}
+          <svg width="40" height="40">
+            <rect width="40" height="40" fill="white" />
+          </svg>
+        </button>
+        <button class="answer-block" style="background: #ABD95B; top: 0; left: calc(50% + 10px);">
+          ${res["question_possible_answers"][1]}
+          <svg width="40" height="40">
+            <circle cx="20" cy="20" r="20" fill="white" />
+          </svg>
+        </button>
+        <button class="answer-block" style="background: #BC5BD9; top: 110px; left: 0;">
+          ${res["question_possible_answers"][2]}
+          <svg width="40" height="40">
+            <polygon points="20,2 38,38 2,38" fill="white" />
+          </svg>
+        </button>
+        <button class="answer-block" style="background: #DFE6E9; top: 110px; left: calc(50% + 10px);"></button>
+      `;
+      break;
+    case 4:
+      document.getElementById('answers_div').innerHTML = `
+        <button class="answer-block" style="background: #99eeff; top: 0; left: 0;">
+          ${res["question_possible_answers"][0]}
+          <svg width="40" height="40">
+            <rect width="40" height="40" fill="white" />
+          </svg>
+        </button>
+        <button class="answer-block" style="background: #ABD95B; top: 0; left: calc(50% + 10px);">
+          ${res["question_possible_answers"][1]}
+          <svg width="40" height="40">
+            <circle cx="20" cy="20" r="20" fill="white" />
+          </svg>
+        </button>
+        <button class="answer-block" style="background: #BC5BD9; top: 110px; left: 0;">
+          ${res["question_possible_answers"][2]}
+          <svg width="40" height="40">
+            <polygon points="20,2 38,38 2,38" fill="white" />
+          </svg>
+        </button>
+        <button class="answer-block" style="background: #D9955B; top: 110px; left: calc(50% + 10px);">
+          ${res["question_possible_answers"][3]}
+          <svg width="40" height="40">
+            <polygon points="20,2 24.4,14 39.2,14 27.2,22.8 31.6,36 20,28 8.4,36 12.8,22.8 0.8,14 15.6,14" fill="white" />
+          </svg>
+        </button>
+      `;
+      break;
+    default:
+      console.log("Invalid data incoming");
+  }
+  document.getElementById("timer").innerText = "0";
+  document.getElementById("question_number").innerText = `Question ${res["question_number"]}/${res["question_count"]}`;
+  duration = res["question_duration"];
+  Count(duration, duration);
 });
 
 socket.on('leaderboard', (res) => {
