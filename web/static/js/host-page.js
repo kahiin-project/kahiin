@@ -1,22 +1,12 @@
 const socket = io();
 
-
+// ---------------------- Variables -------------------------
 var question_count = 0;
 var passcode = "";
 var glossary = {};
+let inSettingsTab = false;
 
-socket.on("language", (res) => {
-  glossary = res;
-  const body = document.getElementById("body");
-  const regex = /\$\{glossary\["([A-Za-z]+)"\]\}/g;
-  const replaced = body.innerHTML.replace(regex, (match, key) => {
-    return glossary[key] || match;
-  });
-  body.innerHTML = replaced;
-  document.getElementById("body").style.display = "block";
-  document.getElementById("passcode").placeholder = glossary["Passcode"];
-});
-
+// ---------------------- Functions -------------------------
 
 function hashSHA256(message) {
   const hash = CryptoJS.SHA256(message);
@@ -29,15 +19,6 @@ function submitPasscode() {
     document.getElementById("start_game").style.display = "block";
     document.getElementById("nav").style.display = "block";
     socket.emit("hostConnect", passcode);
-    socket.on("error", (res) => {
-      document.getElementById("passcode").value = "";
-      document.getElementById("error").style.display = "block";
-      document.getElementById("error").innerHTML = res;
-      document.getElementById("form").style.display = "block";
-      document.getElementById("start_game").style.display = "none";
-      document.getElementById("next_question").style.display = "none";
-      document.getElementById("nav").style.display = "none";
-    });
 }
 
 function startSession() {
@@ -48,27 +29,27 @@ function startSession() {
   socket.emit("nextQuestion", {passcode, question_count});
   document.getElementById("next_question").style.display = "none";
 }
+
 function nextQuestion() {
   question_count += 1;
+  document.getElementById("next_question").style.display = "none";
+  document.getElementById("show_leaderboard").style.display = "none";
   socket.emit("nextQuestion", {passcode, question_count});
 }
+
 function showLeaderboard() {
   socket.emit("showLeaderboard", passcode);
 }
 
-socket.on("questionEnd", (res) => {
-  document.getElementById("next_question").style.display = "block";
-  document.getElementById("show_leaderboard").style.display = "block";
-});
+function applyNewPassword() {
+  if(document.getElementById('new_password').value == document.getElementById('repeat_new_password').value) {
+    socket.emit('setSettings', {passcode: passcode, settings: {adminPassword: hashSHA256(document.getElementById('new_password').value)}});
+  }
+  document.getElementById('new_password').value = "";
+  document.getElementById('repeat_new_password').value = "";
+  alert(glossary["PasswordChanged"]);
+}
 
-socket.on("gameEnd", (res) => {
-  document.getElementById("next_question").style.display = "none";
-  document.getElementById("show_leaderboard").style.display = "none";
-  question_count = 0;
-  document.getElementById("start_game").style.display = "block";
-});
-
-let inSettingsTab = false;
 function navigate(index){
   for(let i = 0; i < 5; i++){
     document.getElementById(`nav_button_${i}`).style.borderLeft = "none";
@@ -108,11 +89,38 @@ function navigate(index){
       console.log("Invalid index incoming.");
   }
 }
+
+// ---------------------- Socket.io Main -------------------------
+
+socket.on("error", (res) => {
+  if (res=="InvalidPasscode") {
+    document.getElementById("passcode").value = "";
+    document.getElementById("error").style.display = "block";
+    document.getElementById("error").innerHTML = glossary[res];
+    document.getElementById("form").style.display = "block";
+    document.getElementById("start_game").style.display = "none";
+    document.getElementById("next_question").style.display = "none";
+    document.getElementById("nav").style.display = "none";
+  } else {
+    alert(glossary[res]);
+    document.getElementById("error").style.display = "block";
+    document.getElementById("error").innerHTML = glossary[res];
+  }
+});
+
+socket.on("language", (res) => {
+  glossary = res;
+  const body = document.getElementById("body");
+  const regex = /\$\{glossary\["([A-Za-z]+)"\]\}/g;
+  const replaced = body.innerHTML.replace(regex, (match, key) => {
+    return glossary[key] || match;
+  });
+  body.innerHTML = replaced;
+  document.getElementById("body").style.display = "block";
+  document.getElementById("passcode").placeholder = glossary["Passcode"];
+});
+
 socket.on("settings", (res) => {
-  // if(res.adminPassword != passcode){
-  //   passcode = res.adminPassword;
-  //   alert("Password modified");
-  // }
   if(inSettingsTab){
     document.getElementById("nav_content").innerHTML = `
       <h1>${glossary["Settings"]}</h1>
@@ -148,10 +156,17 @@ socket.on("settings", (res) => {
   });
 });
 
-function applyNewPassword() {
-  if(document.getElementById('new_password').value == document.getElementById('repeat_new_password').value) {
-    socket.emit('setSettings', {passcode: passcode, settings: {adminPassword: hashSHA256(document.getElementById('new_password').value)}});
-  }
-  document.getElementById('new_password').value = "";
-  document.getElementById('repeat_new_password').value = "";
-}
+// ---------------------- Socket.io Game -------------------------
+
+socket.on("questionEnd", (res) => {
+  document.getElementById("next_question").style.display = "block";
+  document.getElementById("show_leaderboard").style.display = "block";
+});
+
+socket.on("gameEnd", (res) => {
+  document.getElementById("next_question").style.display = "none";
+  document.getElementById("show_leaderboard").style.display = "none";
+  question_count = 0;
+  document.getElementById("start_game").style.display = "block";
+});
+

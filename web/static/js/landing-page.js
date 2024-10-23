@@ -1,5 +1,7 @@
 const socket = io();
 
+// ---------------------- Socket.io Main -------------------------
+
 socket.on("settings", (res) => {
     const elements = document.querySelectorAll('*');
     elements.forEach(element => {

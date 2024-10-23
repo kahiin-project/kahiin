@@ -287,7 +287,7 @@ def handle_host_connect(code: str) -> None:
         session = Host(sid=request.sid, connections=host_list)
 
     else:
-        emit('error', glossary["InvalidPasscode"])
+        emit('error', "InvalidPasscode")
 
 
 @socketio.on('disconnect')
@@ -320,23 +320,23 @@ def handle_connect(username: str) -> None:
     sessid = request.sid
     # Check if the username is already taken
     if game.running:
-        emit('error', glossary["GameAlreadyRunning"])
+        emit('error', "GameAlreadyRunning")
         return
     if any(c.username == username for c in client_list):
-        emit('error', glossary["UsernameAlreadyTaken"])
+        emit('error', "UsernameAlreadyTaken")
         return
     elif any(c.sid == sessid for c in client_list):
-        emit('error', glossary["UserAlreadyConnected"])
+        emit('error', "UserAlreadyConnected")
         return
     if len(username) > 40 or len(username) < 1:
-        emit('error', glossary["InvalidUsername"])
+        emit('error', "InvalidUsername")
         return
 
     # Create a new client session
     session = Client(sid=sessid, username=username, connections=client_list)
     for board in board_list:
         emit('newUser', {'username': username, 'sid': sessid}, to=board.sid)
-
+        
 ## ----------------- SocketIO Game Events ----------------- ##
 
 
@@ -347,14 +347,14 @@ def handle_start_game(code: str) -> None:
     if len(client_list) == 0:
         return
     elif game.running:
-        emit('error', glossary["GameAlreadyRunning"])
+        emit('error', "GameAlreadyRunning")
         return
     elif code == passcode:
         for client in client_list + board_list + host_list:
             emit('startGame', to=client.sid)
         game.running = True
     else:
-        emit('error', glossary["InvalidPasscode"])
+        emit('error', "InvalidPasscode")
 
 
 @socketio.on("nextQuestion")
@@ -364,7 +364,7 @@ def handle_next_question(res) -> None:
     settings = get_settings()
     code, question_number = res["passcode"], res["question_count"]
     if len(client_list) == 0:
-        emit('error', glossary["NoUsersConnected"])
+        emit('error', "NoUsersConnected")
         return
     if code == passcode:
         if question_number == len(config["questions"]):
@@ -402,15 +402,10 @@ def handle_next_question(res) -> None:
             data = {
                 "question_correct_answer": question["correct_answers"]
             }
-            if settings["randomOrder"]:
-                config["questions"][config["questions"].index(question)] = None
-            for client in client_list:
-                client.evalScore()
-            for client in client_list+board_list+host_list:
-                emit("questionEnd", data, to=client.sid)
+            
             
     else:
-        emit('error', glossary["InvalidPasscode"])
+        emit('error', "InvalidPasscode")
 
 
 @socketio.on('showLeaderboard')
@@ -423,7 +418,7 @@ def handle_show_leaderboard(code: str) -> None:
             emit('leaderboard', {
                 "promoted_users": promoted_users, "game_lead": game_lead}, to=client.sid)
     else:
-        emit('error', glossary["InvalidPasscode"])
+        emit('error', "InvalidPasscode")
 
 
 @socketio.on('sendAnswer')
@@ -459,7 +454,7 @@ def handle_edit_question(message: dict) -> None:
         tree.write('quiz.khn')
         # emit('edit', message)
     else:
-        emit('error', glossary["InvalidPasscode"])
+        emit('error', "InvalidPasscode")
 
 
 @socketio.on("getQuestions")
@@ -470,7 +465,7 @@ def handle_get_questions(res) -> None:
     if res.get("passcode") == passcode:
         emit("questions", {"questions": config["questions"]})
     else:
-        emit("error", glossary["InvalidPasscode"])
+        emit("error", "InvalidPasscode")
 
 
 @socketio.on("getSettings")
