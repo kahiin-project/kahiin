@@ -252,40 +252,30 @@ def handle_board_connect(code: str) -> None:
 
     :param code: Passcode provided by the board
     """
-    glossary = get_glossary()
     passcode = get_passcode()
     if game.running:
-        emit('error', glossary["GameAlreadyRunning"])
+        emit('error', "GameAlreadyRunning")
         return
     if code == passcode:
-        session = Board(sid=request.sid, connections=board_list)
-        # Notify all client_list about the new board connection
+        Board(sid=request.sid, connections=board_list)
+        emit('boardConnected')
+        qr_img = qrcodemaker.make(f"http://{request.host}/board")
+        buffered = BytesIO()
+        qr_img.save(buffered, format="JPEG")
+        qr_img_str = b64encode(buffered.getvalue()).decode()
+        emit('qrcode', f"data:image/jpeg;base64,{qr_img_str}", to=request.sid)
         for c in client_list:
             emit('newUser', {'username': c.username, 'sid': c.sid})
     else:
-        emit('error', glossary["InvalidPasscode"])
-
-    qrcode = qrcodemaker.QRCode(
-        version=1,
-        box_size=7,
-        border=4,
-    )
-    qrcode.add_data(f"http://{request.host}/board")
-    qrcode.make(fit=True)
-    qrcode_img = qrcode.make_image(fill_color="black", back_color="white")
-    buffered = BytesIO()
-    qrcode_img.save(buffered, format="JPEG")
-    qrcode_img_str = b64encode(buffered.getvalue()).decode()
-    emit('qrcode', f"data:image/jpeg;base64,{qrcode_img_str}", to=request.sid)
+        emit('error', "InvalidPasscode")
 
 
 @socketio.on('hostConnect')
 def handle_host_connect(code: str) -> None:
     passcode = get_passcode()
-    glossary = get_glossary()
     if code == passcode:
-        session = Host(sid=request.sid, connections=host_list)
-
+        Host(sid=request.sid, connections=host_list)
+        emit('hostConnected')
     else:
         emit('error', "InvalidPasscode")
 
@@ -293,13 +283,11 @@ def handle_host_connect(code: str) -> None:
 @socketio.on('disconnect')
 def handle_disconnect() -> None:
     """Handle client disconnection events."""
-    passcode = get_passcode()
     sessid = request.sid
     for client in client_list:
         if client.sid == sessid:
             for board in board_list:
-                emit('rmUser', {'username': client.username,
-                     'passcode': passcode}, to=board.sid)
+                emit('rmUser', {'username': client.username}, to=board.sid)
 
             client_list.remove(client)  # Remove the client
 
@@ -316,27 +304,36 @@ def handle_connect(username: str) -> None:
 
     :param username: Username provided by the new user
     """
-    glossary = get_glossary()
     sessid = request.sid
     # Check if the username is already taken
     if game.running:
         emit('error', "GameAlreadyRunning")
-        return
-    if any(c.username == username for c in client_list):
+    elif any(c.username == username for c in client_list):
         emit('error', "UsernameAlreadyTaken")
-        return
     elif any(c.sid == sessid for c in client_list):
         emit('error', "UserAlreadyConnected")
-        return
-    if len(username) > 40 or len(username) < 1:
+    elif len(username) > 40 or len(username) < 1:
         emit('error', "InvalidUsername")
-        return
-
-    # Create a new client session
-    session = Client(sid=sessid, username=username, connections=client_list)
-    for board in board_list:
-        emit('newUser', {'username': username, 'sid': sessid}, to=board.sid)
-        
+    else:
+        Client(sid=sessid, username=username, connections=client_list)
+        emit('guestConnected')
+        for board in board_list:
+            emit('newUser', {'username': username, 'sid': sessid}, to=board.sid)
+            
+@socketio.on('kickPlayer')
+def handle_kick_player(res) -> None:
+    passcode = get_passcode()
+    if res["passcode"] == passcode:
+        for client in client_list:
+            if client.username == res["username"]:
+                client_list.remove(client)
+                emit('error','Kicked', to=client.sid)
+                for board in board_list:
+                    emit('rmUser', {'username': client.username}, to=board.sid)
+                return
+        emit('error', "UserNotFound")
+    else:
+        emit('error', 'InvalidPasscode')
 
 ## ----------------- SocketIO Game Events ----------------- ##
 
@@ -344,7 +341,6 @@ def handle_connect(username: str) -> None:
 @socketio.on('startSession')
 def handle_start_game(code: str) -> None:
     passcode = get_passcode()
-    glossary = get_glossary()
     if len(client_list) == 0:
         return
     elif game.running:
@@ -361,7 +357,6 @@ def handle_start_game(code: str) -> None:
 @socketio.on("nextQuestion")
 def handle_next_question(res) -> None:
     passcode = get_passcode()
-    glossary = get_glossary()
     settings = get_settings()
     code, question_number = res["passcode"], res["question_count"]
     if len(client_list) == 0:
@@ -416,7 +411,6 @@ def handle_next_question(res) -> None:
 @socketio.on('showLeaderboard')
 def handle_show_leaderboard(code: str) -> None:
     passcode = get_passcode()
-    glossary = get_glossary()
     if code == passcode:
         game_lead, promoted_users = game.display()
         for client in board_list:
@@ -434,10 +428,12 @@ def handle_answer(res) -> None:
         if client.sid == sessid:
             client.time_end = time.time()
             client.user_answer = user_answer
-            
-    if get_settings()["endOnAllAnswered"]:
-        if all(client.user_answer for client in client_list):
-            sleep_manager.stop()
+            if get_settings()["endOnAllAnswered"]:
+                if all(client.user_answer for client in client_list):
+                    sleep_manager.stop()
+            return
+    
+    emit('error' , "UserNotFound")
 
 ## ----------------- SocketIO Configuration Events ----------------- ##
 
@@ -450,7 +446,6 @@ def handle_edit_question(message: dict) -> None:
     :param message: Dictionary containing the key, value, and passcode
     """
     passcode = get_passcode()
-    glossary = get_glossary()
     if message['passcode'] == passcode:
         for question in root.findall('question'):
             if question.find('title').text == message['key']:
@@ -466,7 +461,6 @@ def handle_edit_question(message: dict) -> None:
 def handle_get_questions(res) -> None:
     """Handle requests for the list of questions."""
     passcode = get_passcode()
-    glossary = get_glossary()
     if res.get("passcode") == passcode:
         emit("questions", {"questions": config["questions"]})
     else:
@@ -507,11 +501,10 @@ def handle_set_settings(res) -> None:
         with open("settings.json", "w") as f:
             json.dump(settings, f)
 
-        glossary = get_glossary()
         for client in client_list+board_list+host_list:
             emit("settings", settings, to=client.sid)
     else:
-        emit("error", glossary["InvalidPasscode"])
+        emit("error", "InvalidPasscode")
 
 
 if __name__ == '__main__':

@@ -4,7 +4,6 @@ const socket = io();
 var question_count = 0;
 var passcode = "";
 var glossary = {};
-let inSettingsTab = false;
 
 // ---------------------- Functions -------------------------
 
@@ -15,9 +14,6 @@ function hashSHA256(message) {
 
 function submitPasscode() {
     passcode = hashSHA256(document.getElementById("passcode").value);
-    document.getElementById("form").style.display = "none";
-    document.getElementById("start_game").style.display = "block";
-    document.getElementById("nav").style.display = "block";
     socket.emit("hostConnect", passcode);
 }
 
@@ -41,6 +37,13 @@ function showLeaderboard() {
   socket.emit("showLeaderboard", passcode);
 }
 
+function kickPlayer() {
+  playerName = document.getElementById("kick_player_name").value;
+  socket.emit("kickPlayer", {passcode : passcode, username : playerName});
+  document.getElementById("kick_player_name").value = "";
+  
+}
+
 function applyNewPassword() {
   if(document.getElementById('new_password').value == document.getElementById('repeat_new_password').value) {
     socket.emit('setSettings', {passcode: passcode, settings: {adminPassword: hashSHA256(document.getElementById('new_password').value)}});
@@ -50,40 +53,45 @@ function applyNewPassword() {
   alert(glossary["PasswordChanged"]);
 }
 
+function changeLanguage() {
+  socket.emit('setSettings', {passcode: passcode, settings: {language: document.getElementById('language').value}}); location.reload();
+}
+
+function editSettingsButton(setting) {
+  socket.emit('setSettings', {passcode
+    , settings: {[setting]: document.getElementById(`${setting}Button`).innerHTML != "ON"}});
+}
+
 function navigate(index){
   for(let i = 0; i < 5; i++){
     document.getElementById(`nav_button_${i}`).style.borderLeft = "none";
   }
   document.getElementById(`nav_button_${index}`).style.borderLeft = "solid #494949 5px";
-  document.getElementById("nav_content").innerHTML = ``;
-  document.getElementById("in_game_div").style.display = "none";
-  inSettingsTab = false;
+  document.getElementById("play_div").style.display = "none";
+  document.getElementById("settings_div").style.display = "none";
   switch (index) {
     case 0:
-      document.getElementById("in_game_div").style.display = "block";
-      socket.emit("getSettings", "");
+      document.getElementById("play_div").style.display = "block";
+      document.getElementById("start_game").style.display = "block";
+      document.getElementById("kick_player_name").style.display = "block";
+      document.getElementById("kick_player_button").style.display = "block";
       break;
     case 1:
-      document.getElementById("nav_content").innerHTML = `
-        
-      `;
-      socket.emit("getSettings", "");
+      // document.getElementById("settings_div").innerHTML = `
+      // `;
       break;
     case 2:
-      document.getElementById("nav_content").innerHTML = `
-        <h1>Kahiin DB</h1>
-      `;
-      socket.emit("getSettings", "");
+      // document.getElementById("settings_div").innerHTML = `
+      //   <h1>Kahiin DB</h1>
+      // `;
       break;
     case 3:
-      inSettingsTab = true;
-      socket.emit("getSettings", passcode);
-      break;
+      document.getElementById("settings_div").style.display = "block";
+      break
     case 4:
-      document.getElementById("nav_content").innerHTML = `
-        <h1>${glossary["Account"]}</h1>
-      `;
-      socket.emit("getSettings", "");
+      // document.getElementById("settings_div").innerHTML = `
+      //   <h1>${glossary["Account"]}</h1>
+      // `;
       break;
     default:
       console.log("Invalid index incoming.");
@@ -121,31 +129,20 @@ socket.on("language", (res) => {
 });
 
 socket.on("settings", (res) => {
-  if(inSettingsTab){
-    document.getElementById("nav_content").innerHTML = `
-      <h1>${glossary["Settings"]}</h1>
-      <h2>${glossary["Language"]}</h2>
-      <select id="language" onchange="socket.emit('setSettings', {passcode: '${passcode}', settings: {language: document.getElementById('language').value}}); location.reload();">
-        <option value="en" ${res.language == "en" ? "selected" : ""}>🇬🇧 English</option>
-        <option value="fr" ${res.language == "fr" ? "selected" : ""}>🇫🇷 Français</option>
-        <option value="es" ${res.language == "es" ? "selected" : ""}>🇪🇸 Español</option>
-        <option value="it" ${res.language == "it" ? "selected" : ""}>🇮🇹 Italiano</option>
-        <option value="de" ${res.language == "de" ? "selected" : ""}>🇩🇪 Deutsch</option>
-      </select>
-      <p style="margin-left: 50px; color: gray;">${glossary["ChangeLanguageWillRefresh"]}</p>
-      <h2>${glossary["DyslexicMode"]}</h2>
-      ${res.dyslexicMode ? `<button class="on" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: false}});">ON</button>` : `<button class="off" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {dyslexicMode: true}});">OFF</button>`}
-      <h2>${glossary["RandomOrder"]}</h2>
-      ${res.randomOrder ? `<button class="on" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {randomOrder: false}});">ON</button>` : `<button class="off" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {randomOrder: true}});">OFF</button>`}
-      <h2>${glossary["EndOnAllAnswered"]}</h2>
-      ${res.endOnAllAnswered ? `<button class="on" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {endOnAllAnswered: false}});">ON</button>` : `<button class="off" onclick="socket.emit('setSettings', {passcode: '${passcode}', settings: {endOnAllAnswered: true}});">OFF</button>`}
-      <h2>${glossary["AdminPassword"]}</h2>
-      <input type="password" id="new_password" placeholder="New Password">
-      <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
-      <button class="apply-button" onclick="applyNewPassword()">APPLY</button>
-      <div style="height: 50px"></div>
-    `;
-  }
+  document.getElementById("language").value = "fr" 
+  dyslexicModeButton = document.getElementById("dyslexicModeButton");
+  dyslexicModeButton.className = res.dyslexicMode ? "on" : "off";
+  dyslexicModeButton.innerHTML = res.dyslexicMode ? "ON" : "OFF";
+
+  randomOrderButton = document.getElementById("randomOrderButton");
+  randomOrderButton.className = res.randomOrder ? "on" : "off";
+  randomOrderButton.innerHTML = res.randomOrder ? "ON" : "OFF";
+
+  endOnAllAnsweredButton = document.getElementById("endOnAllAnsweredButton");
+  endOnAllAnsweredButton.className = res.endOnAllAnswered ? "on" : "off";
+  endOnAllAnsweredButton.innerHTML = res.endOnAllAnswered ? "ON" : "OFF";
+
+  
   const elements = document.querySelectorAll('*');
   elements.forEach(element => {
     if (res.dyslexicMode) {
@@ -156,6 +153,10 @@ socket.on("settings", (res) => {
   });
 });
 
+socket.on("hostConnected", (res) => {
+  document.getElementById("form").style.display = "none";
+  document.getElementById("nav").style.display = "block";
+});
 // ---------------------- Socket.io Game -------------------------
 
 socket.on("questionEnd", (res) => {
