@@ -9,10 +9,6 @@ function submitUsername() {
   const Username = document.getElementById("username").value;
   if (40 >= Username.length >= 1) {
     socket.emit("guestConnect", Username);
-
-    document.getElementById("form").style.display = "none";
-    document.getElementById("loader").style.display = "block";
-    document.getElementById("loader-text").style.display = "block";
   } else {
     alert(glossary["InvalidUsername"]);
   }
@@ -53,10 +49,17 @@ function sendMCQ() {
 // ---------------------- Socket.io main -------------------------
 
 socket.on("error", (res) => {
-  alert(glossary[res]);
-  document.getElementById("form").style.display = "block";
-  document.getElementById("loader").style.display = "none";
-  document.getElementById("loader-text").style.display = "none";
+  if (res=="Kicked") {
+    alert(glossary[res]);
+    setTimeout(() => {
+    }, 2000);
+    location.reload();
+  } else {
+    alert(glossary[res]);
+    document.getElementById("form").style.display = "block";
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("loader-text").style.display = "none";
+    }
 });
 
 socket.on("settings", (res) => {
@@ -83,6 +86,11 @@ socket.on("language", (res) => {
   document.getElementById("username").placeholder = glossary["Username"];
 });
 
+socket.on("guestConnected", (res) => {
+  document.getElementById("form").style.display = "none";
+  document.getElementById("loader").style.display = "block";
+  document.getElementById("loader-text").style.display = "block";
+});
 // ---------------------- Socket.io Game -------------------------
 
 socket.on("questionStart", (res) => {

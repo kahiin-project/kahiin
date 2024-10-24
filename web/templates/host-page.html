@@ -44,10 +44,30 @@
         ${glossary["Account"]}
       </button>
     </nav>
-    <div id="nav_content">
-
+    <div id="settings_div" class="nav_content" style="display: none;" >
+      <h1>${glossary["Settings"]}</h1>
+      <h2>${glossary["Language"]}</h2>
+      <select id="language" onchange=changeLanguage()>
+        <option value="en">🇬🇧 English</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="de">🇩🇪 Deutsch</option>
+      </select>
+      <p style="margin-left: 50px; color: gray;">${glossary["ChangeLanguageWillRefresh"]}</p>
+      <h2>${glossary["DyslexicMode"]}</h2>
+      <button class="" id='dyslexicModeButton' onclick="editSettingsButton('dyslexicMode')" ></button>
+      <h2>${glossary["RandomOrder"]}</h2>
+      <button class="" id='randomOrderButton' onclick="editSettingsButton('randomOrder')"></button>}
+      <h2>${glossary["EndOnAllAnswered"]}</h2>
+      <button class="" id='endOnAllAnsweredButton' onclick="editSettingsButton('endOnAllAnswered')"></button>}
+      <h2>${glossary["AdminPassword"]}</h2>
+      <input type="password" id="new_password" placeholder="New Password">
+      <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
+      <button class="apply-button" onclick="applyNewPassword()">APPLY</button>
+      <div style="height: 50px"></div>
     </div>
-    <div id="in_game_div">
+    <div id="play_div" style="display: none;" class="nav_content">
       <button id="start_game" style="display: none" onclick="startSession()">
         Demarrer le jeu
       </button>
@@ -56,6 +76,10 @@
       </button>
       <button id="show_leaderboard" style="display: none" onclick="showLeaderboard()">
         Afficher le classement
+      </button>
+      <input type="text" id="kick_player_name" style="display: none" placeholder='Jean Mark' />
+      <button id="kick_player_button" style="display: none" onclick="kickPlayer()">
+        Expulse le joueur
       </button>
     </div>
   </body>

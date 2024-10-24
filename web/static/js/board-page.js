@@ -19,10 +19,6 @@ function hashSHA256(message) {
 function submitPasscode() {
   const passcode = hashSHA256(document.getElementById("passcode").value);
   socket.emit("boardConnect", passcode);
-  document.getElementById("form").style.display = "none";
-  document.getElementById("list").style.display = "block";
-  document.getElementById("qrcode").style.display = "block";
-  document.getElementById("scan").style.display = "block";
 }
 
 function Count(duration, seconds) {
@@ -35,10 +31,6 @@ function Count(duration, seconds) {
       Count(duration, seconds - 1);
     }, 1000);
   }
-}
-
-function Display() {
-
 }
 
 // ---------------------- Socket.io  Main-------------------------
@@ -86,6 +78,12 @@ socket.on("qrcode", (res) => {
   document.getElementById("qrcode").src = res;
 });
 
+socket.on("boardConnected", (res) => {
+  document.getElementById("form").style.display = "none";
+  document.getElementById("list").style.display = "block";
+  document.getElementById("qrcode").style.display = "block";
+  document.getElementById("scan").style.display = "block";
+});
 // ---------------------- Socket.io Game -------------------------
 
 socket.on("newUser", (res) => {
@@ -98,17 +96,16 @@ socket.on("newUser", (res) => {
 });
 
 socket.on("rmUser", (res) => {
-  if (res.passcode == passcode) {
-    const usersList = document.getElementById("users");
-    const items = usersList.getElementsByTagName("li");
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].textContent === res.username) {
-        usersList.removeChild(items[i]);
-        break;
+  const usersList = document.getElementById("users");
+  const items = usersList.getElementsByTagName("li");
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].textContent === res.username) {
+      usersList.removeChild(items[i]);
+      break;
       }
     }
   }
-});
+);
 
 socket.on("startGame", (res) => {
   document.getElementById("timer").style.display = "block";

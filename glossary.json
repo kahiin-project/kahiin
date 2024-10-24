@@ -30,7 +30,9 @@
         "Username": "Nom d'utilisateur",
         "InvalidUsername": "Nom d'utilisateur invalide",
         "RandomOrder": "Ordre aléatoire des questions",
-        "EndOnAllAnswered": "Terminer le jeu lorsque toutes les questions ont été répondues"
+        "EndOnAllAnswered": "Terminer le jeu lorsque toutes les questions ont été répondues",
+        "UserNotFound": "Utilisateur introuvable",
+        "Kicked": "Vous avez été expulsé de la partie"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -63,7 +65,9 @@
         "Username": "Username",
         "InvalidUsername": "Invalid username",
         "RandomOrder": "Random order of questions",
-        "EndOnAllAnswered": "End game when all questions have been answered"
+        "EndOnAllAnswered": "End game when all questions have been answered",
+        "UserNotFound": "User not found",
+        "Kicked": "You have been kicked from the game"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -96,7 +100,9 @@
         "Username": "Nombre de usuario",
         "InvalidUsername": "Nombre de usuario inválido",
         "RandomOrder": "Orden aleatorio de preguntas",
-        "EndOnAllAnswered": "Finalizar el juego cuando todas las preguntas hayan sido respondidas"
+        "EndOnAllAnswered": "Finalizar el juego cuando todas las preguntas hayan sido respondidas",
+        "UserNotFound": "Usuario no encontrado",
+        "Kicked": "Has sido expulsado del juego"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -129,7 +135,9 @@
         "Username": "Nome utente",
         "InvalidUsername": "Nome utente non valido",
         "RandomOrder": "Ordine casuale delle domande",
-        "EndOnAllAnswered": "Termina il gioco quando tutte le domande sono state risposte"
+        "EndOnAllAnswered": "Termina il gioco quando tutte le domande sono state risposte",
+        "UserNotFound": "Utente non trovato",
+        "Kicked": "Sei stato cacciato dal gioco"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -162,6 +170,8 @@
         "Username": "Benutzername",
         "InvalidUsername": "Ungültiger Benutzername",
         "RandomOrder": "Zufällige Reihenfolge der Fragen",
-        "EndOnAllAnswered": "Spiel beenden, wenn alle Fragen beantwortet wurden"
+        "EndOnAllAnswered": "Spiel beenden, wenn alle Fragen beantwortet wurden",
+        "UserNotFound": "Benutzer nicht gefunden",
+        "Kicked": "Sie wurden aus dem Spiel geworfen"
     }
 }

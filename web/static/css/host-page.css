@@ -102,7 +102,7 @@ nav button img{
     width: 40px;
 }
 
-#nav_content{
+.nav_content{
     position: absolute;
     left: 300px;
     right: 0;
@@ -111,18 +111,18 @@ nav button img{
     z-index: -1;
     overflow-y: scroll;
 }
-#nav_content h1{
+.nav_content h1{
     font-size: 50px;
     padding-left: 50px;
     margin-top: 50px;
 }
-#nav_content h2{
+.nav_content h2{
     font-size: 30px;
     padding-left: 50px;
     margin-top: 50px;
     font-weight: normal;
 }
-#nav_content select, #nav_content button, #nav_content input{
+.nav_content select, .nav_content button, .nav_content input{
     margin-left: 50px;
     width: calc(100% - 100px);
     font-size: 20px;
@@ -134,26 +134,26 @@ nav button img{
     border-radius: 5px;
     cursor: pointer;
 }
-#nav_content select:hover, #nav_content button:hover{
+.nav_content select:hover, .nav_content button:hover{
     background: #e8e8e8;
 }
-#nav_content button{
+.nav_content button{
     border: none;
     color: white;
 }
 /* ON */
-#nav_content button.on{
+.nav_content button.on{
     background: #49cf38;
     padding: 0;
 }
-#nav_content button.on:hover{
+.nav_content button.on:hover{
     background: #47c037;
 }
 /* OFF */
-#nav_content button.off{
+.nav_content button.off{
     background: #cf3838;
 }
-#nav_content button.off:hover{
+.nav_content button.off:hover{
     background: #c03737;
 }
 
@@ -166,18 +166,18 @@ nav button img{
     padding-left: 10px;
 }
 
-#nav_content input{
+.nav_content input{
     margin-bottom: 5px;
     cursor: text;
     width: calc(100% - 115px);
 }
-#nav_content .apply-button{
+.nav_content .apply-button{
     background: #387fcf;
 }
-#nav_content .apply-button:hover{
+.nav_content .apply-button:hover{
     background: #3473bb;
 }
-#nav_content .apply-button.dyslexic{
+.nav_content .apply-button.dyslexic{
     padding: 0;
     padding-left: 10px;
 }
