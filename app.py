@@ -207,6 +207,20 @@ class Game:
 
 game = Game()
 
+## ----------------- Functions ----------------- ##
+
+def verification_wrapper(func):
+    def wrap(*args, **kwargs):
+        real_passcode = get_passcode()
+        guessed_passcode = args[0] if type(args[0]) == str else args[0]["passcode"]
+        if guessed_passcode == real_passcode:
+            return func(*args, **kwargs)
+        else:
+            emit('error', "InvalidPasscode")
+            return    
+    return wrap
+
+
 ## ----------------- Routes ----------------- ##
 
 
@@ -246,38 +260,32 @@ def handle_connect() -> None:
 
 
 @socketio.on('boardConnect')
-def handle_board_connect(code: str) -> None:
+@verification_wrapper
+def handle_board_connect(passcode: str) -> None:
     """
     Handle board connection requests.
 
     :param code: Passcode provided by the board
     """
-    passcode = get_passcode()
     if game.running:
         emit('error', "GameAlreadyRunning")
         return
-    if code == passcode:
-        Board(sid=request.sid, connections=board_list)
-        emit('boardConnected')
-        qr_img = qrcodemaker.make(f"http://{request.host}/board")
-        buffered = BytesIO()
-        qr_img.save(buffered, format="JPEG")
-        qr_img_str = b64encode(buffered.getvalue()).decode()
-        emit('qrcode', f"data:image/jpeg;base64,{qr_img_str}", to=request.sid)
-        for c in client_list:
-            emit('newUser', {'username': c.username, 'sid': c.sid})
-    else:
-        emit('error', "InvalidPasscode")
+    Board(sid=request.sid, connections=board_list)
+    emit('boardConnected')
+    qr_img = qrcodemaker.make(f"http://{request.host}/board")
+    buffered = BytesIO()
+    qr_img.save(buffered, format="JPEG")
+    qr_img_str = b64encode(buffered.getvalue()).decode()
+    emit('qrcode', f"data:image/jpeg;base64,{qr_img_str}", to=request.sid)
+    for c in client_list:
+        emit('newUser', {'username': c.username, 'sid': c.sid})
 
 
 @socketio.on('hostConnect')
-def handle_host_connect(code: str) -> None:
-    passcode = get_passcode()
-    if code == passcode:
-        Host(sid=request.sid, connections=host_list)
-        emit('hostConnected')
-    else:
-        emit('error', "InvalidPasscode")
+@verification_wrapper
+def handle_host_connect(passcode: str) -> None:
+    Host(sid=request.sid, connections=host_list)
+    emit('hostConnected')
 
 
 @socketio.on('disconnect')
@@ -321,103 +329,92 @@ def handle_connect(username: str) -> None:
             emit('newUser', {'username': username, 'sid': sessid}, to=board.sid)
             
 @socketio.on('kickPlayer')
+@verification_wrapper
 def handle_kick_player(res) -> None:
-    passcode = get_passcode()
-    if res["passcode"] == passcode:
-        for client in client_list:
-            if client.username == res["username"]:
-                client_list.remove(client)
-                emit('error','Kicked', to=client.sid)
-                for board in board_list:
-                    emit('rmUser', {'username': client.username}, to=board.sid)
-                return
-        emit('error', "UserNotFound")
-    else:
-        emit('error', 'InvalidPasscode')
+    for client in client_list:
+        if client.username == res["username"]:
+            client_list.remove(client)
+            emit('error','Kicked', to=client.sid)
+            for board in board_list:
+                emit('rmUser', {'username': client.username}, to=board.sid)
+            return
+    emit('error', "UserNotFound")
 
 ## ----------------- SocketIO Game Events ----------------- ##
 
-
 @socketio.on('startSession')
+@verification_wrapper
 def handle_start_game(code: str) -> None:
-    passcode = get_passcode()
     if len(client_list) == 0:
         return
     elif game.running:
         emit('error', "GameAlreadyRunning")
         return
-    elif code == passcode:
-        for client in client_list + board_list + host_list:
-            emit('startGame', to=client.sid)
-        game.running = True
-    else:
-        emit('error', "InvalidPasscode")
+    for client in client_list + board_list + host_list:
+        emit('startGame', to=client.sid)
+    game.running = True
 
 
 @socketio.on("nextQuestion")
+@verification_wrapper
 def handle_next_question(res) -> None:
-    passcode = get_passcode()
     settings = get_settings()
-    code, question_number = res["passcode"], res["question_count"]
+    question_number = res["question_count"]
     if len(client_list) == 0:
         emit('error', "NoUsersConnected")
         return
-    if code == passcode:
-        if question_number == len(config["questions"]):
-            data = {
-                "game_lead": game.display()[0],
-            }
-            for client in client_list+board_list+host_list:
-                emit("gameEnd", data, to=client.sid)
-            game.reset()
-            return
-        else:
-            question_not_answered = list(filter(lambda q: q is not None, config["questions"]))
-            question = random.choice(question_not_answered) if settings["randomOrder"] else config["questions"][question_number]
-            data = {
-                "question_title": question["title"],
-                "question_type": question["type"],
-                "question_possible_answers": question["shown_answers"],
-                "question_duration": question["duration"],
-                "question_number": (len(config["questions"]) - len(question_not_answered) + 1) if settings["randomOrder"] else config["questions"].index(question) + 1,
-                "question_count": len(config["questions"]),
-            }
-            for client in client_list + board_list + host_list:
-                emit("questionStart", data, to=client.sid)
-            for client in client_list:
-                client.time_begin = time.time()
-                client.expected_response = question["correct_answers"]
-                client.question_type = question["type"]
-                client.timer_time = question["duration"]
-            # 2sec for progress bar to appear and first delay,
-            # question["duration"] seconds for the game,
-            sleep_manager.reset()
-            sleep_thread = threading.Thread(target=sleep_manager.sleep, args=(2 + question["duration"],))
-            sleep_thread.start()
-            sleep_thread.join()
-            data = {
-                "question_correct_answer": question["correct_answers"]
-            }
-            if settings["randomOrder"]:
-                config["questions"][config["questions"].index(question)] = None
-            for client in client_list:
-                client.evalScore()
-            for client in client_list+board_list+host_list:
-                emit("questionEnd", data, to=client.sid)
+    if question_number == len(config["questions"]):
+        data = {
+            "game_lead": game.display()[0],
+        }
+        for client in client_list+board_list+host_list:
+            emit("gameEnd", data, to=client.sid)
+        game.reset()
+        return
     else:
-        emit('error', "InvalidPasscode")
+        question_not_answered = list(filter(lambda q: q is not None, config["questions"]))
+        question = random.choice(question_not_answered) if settings["randomOrder"] else config["questions"][question_number]
+        data = {
+            "question_title": question["title"],
+            "question_type": question["type"],
+            "question_possible_answers": question["shown_answers"],
+            "question_duration": question["duration"],
+            "question_number": (len(config["questions"]) - len(question_not_answered) + 1) if settings["randomOrder"] else config["questions"].index(question) + 1,
+            "question_count": len(config["questions"]),
+        }
+        for client in client_list + board_list + host_list:
+            emit("questionStart", data, to=client.sid)
+        for client in client_list:
+            client.time_begin = time.time()
+            client.expected_response = question["correct_answers"]
+            client.question_type = question["type"]
+            client.timer_time = question["duration"]
+        # 2sec for progress bar to appear and first delay,
+        # question["duration"] seconds for the game,
+        sleep_manager.reset()
+        sleep_thread = threading.Thread(target=sleep_manager.sleep, args=(2 + question["duration"],))
+        sleep_thread.start()
+        sleep_thread.join()
+        data = {
+            "question_correct_answer": question["correct_answers"]
+        }
+        if settings["randomOrder"]:
+            config["questions"][config["questions"].index(question)] = None
+        for client in client_list:
+            client.evalScore()
+        for client in client_list+board_list+host_list:
+            emit("questionEnd", data, to=client.sid)
+
 
 
 @socketio.on('showLeaderboard')
+@verification_wrapper
 def handle_show_leaderboard(code: str) -> None:
-    passcode = get_passcode()
-    if code == passcode:
-        game_lead, promoted_users = game.display()
-        for client in board_list:
-            emit('leaderboard', {
-                "promoted_users": promoted_users, "game_lead": game_lead}, to=client.sid)
-    else:
-        emit('error', "InvalidPasscode")
+    game_lead, promoted_users = game.display()
+    for client in board_list:
+        emit('leaderboard', {
+            "promoted_users": promoted_users, "game_lead": game_lead}, to=client.sid)
+
 
 
 @socketio.on('sendAnswer')
@@ -439,39 +436,33 @@ def handle_answer(res) -> None:
 
 
 @socketio.on('editQuestion')
-def handle_edit_question(message: dict) -> None:
+@verification_wrapper
+def handle_edit_question(res) -> None:
     """
     Handle configuration edit requests.
 
     :param message: Dictionary containing the key, value, and passcode
     """
-    passcode = get_passcode()
-    if message['passcode'] == passcode:
-        for question in root.findall('question'):
-            if question.find('title').text == message['key']:
-                question.find('title').text = message['value']
-                break
-        tree.write('quiz.khn')
-        # emit('edit', message)
-    else:
-        emit('error', "InvalidPasscode")
+    for question in root.findall('question'):
+        if question.find('title').text == message['key']:
+            question.find('title').text = message['value']
+            break
+    tree.write('quiz.khn')
 
 
 @socketio.on("getQuestions")
+@verification_wrapper
 def handle_get_questions(res) -> None:
     """Handle requests for the list of questions."""
-    passcode = get_passcode()
-    if res.get("passcode") == passcode:
-        emit("questions", {"questions": config["questions"]})
-    else:
-        emit("error", "InvalidPasscode")
+
+    emit("questions", {"questions": config["questions"]})
+
 
 
 @socketio.on("getSettings")
 def handle_get_settings(code: str) -> None:
     """Handle requests to get settings."""
-    passcode = get_passcode()
-    if passcode == code:
+    if get_passcode == code:
         emit("settings", get_settings())
     else:
         data = get_settings()
@@ -481,30 +472,28 @@ def handle_get_settings(code: str) -> None:
 
 
 @socketio.on("setSettings")
+@verification_wrapper
 def handle_set_settings(res) -> None:
     """Handle requests to set a specific setting."""
-    passcode = get_passcode()
-    if res.get("passcode") == passcode:
-        try:
-            with open("settings.json", "r") as f:
-                content = f.read().strip()
-                if content:
-                    settings = json.loads(content)
-                else:
-                    settings = {}
-        except FileNotFoundError:
-            settings = {}
+    try:
+        with open("settings.json", "r") as f:
+            content = f.read().strip()
+            if content:
+                settings = json.loads(content)
+            else:
+                settings = {}
+    except FileNotFoundError:
+        settings = {}
 
-        # Update the specific setting
-        settings.update(res["settings"])
+    # Update the specific setting
+    settings.update(res["settings"])
 
-        with open("settings.json", "w") as f:
-            json.dump(settings, f)
+    with open("settings.json", "w") as f:
+        json.dump(settings, f)
 
-        for client in client_list+board_list+host_list:
-            emit("settings", settings, to=client.sid)
-    else:
-        emit("error", "InvalidPasscode")
+    for client in client_list+board_list+host_list:
+        emit("settings", settings, to=client.sid)
+
 
 
 if __name__ == '__main__':
