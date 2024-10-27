@@ -123,6 +123,7 @@
   width: 400px;
   height: 400px;
   margin-left: calc(50% - 200px);
+  image-rendering: pixelated;
 }
 #scan{
   display: none;
