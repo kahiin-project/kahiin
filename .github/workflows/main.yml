@@ -37,7 +37,7 @@ jobs:
     - name: Clone source repository from GitHub
       if: github.event_name == 'push'
       run: |
-        git clone --mirror https://github.com/kahiin-project/kahinn.git github-repo
+        git clone --mirror https://github.com/kahiin-project/kahiin.git github-repo
 
     - name: Push to Codeberg repository
       if: github.event_name == 'push'
