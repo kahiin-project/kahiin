@@ -2,8 +2,6 @@ name: Sync Repositories
 
 
 on:
-  schedule:
-    - cron: '0 * * * *'
   push:
     branches:
       - main
@@ -20,20 +18,6 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-
-    - name: Clone source repository from Codeberg
-      if: github.event_name == 'schedule'
-      run: |
-        git clone --mirror https://codeberg.org/tristan-gscn/kahiin.git codeberg-repo
-
-    - name: Push to GitHub repository
-      if: github.event_name == 'schedule'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        cd codeberg-repo
-        git remote add github https://x-access-token:${GITHUB_TOKEN}@github.com/kahiin-project/kahiin.git
-        git push --mirror github
 
     - name: Clone source repository from GitHub
       if: github.event_name == 'push'
