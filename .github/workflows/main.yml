@@ -1,0 +1,50 @@
+name: Sync Repositories
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Git
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+    - name: Clone source repository from Codeberg
+      if: github.event_name == 'schedule'
+      run: |
+        git clone --mirror https://codeberg.org/tristan-gscn/kahiin.git codeberg-repo
+
+    - name: Push to GitHub repository
+      if: github.event_name == 'schedule'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        cd codeberg-repo
+        git remote add github https://x-access-token:${GITHUB_TOKEN}@github.com/kahiin-project/kahinn.git
+        git push --mirror github
+
+    - name: Clone source repository from GitHub
+      if: github.event_name == 'push'
+      run: |
+        git clone --mirror https://github.com/kahiin-project/kahinn.git github-repo
+
+    - name: Push to Codeberg repository
+      if: github.event_name == 'push'
+      env:
+        CODEBERG_USERNAME: ${{ secrets.CODEBERG_USERNAME }}
+        CODEBERG_PASSWORD: ${{ secrets.CODEBERG_PASSWORD }}
+      run: |
+        cd github-repo
+        git remote add codeberg https://${CODEBERG_USERNAME}:${CODEBERG_PASSWORD}@codeberg.org/tristan-gscn/kahiin.git
+        git push --mirror codeberg
