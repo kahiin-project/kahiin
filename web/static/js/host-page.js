@@ -5,7 +5,7 @@ var question_count = 0;
 var passcode = "";
 var glossary = {};
 
-// ---------------------- Functions -------------------------
+// ---------------------- Functions Main -------------------------
 
 function hashSHA256(message) {
   const hash = CryptoJS.SHA256(message);
@@ -17,6 +17,7 @@ function submitPasscode() {
     socket.emit("hostConnect", passcode);
 }
 
+// ---------------------- Functions Game -------------------------
 function startSession() {
   document.getElementById("start_game").style.display = "none";
   document.getElementById("next_question").style.display = "block";
@@ -44,6 +45,8 @@ function kickPlayer() {
   
 }
 
+// ---------------------- Functions Config -------------------------
+
 function applyNewPassword() {
   if(document.getElementById('new_password').value == document.getElementById('repeat_new_password').value) {
     socket.emit('setSettings', {passcode: passcode, settings: {adminPassword: hashSHA256(document.getElementById('new_password').value)}});
@@ -62,6 +65,14 @@ function editSettingsButton(setting) {
     , settings: {[setting]: document.getElementById(`${setting}Button`).innerHTML != "ON"}});
 }
 
+// ---------------------- Functions Create -------------------------
+function selectQuestionary(questionary_name) {
+  socket.emit("selectQuestionary", {passcode: passcode, questionary_name: questionary_name});
+  alert(glossary["QuestionarySelected"]);
+}
+
+
+// ---------------------- Functions Navigation -------------------------
 function navigate(index){
   for(let i = 0; i < 5; i++){
     document.getElementById(`nav_button_${i}`).style.borderLeft = "none";
@@ -69,16 +80,13 @@ function navigate(index){
   document.getElementById(`nav_button_${index}`).style.borderLeft = "solid #494949 5px";
   document.getElementById("play_div").style.display = "none";
   document.getElementById("settings_div").style.display = "none";
+  document.getElementById("create_div").style.display = "none";
   switch (index) {
     case 0:
       document.getElementById("play_div").style.display = "block";
-      document.getElementById("start_game").style.display = "block";
-      document.getElementById("kick_player_name").style.display = "block";
-      document.getElementById("kick_player_button").style.display = "block";
       break;
     case 1:
-      // document.getElementById("settings_div").innerHTML = `
-      // `;
+      document.getElementById("create_div").style.display = "block";
       break;
     case 2:
       // document.getElementById("settings_div").innerHTML = `
@@ -156,6 +164,7 @@ socket.on("settings", (res) => {
 socket.on("hostConnected", (res) => {
   document.getElementById("form").style.display = "none";
   document.getElementById("nav").style.display = "block";
+  socket.emit("listQuestionary", {passcode: passcode});
 });
 // ---------------------- Socket.io Game -------------------------
 
@@ -171,3 +180,14 @@ socket.on("gameEnd", (res) => {
   document.getElementById("start_game").style.display = "block";
 });
 
+// ---------------------- Socket.io Create -------------------------
+
+socket.on("ListOfQuestionary", (res) => {
+
+  const questionary_list = document.getElementById("questionary_list");
+  questionary_list.innerHTML = "";
+  res.questionaries.forEach(questionary => {
+    questionary_list.innerHTML += `<button onclick="selectQuestionary('${questionary}')" class="questionary">${questionary}</button>`;
+  }
+  );
+});

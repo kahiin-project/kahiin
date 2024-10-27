@@ -32,7 +32,8 @@
         "RandomOrder": "Ordre aléatoire des questions",
         "EndOnAllAnswered": "Terminer le jeu lorsque toutes les questions ont été répondues",
         "UserNotFound": "Utilisateur introuvable",
-        "Kicked": "Vous avez été expulsé de la partie"
+        "Kicked": "Vous avez été expulsé de la partie",
+        "QuestionarySelected": "Questionnaire sélectionné"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -67,7 +68,8 @@
         "RandomOrder": "Random order of questions",
         "EndOnAllAnswered": "End game when all questions have been answered",
         "UserNotFound": "User not found",
-        "Kicked": "You have been kicked from the game"
+        "Kicked": "You have been kicked from the game",
+        "QuestionarySelected": "Questionary selected"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -102,7 +104,8 @@
         "RandomOrder": "Orden aleatorio de preguntas",
         "EndOnAllAnswered": "Finalizar el juego cuando todas las preguntas hayan sido respondidas",
         "UserNotFound": "Usuario no encontrado",
-        "Kicked": "Has sido expulsado del juego"
+        "Kicked": "Has sido expulsado del juego",
+        "QuestionarySelected": "Cuestion de seleccion"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -137,7 +140,8 @@
         "RandomOrder": "Ordine casuale delle domande",
         "EndOnAllAnswered": "Termina il gioco quando tutte le domande sono state risposte",
         "UserNotFound": "Utente non trovato",
-        "Kicked": "Sei stato cacciato dal gioco"
+        "Kicked": "Sei stato cacciato dal gioco",
+        "QuestionarySelected": "Domanda selezionata"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -172,6 +176,7 @@
         "RandomOrder": "Zufällige Reihenfolge der Fragen",
         "EndOnAllAnswered": "Spiel beenden, wenn alle Fragen beantwortet wurden",
         "UserNotFound": "Benutzer nicht gefunden",
-        "Kicked": "Sie wurden aus dem Spiel geworfen"
+        "Kicked": "Sie wurden aus dem Spiel geworfen",
+        "QuestionarySelected": "Fragebogen ausgewählt"
     }
 }

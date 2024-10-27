@@ -44,6 +44,24 @@
         ${glossary["Account"]}
       </button>
     </nav>
+    <div id="play_div" style="display: none;" class="nav_content">
+      <button id="start_game" onclick="startSession()">
+        Demarrer le jeu
+      </button>
+      <button id="next_question" style="display: none;" onclick="nextQuestion()">
+        Prochaine question
+      </button>
+      <button id="show_leaderboard" style="display: none;" onclick="showLeaderboard()">
+        Afficher le classement
+      </button>
+      <input type="text" id="kick_player_name" placeholder='Jean Mark' />
+      <button id="kick_player_button" onclick="kickPlayer()">
+        Expulse le joueur
+      </button>
+    </div>
+    <div id="create_div" class="nav_content" style="display: none;">
+      <ul id="questionary_list"></ul>
+    </div>
     <div id="settings_div" class="nav_content" style="display: none;" >
       <h1>${glossary["Settings"]}</h1>
       <h2>${glossary["Language"]}</h2>
@@ -66,21 +84,6 @@
       <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
       <button class="apply-button" onclick="applyNewPassword()">APPLY</button>
       <div style="height: 50px"></div>
-    </div>
-    <div id="play_div" style="display: none;" class="nav_content">
-      <button id="start_game" style="display: none" onclick="startSession()">
-        Demarrer le jeu
-      </button>
-      <button id="next_question" style="display: none" onclick="nextQuestion()">
-        Prochaine question
-      </button>
-      <button id="show_leaderboard" style="display: none" onclick="showLeaderboard()">
-        Afficher le classement
-      </button>
-      <input type="text" id="kick_player_name" style="display: none" placeholder='Jean Mark' />
-      <button id="kick_player_button" style="display: none" onclick="kickPlayer()">
-        Expulse le joueur
-      </button>
     </div>
   </body>
 </html>
