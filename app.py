@@ -8,28 +8,7 @@ import xml.etree.ElementTree as ET
 from base64 import b64encode
 import random
 import threading
-# Passcode for authentication
-
-tree = ET.parse('quiz.khn')
-root = tree.getroot()
-config = {"questions": []}
-# Add each question to config
-for question in root.findall('question'):
-    title = question.find('title').text
-    duration = question.find('duration').text
-    question_type = question.find('type').text
-    shown_answers = [answer.text for answer in question.find(
-        'shown_answers').findall('answer')]
-    correct_answers = [answer.text for answer in question.find(
-        'correct_answers').findall('answer')]
-
-    config["questions"].append({
-        "title": title,
-        "shown_answers": shown_answers,
-        "correct_answers": correct_answers,
-        "duration": int(duration),
-        "type": question_type
-    })
+import os
 
 def get_settings():
     with open("settings.json", "r") as f:
@@ -55,6 +34,15 @@ app.template_folder = 'web/templates'
 
 ## ----------------- Class ----------------- ##
 
+class Questionary:
+    def __init__(self, root=None, tree=None) -> None:
+        self.root = root
+        self.tree = tree
+        self.questionary = {"questions": []}
+    
+    
+
+questionary = Questionary()
 class SleepManager:
     def __init__(self):
         self._stop_event = threading.Event()
@@ -187,8 +175,8 @@ class Game:
     def reset(self):
         self.previous_leaderboard = {}
         self.current_leaderboard = {}
-        config = {"questions": []}
-        for question in root.findall('question'):
+        questionary.questionary = {"questions": []}
+        for question in questionary.root.findall('question'):
             title = question.find('title').text
             duration = question.find('duration').text
             question_type = question.find('type').text
@@ -197,7 +185,7 @@ class Game:
             correct_answers = [answer.text for answer in question.find(
                 'correct_answers').findall('answer')]
 
-            config["questions"].append({
+            questionary.questionary["questions"].append({
                 "title": title,
                 "shown_answers": shown_answers,
                 "correct_answers": correct_answers,
@@ -363,7 +351,7 @@ def handle_next_question(res) -> None:
     if len(client_list) == 0:
         emit('error', "NoUsersConnected")
         return
-    if question_number == len(config["questions"]):
+    if question_number == len(questionary.questionary["questions"]):
         data = {
             "game_lead": game.display()[0],
         }
@@ -372,15 +360,15 @@ def handle_next_question(res) -> None:
         game.reset()
         return
     else:
-        question_not_answered = list(filter(lambda q: q is not None, config["questions"]))
-        question = random.choice(question_not_answered) if settings["randomOrder"] else config["questions"][question_number]
+        question_not_answered = list(filter(lambda q: q is not None, questionary.questionary["questions"]))
+        question = random.choice(question_not_answered) if settings["randomOrder"] else questionary.questionary["questions"][question_number]
         data = {
             "question_title": question["title"],
             "question_type": question["type"],
             "question_possible_answers": question["shown_answers"],
             "question_duration": question["duration"],
-            "question_number": (len(config["questions"]) - len(question_not_answered) + 1) if settings["randomOrder"] else config["questions"].index(question) + 1,
-            "question_count": len(config["questions"]),
+            "question_number": (len(questionary.questionary["questions"]) - len(question_not_answered) + 1) if settings["randomOrder"] else questionary.questionary["questions"].index(question) + 1,
+            "question_count": len(questionary.questionary["questions"]),
         }
         for client in client_list + board_list + host_list:
             emit("questionStart", data, to=client.sid)
@@ -399,7 +387,7 @@ def handle_next_question(res) -> None:
             "question_correct_answer": question["correct_answers"]
         }
         if settings["randomOrder"]:
-            config["questions"][config["questions"].index(question)] = None
+            questionary.questionary["questions"][questionary.questionary["questions"].index(question)] = None
         for client in client_list:
             client.evalScore()
         for client in client_list+board_list+host_list:
@@ -434,6 +422,54 @@ def handle_answer(res) -> None:
 
 ## ----------------- SocketIO Configuration Events ----------------- ##
 
+@socketio.on('sendNewQuestionary')
+@verification_wrapper
+def handle_new_questionary(res) -> None:
+    """
+    Handle requests to send the questionary to the host.
+
+    :param res: Dictionary containing the passcode and the questionary
+    """
+    # rename automatically the file to khn
+    filename = filename.split(".")[0] + ".khn"
+    with open(os.path.join("questionary", res["filename"]), "wb") as f:
+        f.write(res["questionaire_data"])
+    
+@socketio.on('listQuestionary')
+@verification_wrapper
+def handle_list_questionary(res) -> None:
+    """
+    Handle requests to list all the questionaries.
+
+    :param code: Passcode provided by the host
+    """
+    questionaries = os.listdir("questionary")
+        
+    emit("ListOfQuestionary", {"questionaries": questionaries})
+    
+@socketio.on('selectQuestionary')
+@verification_wrapper
+def handle_select_questionary(res) -> None:
+    questionary.tree = ET.parse(os.path.join("questionary", res["questionary_name"]))
+    questionary.root = questionary.tree.getroot()
+    questionary.questionary = {"questions": []}
+    for question in questionary.root.findall('question'):
+        title = question.find('title').text
+        duration = question.find('duration').text
+        question_type = question.find('type').text
+        shown_answers = [answer.text for answer in question.find(
+            'shown_answers').findall('answer')]
+        correct_answers = [answer.text for answer in question.find(
+            'correct_answers').findall('answer')]
+
+        questionary.questionary["questions"].append({
+            "title": title,
+            "shown_answers": shown_answers,
+            "correct_answers": correct_answers,
+            "duration": int(duration),
+            "type": question_type
+        })
+    
 
 @socketio.on('editQuestion')
 @verification_wrapper
@@ -443,20 +479,18 @@ def handle_edit_question(res) -> None:
 
     :param message: Dictionary containing the key, value, and passcode
     """
-    for question in root.findall('question'):
-        if question.find('title').text == message['key']:
-            question.find('title').text = message['value']
+    for question in questionary.root.findall('question'):
+        if question.find('title').text == res['key']:
+            question.find('title').text = res['value']
             break
-    tree.write('quiz.khn')
+    questionary.root.write('quiz.khn')
 
 
 @socketio.on("getQuestions")
 @verification_wrapper
 def handle_get_questions(res) -> None:
     """Handle requests for the list of questions."""
-
-    emit("questions", {"questions": config["questions"]})
-
+    emit("questions", {"questions": questionary["questions"]})
 
 
 @socketio.on("getSettings")
