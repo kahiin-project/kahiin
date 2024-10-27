@@ -31,7 +31,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         cd codeberg-repo
-        git remote add github https://x-access-token:${GITHUB_TOKEN}@github.com/kahiin-project/kahinn.git
+        git remote add github https://x-access-token:${GITHUB_TOKEN}@github.com/kahiin-project/kahiin.git
         git push --mirror github
 
     - name: Clone source repository from GitHub
