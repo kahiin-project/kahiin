@@ -23,7 +23,7 @@
         "ChangesNeedRefresh": "Rafraîchir pour appliquer les modifications",
         "ChangeLanguageWillRefresh": "Modifier la langue va rafraîchir la page",
         "StartGame": "Démarrer le jeu",
-        "NextQuestion": "Terminer le jeu",
+        "NextQuestion": "Prochaine question",
         "ShowLeaderboard": "Afficher le classement",
         "ScanMe": "Scannez Moi",
         "Passcode": "code d'accès",
@@ -33,7 +33,13 @@
         "EndOnAllAnswered": "Terminer le jeu lorsque toutes les questions ont été répondues",
         "UserNotFound": "Utilisateur introuvable",
         "Kicked": "Vous avez été expulsé de la partie",
-        "QuestionarySelected": "Questionnaire sélectionné"
+        "QuestionarySelected": "Questionnaire sélectionné",
+        "GetSpreadsheet": "Télécharger le tableau de score en format CSV",
+        "Apply": "Appliquer",
+        "StartGameWillRemoveData": "Redemarrer le jeu supprimera toutes les données",
+        "KickPlayer": "Expulser le joueur",
+        "NoQuestionary": "Veuillez sélectionner un questionnaire",
+        "NoBoardConnected": "Aucun tableau connecté"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -69,7 +75,13 @@
         "EndOnAllAnswered": "End game when all questions have been answered",
         "UserNotFound": "User not found",
         "Kicked": "You have been kicked from the game",
-        "QuestionarySelected": "Questionary selected"
+        "QuestionarySelected": "Questionary selected",
+        "GetSpreadsheet": "Download the leaderboard in CSV format",
+        "Apply": "Apply",
+        "StartGameWillRemoveData": "Starting the game will remove all data",
+        "KickPlayer": "Kick player",
+        "NoQuestionary": "Please select a questionary",
+        "NoBoardConnected": "No board connected"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -105,7 +117,13 @@
         "EndOnAllAnswered": "Finalizar el juego cuando todas las preguntas hayan sido respondidas",
         "UserNotFound": "Usuario no encontrado",
         "Kicked": "Has sido expulsado del juego",
-        "QuestionarySelected": "Cuestion de seleccion"
+        "QuestionarySelected": "Cuestion de seleccion",
+        "GetSpreadsheet": "Descargar la clasificación en formato CSV",
+        "Apply": "Aplicar",
+        "StartGameWillRemoveData": "Iniciar el juego eliminará todos los datos",
+        "KickPlayer": "Expulsar jugador",
+        "NoQuestionary": "Por favor seleccione un cuestionario",
+        "NoBoardConnected": "No hay tablero conectado"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -141,7 +159,13 @@
         "EndOnAllAnswered": "Termina il gioco quando tutte le domande sono state risposte",
         "UserNotFound": "Utente non trovato",
         "Kicked": "Sei stato cacciato dal gioco",
-        "QuestionarySelected": "Domanda selezionata"
+        "QuestionarySelected": "Domanda selezionata",
+        "GetSpreadsheet": "Scarica la classifica in formato CSV",
+        "Apply": "Applicare",
+        "StartGameWillRemoveData": "Avviare il gioco rimuoverà tutti i dati",
+        "KickPlayer": "Cacciare il giocatore",
+        "NoQuestionary": "Si prega di selezionare un questionario",
+        "NoBoardConnected": "Nessuna lavagna connessa"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -177,6 +201,12 @@
         "EndOnAllAnswered": "Spiel beenden, wenn alle Fragen beantwortet wurden",
         "UserNotFound": "Benutzer nicht gefunden",
         "Kicked": "Sie wurden aus dem Spiel geworfen",
-        "QuestionarySelected": "Fragebogen ausgewählt"
+        "QuestionarySelected": "Fragebogen ausgewählt",
+        "GetSpreadsheet": "Bestenliste im CSV-Format herunterladen",
+        "Apply": "Anwenden",
+        "StartGameWillRemoveData": "Das Starten des Spiels löscht alle Daten",
+        "KickPlayer": "Spieler rauswerfen",
+        "NoQuestionary": "Bitte wählen Sie einen Fragebogen aus",
+        "NoBoardConnected": "Keine Tafel verbunden"
     }
 }

@@ -1,63 +1,66 @@
-<questions>
-    <question>
-        <title>
-        # Test Question Answer A
-        - L'équation de la droite : $y = mx + b$ 
-        - La formule quadratique : $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$
-        </title>
-        <shown_answers>
-            <answer>a</answer>
-            <answer>b</answer>
-            <answer>c</answer>
-            <answer>d</answer>
-        </shown_answers>
-        <correct_answers>
-            <answer>a</answer>
-            <answer>b</answer>
-        </correct_answers>
-        <duration>20</duration>
-        <type>mcq</type>
-    </question>
-    <question>
-        <title>Test Question Answer B</title>
-        <shown_answers>
-            <answer>Seulement</answer>
-            <answer>Trois</answer>
-            <answer>Réponses</answer>
-        </shown_answers>
-        <correct_answers>
-            <answer>Seulement</answer>
-            <answer>Réponses</answer>
-        </correct_answers>
-        <duration>20</duration>
-        <type>uniqueanswer</type>
-    </question>
-    <question>
-        <title>Test Question Answer C</title>
-        <shown_answers>
-            <answer>Vrai</answer>
-            <answer>Faux</answer>
-        </shown_answers>
-        <correct_answers>
-            <answer>Vrai</answer>
-            <answer>Faux</answer>
-        </correct_answers>
-        <duration>20</duration>
-        <type>mcq</type>
-    </question>
-    <question>
-        <title>Test Question Answer D</title>
-        <shown_answers>
-            <answer>a</answer>
-            <answer>b</answer>
-            <answer>c</answer>
-            <answer>d</answer>
-        </shown_answers>
-        <correct_answers>
-            <answer>a</answer>
-            <answer>b</answer>
-        </correct_answers>
-        <duration>20</duration>
-        <type>uniqueanswer</type>
-    </question>
-</questions>
+<questionary>
+    <title>Test Quiz</title>
+    <questions>
+        <question>
+            <title>
+            # Test Question Answer A
+            - L'équation de la droite : $y = mx + b$ 
+            - La formule quadratique : $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$
+            </title>
+            <shown_answers>
+                <answer>a</answer>
+                <answer>b</answer>
+                <answer>c</answer>
+                <answer>d</answer>
+            </shown_answers>
+            <correct_answers>
+                <answer>a</answer>
+                <answer>b</answer>
+            </correct_answers>
+            <duration>20</duration>
+            <type>mcq</type>
+        </question>
+        <question>
+            <title>Test Question Answer B</title>
+            <shown_answers>
+                <answer>Seulement</answer>
+                <answer>Trois</answer>
+                <answer>Réponses</answer>
+            </shown_answers>
+            <correct_answers>
+                <answer>Seulement</answer>
+                <answer>Réponses</answer>
+            </correct_answers>
+            <duration>20</duration>
+            <type>uniqueanswer</type>
+        </question>
+        <question>
+            <title>Test Question Answer C</title>
+            <shown_answers>
+                <answer>Vrai</answer>
+                <answer>Faux</answer>
+            </shown_answers>
+            <correct_answers>
+                <answer>Vrai</answer>
+                <answer>Faux</answer>
+            </correct_answers>
+            <duration>20</duration>
+            <type>mcq</type>
+        </question>
+        <question>
+            <title>Test Question Answer D</title>
+            <shown_answers>
+                <answer>a</answer>
+                <answer>b</answer>
+                <answer>c</answer>
+                <answer>d</answer>
+            </shown_answers>
+            <correct_answers>
+                <answer>a</answer>
+                <answer>b</answer>
+            </correct_answers>
+            <duration>20</duration>
+            <type>uniqueanswer</type>
+        </question>
+    </questions>
+</questionary>

@@ -46,17 +46,21 @@
     </nav>
     <div id="play_div" style="display: none;" class="nav_content">
       <button id="start_game" onclick="startSession()">
-        Demarrer le jeu
+        ${glossary["StartGame"]}
       </button>
       <button id="next_question" style="display: none;" onclick="nextQuestion()">
-        Prochaine question
+        ${glossary["NextQuestion"]}
       </button>
       <button id="show_leaderboard" style="display: none;" onclick="showLeaderboard()">
-        Afficher le classement
+        ${glossary["ShowLeaderboard"]}
+      </button>
+      <p id="start_game_will_remove_data" style="margin-left: 50px; color: gray;display: none;">${glossary["StartGameWillRemoveData"]}</p>
+      <button id="get_spreadsheet" style="display: none;" onclick="getSpreadsheet()">
+        ${glossary["GetSpreadsheet"]}
       </button>
       <input type="text" id="kick_player_name" placeholder='Jean Mark' />
       <button id="kick_player_button" onclick="kickPlayer()">
-        Expulse le joueur
+        ${glossary["KickPlayer"]}
       </button>
     </div>
     <div id="create_div" class="nav_content" style="display: none;">
@@ -82,7 +86,7 @@
       <h2>${glossary["AdminPassword"]}</h2>
       <input type="password" id="new_password" placeholder="New Password">
       <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
-      <button class="apply-button" onclick="applyNewPassword()">APPLY</button>
+      <button class="apply-button" onclick="applyNewPassword()">${glossary["Apply"]}</button>
       <div style="height: 50px"></div>
     </div>
   </body>

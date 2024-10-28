@@ -19,18 +19,15 @@ function submitPasscode() {
 
 // ---------------------- Functions Game -------------------------
 function startSession() {
-  document.getElementById("start_game").style.display = "none";
-  document.getElementById("next_question").style.display = "block";
   socket.emit("startSession", passcode);
-  question_count = 0;
-  socket.emit("nextQuestion", {passcode, question_count});
-  document.getElementById("next_question").style.display = "none";
 }
 
 function nextQuestion() {
   question_count += 1;
-  document.getElementById("next_question").style.display = "none";
-  document.getElementById("show_leaderboard").style.display = "none";
+  elementToHide = ["next_question", "show_leaderboard"];
+  elementToHide.forEach(element => {
+    document.getElementById(element).style.display = "none";
+  });
   socket.emit("nextQuestion", {passcode, question_count});
 }
 
@@ -43,6 +40,10 @@ function kickPlayer() {
   socket.emit("kickPlayer", {passcode : passcode, username : playerName});
   document.getElementById("kick_player_name").value = "";
   
+}
+
+function getSpreadsheet() {
+  socket.emit("getSpreadsheet", passcode);
 }
 
 // ---------------------- Functions Config -------------------------
@@ -66,6 +67,7 @@ function editSettingsButton(setting) {
 }
 
 // ---------------------- Functions Create -------------------------
+
 function selectQuestionary(questionary_name) {
   socket.emit("selectQuestionary", {passcode: passcode, questionary_name: questionary_name});
   alert(glossary["QuestionarySelected"]);
@@ -77,10 +79,11 @@ function navigate(index){
   for(let i = 0; i < 5; i++){
     document.getElementById(`nav_button_${i}`).style.borderLeft = "none";
   }
+  elementToHide = ["play_div", "settings_div", "create_div"];
+  elementToHide.forEach(element => {
+    document.getElementById(element).style.display = "none";
+  });
   document.getElementById(`nav_button_${index}`).style.borderLeft = "solid #494949 5px";
-  document.getElementById("play_div").style.display = "none";
-  document.getElementById("settings_div").style.display = "none";
-  document.getElementById("create_div").style.display = "none";
   switch (index) {
     case 0:
       document.getElementById("play_div").style.display = "block";
@@ -110,13 +113,17 @@ function navigate(index){
 
 socket.on("error", (res) => {
   if (res=="InvalidPasscode") {
+    elementToHide = ["start_game", "next_question", "nav"];
+    elementToHide.forEach(element => {
+      document.getElementById(element).style.display = "none";
+    });
+    elementToShow = ["form", "error"];
+    elementToShow.forEach(element => {
+      document.getElementById(element).style.display = "block";
+    });
     document.getElementById("passcode").value = "";
-    document.getElementById("error").style.display = "block";
     document.getElementById("error").innerHTML = glossary[res];
-    document.getElementById("form").style.display = "block";
-    document.getElementById("start_game").style.display = "none";
-    document.getElementById("next_question").style.display = "none";
-    document.getElementById("nav").style.display = "none";
+
   } else {
     alert(glossary[res]);
     document.getElementById("error").style.display = "block";
@@ -168,22 +175,56 @@ socket.on("hostConnected", (res) => {
 });
 // ---------------------- Socket.io Game -------------------------
 
+socket.on("startGame", (res) => {
+  question_count = 0;
+  socket.emit("nextQuestion", {passcode, question_count});
+  elementToHide = ["start_game", "get_spreadsheet", "start_game_will_remove_data", "show_leaderboard", "next_question"];
+  elementToHide.forEach(element => {
+    document.getElementById(element).style.display = "none";
+  });
+
+});
+
 socket.on("questionEnd", (res) => {
-  document.getElementById("next_question").style.display = "block";
-  document.getElementById("show_leaderboard").style.display = "block";
+  elementToShow = ["next_question", "show_leaderboard"];
+  elementToHide.forEach(element => {
+    document.getElementById(element).style.display = "block";
+  });
 });
 
 socket.on("gameEnd", (res) => {
-  document.getElementById("next_question").style.display = "none";
-  document.getElementById("show_leaderboard").style.display = "none";
+  elementToShow = ["start_game", "get_spreadsheet", "start_game_will_remove_data"];
+  elementToHide.forEach(element => {
+    document.getElementById(element).style.display = "block";
+  });
+  elementToHide = ["next_question", "show_leaderboard"];
+  elementToHide.forEach(element => {
+    document.getElementById(element).style.display = "none";
+  });
   question_count = 0;
-  document.getElementById("start_game").style.display = "block";
+
 });
 
+socket.on("spreadsheet", (res) => {
+  var csv = res['csv'];
+  var datetime = new Date();
+  var formattedDate = datetime.toISOString().slice(0,16).replace(/T/g, '_').replace(/:/g, '-');
+  var blob = new Blob([csv], { type: 'text/csv' });
+  var url = window.URL.createObjectURL(blob);
+  var csv_link = document.createElement('a');
+  csv_link.href = url;
+  csv_link.download = `${res.questionary_name}_leaderboard_${formattedDate}.csv`;
+  document.body.appendChild(csv_link);
+  csv_link.click();
+  document.body.removeChild(csv_link);
+  window.URL.revokeObjectURL(url);
+  
+});
+
+  
 // ---------------------- Socket.io Create -------------------------
 
 socket.on("ListOfQuestionary", (res) => {
-
   const questionary_list = document.getElementById("questionary_list");
   questionary_list.innerHTML = "";
   res.questionaries.forEach(questionary => {
