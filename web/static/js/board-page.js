@@ -22,6 +22,9 @@ function submitPasscode() {
 }
 
 function Count(duration, seconds) {
+  if (document.getElementById("timer").style.opacity == 0) {
+    return;
+  }
   if (seconds >= 0) {
     setTimeout(function () {
       document.getElementById("timer").innerText = `${duration - seconds}`;
@@ -37,13 +40,18 @@ function Count(duration, seconds) {
 
 socket.on("error", (res) => {
   if (res == "InvalidPasscode") {
+    elementsToHide = ["list", "qrcode", "scan"];
+    elementsToHide.forEach(id => {
+      document.getElementById(id).style.display = "none";
+    });
+    elementsToShow = ["form", "error"];
+    elementsToShow.forEach(id => {
+      document.getElementById(id).style.display = "block";
+    });
     document.getElementById("passcode").value = "";
-    document.getElementById("error").style.display = "block";
     document.getElementById("error").innerHTML = glossary[res];
-    document.getElementById("list").style.display = "none";
     document.getElementById("form").style.display = "block";
-    document.getElementById("qrcode").style.display = "none";
-    document.getElementById("scan").style.display = "none";
+
   } else {
     alert(glossary[res]);
     document.getElementById("error").style.display = "block";
@@ -79,10 +87,14 @@ socket.on("qrcode", (res) => {
 });
 
 socket.on("boardConnected", (res) => {
-  document.getElementById("form").style.display = "none";
-  document.getElementById("list").style.display = "block";
-  document.getElementById("qrcode").style.display = "block";
-  document.getElementById("scan").style.display = "block";
+  elementsToHide = ["form"];
+  elementsToHide.forEach(id => {
+    document.getElementById(id).style.display = "none";
+  });
+  elementsToShow = ["list", "qrcode", "scan"];
+  elementsToShow.forEach(id => {
+    document.getElementById(id).style.display = "block";
+  });
 });
 // ---------------------- Socket.io Game -------------------------
 
@@ -115,19 +127,18 @@ socket.on("startGame", (res) => {
 });
 
 socket.on("questionStart", (res) => {
+  elementsToHide = ["leaderboard-container", "leaderboard_top", "promoted-list","loader", "loader-text"];
+  elementsToHide.forEach(id => {
+    document.getElementById(id).style.opacity = 0;
+  });
+  elementsToShow = ["question", "question_number", "timer", "timerbar", "answers_div"];
+  elementsToShow.forEach(id => {
+    document.getElementById(id).style.opacity = 1;
+  });
+
   document.getElementById("question").style.bottom = "340px";
-  document.getElementById("question").style.opacity = 1;
-  document.getElementById("question_number").style.opacity = 1;
-  document.getElementById("timer").style.opacity = 1;
-  document.getElementById("timerbar").style.opacity = 1;
-  document.getElementById("answers_div").style.opacity = 1;
-  document.getElementById("answers_div").style.opacity = 1;
-  document.getElementById("loader").style.opacity = 0;
-  document.getElementById("loader").style.display = "none";
-  document.getElementById("loader-text").style.display = "none";
-  document.getElementById("leaderboard-container").style.opacity = 0;
-  document.getElementById("leaderboard_top").style.opacity = 0;
-  document.getElementById("promoted-list").style.opacity = 0;
+
+
   const answer_blocks = document.getElementById("answers_div").getElementsByClassName("answer-block");
   for (let i = 0; i < answer_blocks.length; i++) {
     answer_blocks[i].style.opacity = 1;
@@ -217,7 +228,6 @@ socket.on("questionStart", (res) => {
     default:
       console.log("Invalid data incoming");
   }
-  document.getElementById("timer").innerText = "0";
   document.getElementById("question_number").innerText = `Question ${res["question_number"]}/${res["question_count"]}`;
   duration = res["question_duration"];
   Count(duration, duration);
@@ -259,8 +269,10 @@ socket.on('leaderboard', (res) => {
 });
 
 socket.on("questionEnd", (res) => {
-  document.getElementById("timer").style.opacity = 0;
-  document.getElementById("timerbar").style.opacity = 0;
+  const elementsToHide = ["timer", "timerbar"];
+  elementsToHide.forEach(id => {
+      document.getElementById(id).style.opacity = 0;
+  });
   const question_correct_answer = res["question_correct_answer"].map((x) => x.trim());
   // Gray out the incorrect answers
   const answers_div = document.getElementById("answers_div");
@@ -273,35 +285,53 @@ socket.on("questionEnd", (res) => {
   }
 });
 
-socket.on("gameEnd", (res) => { 
-  document.getElementById("question").style.opacity = 0;
-  document.getElementById("question_number").style.opacity = 0;
-  document.getElementById("answers_div").style.opacity = 0;
-  document.getElementById("leaderboard-container").style.opacity = 0;
-  document.getElementById("loader").style.opacity = 0;
-  document.getElementById("podium").style.opacity = 1;
+socket.on("gameEnd", (res) => {
+  const elementsToHide = ["question", "question_number", "answers_div", "leaderboard-container", "loader"];
+  elementsToHide.forEach(id => {
+      document.getElementById(id).style.opacity = 0;
+  });
+
+  const podium = document.getElementById("podium");
+  podium.innerHTML = "";
+  podium.style.opacity = 1;
   const game_lead = res["game_lead"];
-  document.getElementById("podium").innerHTML = "";
-  document.getElementById("podium").style.opacity = 1;
-  podium = document.getElementById("podium");
-  const podium_ranks = [4, 2, 1, 3, 5];
-  const podium_rank_names = ["fourth", "second","first","third", "fifth"];
-  if (game_lead.length % 2 == 0) {
-    document.getElementById("podium").style.transform = "translateX(-100px)";
+  let podiumConfig;
+  
+  switch(game_lead.length) {
+      case 1:
+          podiumConfig = [[1, "first"]];
+          break;
+      case 2:
+          podiumConfig = [[2, "second"], [1, "first"]];
+          break;
+      case 3:
+          podiumConfig = [[2, "second"], [1, "first"], [3, "third"]];
+          break;
+      case 4:
+          podiumConfig = [[4, "fourth"], [2, "second"], [1, "first"], [3, "third"]];
+          break;
+      default:
+          podiumConfig = [[4, "fourth"], [2, "second"], [1, "first"], [3, "third"], [5, "fifth"]];
   }
-  for (let i = 0; i < game_lead.length; i++) {
-    if (i >= podium_ranks.length) break;
-    const podium_item = document.createElement("div");
-    podium_item.classList.add("podium__item");
-    const podium_name = document.createElement("p");
-    podium_name.classList.add("podium__name");
-    podium_name.innerText = game_lead[i][0];
-    podium_item.appendChild(podium_name);
-    const podium_rank_div = document.createElement("div");
-    podium_rank_div.classList.add("podium__rank");
-    podium_rank_div.innerText = podium_ranks[i];
-    podium_rank_div.classList.add(podium_rank_names[i]);
-    podium_item.appendChild(podium_rank_div);
-    podium.appendChild(podium_item);
-  }
+
+  podiumConfig.forEach((config, index) => {
+      if (index >= game_lead.length) return;
+
+      const podium_item = document.createElement("div");
+      podium_item.classList.add("podium__item");
+      podium_item.style.animationDelay = `${index * 0.2}s`;
+
+      const podium_name = document.createElement("p");
+      podium_name.classList.add("podium__name");
+      podium_name.innerText = game_lead[index][0];
+
+      const podium_rank_div = document.createElement("div");
+      podium_rank_div.classList.add("podium__rank", config[1]);
+      podium_rank_div.innerText = config[0];
+
+      podium_item.appendChild(podium_name);
+      podium_item.appendChild(podium_rank_div);
+      podium.appendChild(podium_item);
+  });
+  podium.style.transform = `translateX(${game_lead.length < 5 ? (5 - game_lead.length) * 20 : 0}px)`;
 });

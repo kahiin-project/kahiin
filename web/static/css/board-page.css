@@ -342,20 +342,34 @@
   display: flex;
   align-items: flex-end;
 }
-
 .podium {
   display: flex;
-  justify-content: space-around;
-  padding-top : 5% ;
+  justify-content: center;
+  padding-top: 5%;
   align-items: flex-end;
   margin: 0 auto;
   width: 100%;
   max-width: 800px;
   opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  gap: 40px;
 }
 
 .podium__item {
-  width: 200px;
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateY(100px);
+  opacity: 0;
+  animation: slideUp 0.5s ease forwards;
+}
+
+@keyframes slideUp {
+  to {
+      transform: translateY(0);
+      opacity: 1;
+  }
 }
 
 .podium__rank {
@@ -364,44 +378,83 @@
   align-items: center;
   font-size: 35px;
   color: #fff;
+  position: relative;
+  transition: all 0.3s ease;
+  width: 180px;
 }
 
 .podium__name {
   text-align: center;
-  padding: 0 .5rem;
+  padding: 0.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  width: 90%;
 }
 
-.podium__number {
-  width: 27px;
-  height: 75px;
+.first::before {
+  content: "🏆";
+  position: absolute;
+  top: -100px;
+  font-size: 24px;
+  animation: bounce 1s ease infinite;
+}
+
+.second::before {
+  content: "🥈";
+  position: absolute;
+  top: -100px;
+  font-size: 24px;
+  animation: bounce 1s ease infinite;
+}
+
+.third::before {
+  content: "🥉";
+  position: absolute;
+  top: -100px;
+  font-size: 24px;
+  animation: bounce 1s ease infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 .podium .first {
   min-height: 300px;
-  background: #FBE870;
+  background: linear-gradient(180deg, #ffd267, #FBE870);
   border-radius: 20px 20px 0px 0px;
+  box-shadow: 0 4px 15px rgba(251, 232, 112, 0.5);
 }
 
 .podium .second {
   min-height: 250px;
-  background: #99eeff;
+  background: linear-gradient(180deg, #bcd6ff 0%, #9ef 75%);
   border-radius: 20px 20px 0px 0px;
-}
-
-.podium .fourth {
-  min-height: 150px;
-  background: #ca9ee6;
-  border-radius: 20px 20px 0px 0px;
+  box-shadow: 0 4px 15px rgba(153, 238, 255, 0.5);
 }
 
 .podium .third {
   min-height: 200px;
-  background: #ABD95B;
+  background: linear-gradient(180deg, #cac53d 0%, #ABD95B 75%);
   border-radius: 20px 20px 0px 0px;
+  box-shadow: 0 4px 15px rgba(171, 217, 91, 0.5);
+}
+
+.podium .fourth {
+  min-height: 150px;
+  background: linear-gradient(45deg, #9370DB, #ca9ee6);
+  border-radius: 20px 20px 0px 0px;
+  box-shadow: 0 4px 15px rgba(202, 158, 230, 0.5);
 }
 
 .podium .fifth {
   min-height: 100px;
-  background: #81c8be;
+  background: linear-gradient(45deg, #20B2AA, #81c8be);
   border-radius: 20px 20px 0px 0px;
+  box-shadow: 0 4px 15px rgba(129, 200, 190, 0.5);
 }
