@@ -38,7 +38,8 @@ class Questionary:
     def __init__(self, root=None, tree=None) -> None:
         self.root = root
         self.tree = tree
-        self.questionary = {"questions": []}
+        
+        self.questionary = {"title" : "", "questions": []}
     
     
 
@@ -142,41 +143,55 @@ class Game:
             client_list, key=lambda x: x.score, reverse=True)
 
     def genPromotedUsers(self, previous: list[list], current: list[list]) -> list[list]:
-        previous_ranks = {k: i+1 for i, (k, _) in enumerate(previous)}
-        current_ranks = {k: i+1 for i, (k, _) in enumerate(current)}
-
+        # Créer des dictionnaires de rang pour l'ancien et le nouveau classement
+        previous_ranks = {username: i+1 for i, (username, _) in enumerate(previous)}
+        current_ranks = {username: i+1 for i, (username, _) in enumerate(current)}
+        
         self.promoted_users = []
-        for username, current_rank in current_ranks.items():
-            previous_rank = previous_ranks.get(username, float('inf'))
-            if current_rank < previous_rank:
-                self.promoted_users.append(
-                    [username, previous_rank - current_rank])
-        for promoted_user in self.promoted_users:
-            if promoted_user[0] in [user.username for user in current]:
-                self.promoted_users.remove(promoted_user)
+        
+        # Pour chaque joueur dans le classement actuel
+        for username, _ in current:
+            if username in previous_ranks:
+                previous_rank = previous_ranks[username]
+                current_rank = current_ranks[username]
+                
+                # Calculer la différence de rang (nombre de places gagnées)
+                rank_improvement = previous_rank - current_rank
+                
+                # Ajouter le joueur s'il :
+                # 1. N'est pas dans le top 5 précédent
+                # 2. A gagné au moins 3 places
+                # 3. N'est pas déjà dans la liste des promus
+                if (previous_rank > 5 and 
+                    rank_improvement >= 3 and 
+                    username not in [user[0] for user in self.promoted_users]):
+                    self.promoted_users.append([username, rank_improvement])
+
         self.promoted_users.sort(key=lambda x: x[1], reverse=True)
+        return self.promoted_users
 
     def display(self):
         if not self.current_leaderboard:
             self.handleFirstLeaderboard()
             current_leaderboard = [[user.username, user.score]
-                                   for user in self.current_leaderboard]
+                                 for user in self.current_leaderboard]
             return current_leaderboard[:5], []
+
         self.handleNextLeaderboard()
         current_leaderboard = [[user.username, user.score]
-                               for user in self.current_leaderboard]
+                             for user in self.current_leaderboard]
         previous_leaderboard = [[user.username, user.score]
-                                for user in self.previous_leaderboard]
-
+                              for user in self.previous_leaderboard]
         promoted_users = self.genPromotedUsers(
-            current_leaderboard, previous_leaderboard)
+            previous_leaderboard, current_leaderboard)  
         return current_leaderboard[:5], promoted_users
 
     def reset(self):
-        self.previous_leaderboard = {}
-        self.current_leaderboard = {}
-        questionary.questionary = {"questions": []}
-        for question in questionary.root.findall('question'):
+        self.previous_leaderboard = []  
+        self.current_leaderboard = []   
+        questionary.questionary = {"title": questionary.root.find('title').text,"questions": []}
+        questions = questionary.root.find('questions')
+        for question in questions.findall('question'):
             title = question.find('title').text
             duration = question.find('duration').text
             question_type = question.find('type').text
@@ -184,7 +199,6 @@ class Game:
                 'shown_answers').findall('answer')]
             correct_answers = [answer.text for answer in question.find(
                 'correct_answers').findall('answer')]
-
             questionary.questionary["questions"].append({
                 "title": title,
                 "shown_answers": shown_answers,
@@ -192,6 +206,7 @@ class Game:
                 "duration": int(duration),
                 "type": question_type
             })
+
 
 game = Game()
 
@@ -333,14 +348,22 @@ def handle_kick_player(res) -> None:
 @socketio.on('startSession')
 @verification_wrapper
 def handle_start_game(code: str) -> None:
-    if len(client_list) == 0:
-        return
-    elif game.running:
+    if game.running:
         emit('error', "GameAlreadyRunning")
         return
+    if questionary.root is None:
+        emit('error', "NoQuestionary")
+        return
+    if len(client_list) == 0:
+        emit('error', "NoUsersConnected")
+        return
+    if len(board_list) == 0:
+        emit('error', "NoBoardConnected")
+        return
+    game.reset()
+    game.running = True
     for client in client_list + board_list + host_list:
         emit('startGame', to=client.sid)
-    game.running = True
 
 
 @socketio.on("nextQuestion")
@@ -348,6 +371,9 @@ def handle_start_game(code: str) -> None:
 def handle_next_question(res) -> None:
     settings = get_settings()
     question_number = res["question_count"]
+    # Reset all old user answer for the new question
+    for client in client_list:
+        client.user_answer = ""
     if len(client_list) == 0:
         emit('error', "NoUsersConnected")
         return
@@ -357,7 +383,6 @@ def handle_next_question(res) -> None:
         }
         for client in client_list+board_list+host_list:
             emit("gameEnd", data, to=client.sid)
-        game.reset()
         return
     else:
         question_not_answered = list(filter(lambda q: q is not None, questionary.questionary["questions"]))
@@ -420,6 +445,21 @@ def handle_answer(res) -> None:
     
     emit('error' , "UserNotFound")
 
+@socketio.on('getSpreadsheet')
+def handle_get_spreadsheet(res) -> None:
+    csv = []
+    csv.append("Username,Score,MaxPossibleScore")
+    client_list.sort(key=lambda x: x.score, reverse=True)
+    for client in client_list:
+        csv.append(f"{client.username},{client.score},{500*len(questionary.questionary['questions'])}")
+    data = {
+            "csv" : "\n".join(csv), 
+            "questionary_name": questionary.questionary["title"]
+            }
+    
+    for host in host_list:
+        emit('spreadsheet', data, to=host.sid)
+        
 ## ----------------- SocketIO Configuration Events ----------------- ##
 
 @socketio.on('sendNewQuestionary')
@@ -452,23 +492,23 @@ def handle_list_questionary(res) -> None:
 def handle_select_questionary(res) -> None:
     questionary.tree = ET.parse(os.path.join("questionary", res["questionary_name"]))
     questionary.root = questionary.tree.getroot()
-    questionary.questionary = {"questions": []}
-    for question in questionary.root.findall('question'):
-        title = question.find('title').text
-        duration = question.find('duration').text
-        question_type = question.find('type').text
-        shown_answers = [answer.text for answer in question.find(
-            'shown_answers').findall('answer')]
-        correct_answers = [answer.text for answer in question.find(
-            'correct_answers').findall('answer')]
+    # questionary.questionary = {"questions": []}
+    # for question in questionary.root.findall('question'):
+    #     title = question.find('title').text
+    #     duration = question.find('duration').text
+    #     question_type = question.find('type').text
+    #     shown_answers = [answer.text for answer in question.find(
+    #         'shown_answers').findall('answer')]
+    #     correct_answers = [answer.text for answer in question.find(
+    #         'correct_answers').findall('answer')]
 
-        questionary.questionary["questions"].append({
-            "title": title,
-            "shown_answers": shown_answers,
-            "correct_answers": correct_answers,
-            "duration": int(duration),
-            "type": question_type
-        })
+    #     questionary.questionary["questions"].append({
+    #         "title": title,
+    #         "shown_answers": shown_answers,
+    #         "correct_answers": correct_answers,
+    #         "duration": int(duration),
+    #         "type": question_type
+    #     })
     
 
 @socketio.on('editQuestion')
