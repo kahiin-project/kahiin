@@ -16,11 +16,15 @@ function submitUsername() {
 }
 
 function sendAnswer(answer) {
-  document.getElementById("loader").style.display = "block";
-  document.getElementById("loader-text").style.display = "block";
+  elementToShow = ["loader", "loader-text"];
+  elementToShow.forEach(element => {
+    document.getElementById(element).style.display = "block";
+  });
+  elementToHide = ["buttons", "send_button"];
+  elementToHide.forEach(element => {
+    document.getElementById(element).style.display = "none";
+  });
   socket.emit("sendAnswer", {"answers":[answer], "question_number": question_number});
-  document.getElementById("send_button").style.display = "none";
-  document.getElementById("buttons").style.display = "none";
   for (let i = 0; i < 4; i++) {
     document.getElementById(`button_${i}`).style.display = "none";
     document.getElementById(`button_${i}`).onclick = null;
@@ -36,9 +40,14 @@ function editAnswer(answer) {
 }};
 
 function sendMCQ() {
-  document.getElementById("send_button").style.display = "none";
-  document.getElementById("loader").style.display = "block";
-  document.getElementById("loader-text").style.display = "block";
+  elementToShow = ["loader", "loader-text"];
+  elementToShow.forEach(element => {
+    document.getElementById(element).style.display = "block";
+  });
+  elementToHide = ["buttons", "send_button"];
+  elementToHide.forEach(element => {
+    document.getElementById(element).style.display = "none";
+  });
   socket.emit("sendAnswer", {"answers":answer_list, "question_number": question_number});
   for (let i = 0; i < 4; i++) {
     document.getElementById(`button_${i}`).style.display = "none";
@@ -56,9 +65,14 @@ socket.on("error", (res) => {
     location.reload();
   } else {
     alert(glossary[res]);
-    document.getElementById("form").style.display = "block";
-    document.getElementById("loader").style.display = "none";
-    document.getElementById("loader-text").style.display = "none";
+    elementToShow = ["form"];
+    elementToShow.forEach(element => {
+      document.getElementById(element).style.display = "block";
+    });
+    elementToHide = ["loader", "loader-text"];
+    elementToHide.forEach(element => {
+      document.getElementById(element).style.display = "none";
+    });
     }
 });
 
@@ -87,18 +101,29 @@ socket.on("language", (res) => {
 });
 
 socket.on("guestConnected", (res) => {
-  document.getElementById("form").style.display = "none";
-  document.getElementById("loader").style.display = "block";
-  document.getElementById("loader-text").style.display = "block";
+  elementToShow = ["loader", "loader-text"];
+  elementToShow.forEach(element => {
+    document.getElementById(element).style.display = "block";
+  });
+  elementToHide = ["form"];
+  elementToHide.forEach(element => {
+    document.getElementById(element).style.display = "none";
+  });
+
 });
 // ---------------------- Socket.io Game -------------------------
 
 socket.on("questionStart", (res) => {
-  document.getElementById("loader").style.display = "none";
-  document.getElementById("loader-text").style.display = "none";
+  elementToHide = ["loader", "loader-text"];
+  elementToShow.forEach(element => {
+    document.getElementById(element).style.display = "none";
+  });
+  elementToShow = ["buttons"];
+  elementToShow.forEach(element => {
+    document.getElementById(element).style.display = "block";
+  });
   question_number = res["question_number"]
   const possible_answer = res["question_possible_answers"];
-  document.getElementById("buttons").style.display = "block";
   if (res["question_type"] == "mcq") {
     document.getElementById("send_button").style.display = "block";
     switch (possible_answer.length) {
@@ -215,9 +240,10 @@ socket.on("questionEnd", (res) => {
 });
 
 socket.on("gameEnd", (res) => {
-  document.getElementById("form").style.display = "block";
-  document.getElementById("loader").style.display = "none";
-  document.getElementById("loader-text").style.display = "none";
+  elementToShow = ["loader-text", "loader"];
+  elementToShow.forEach(element => {
+    document.getElementById(element).style.display = "block";
+  });
 });
 
 
