@@ -569,6 +569,8 @@ def handle_set_settings(res) -> None:
         emit("settings", settings, to=client.sid)
 
 
+def start_flask():
+    socketio.run(app, debug=True, port=8080, host="0.0.0.0")
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, port=8080, host="0.0.0.0")
+    start_flask()
