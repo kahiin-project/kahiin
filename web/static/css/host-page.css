@@ -144,7 +144,6 @@ nav button img{
 /* ON */
 .nav_content button.on{
     background: #49cf38;
-    padding: 0;
 }
 .nav_content button.on:hover{
     background: #47c037;
