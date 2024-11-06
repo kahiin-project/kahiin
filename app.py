@@ -258,8 +258,8 @@ def handle_connect() -> None:
     """Handle client connection events."""
     data = get_settings()
     del data["adminPassword"]
-    emit("settings", data)
     emit("language", get_glossary())
+    emit("settings", data)
 
 
 @socketio.on('boardConnect')
@@ -295,18 +295,36 @@ def handle_host_connect(passcode: str) -> None:
 def handle_disconnect() -> None:
     """Handle client disconnection events."""
     sessid = request.sid
-    for client in client_list:
-        if client.sid == sessid:
-            for board in board_list:
-                emit('rmUser', {'username': client.username}, to=board.sid)
 
-            client_list.remove(client)  # Remove the client
+    client = next((client for client in client_list if client.sid == sessid), None) # Get first client with the sessid, is used to not iter the list multiple times
+    if client:
+        for board in board_list:
+            emit('rmUser', {'username': client.username}, to=board.sid)
+        client_list.remove(client)
+        if len(client_list) == 0:
+            for client in board+host:
+                emit("error", "NoClientConnected", to=client.sid)
+                emit("gameEnd", to=client.sid)
+        return
 
-    # Remove board if it is disconnected
-    for board in board_list:
-        if board.sid == sessid:
-            board_list.remove(board)
+    board = next((board for board in board_list if board.sid == sessid), None)
+    if sessid in [board.sid for board in board_list]:
+        board_list.remove(board)
+        if len(board_list == 0):
+            for client in client_list+host_list:
+                emit("error", "NoBoardConnected", to=client.sid)
+                emit("gameEnd", to=client.sid)
+        return
 
+    host = next((host for host in host_list if host.sid == sessid), None)
+    if host:
+        host_list.remove(host)
+        if len(host_list) == 0:
+            for client in client_list+board_list:
+                emit("error", "NoHostConnected", to=client.sid)
+                emit("gameEnd", to=client.sid)
+        return
+    
 
 @socketio.on('guestConnect')
 def handle_connect(username: str) -> None:
@@ -402,12 +420,16 @@ def handle_next_question(res) -> None:
             client.expected_response = question["correct_answers"]
             client.question_type = question["type"]
             client.timer_time = question["duration"]
-        # 2sec for progress bar to appear and first delay,
-        # question["duration"] seconds for the game,
-        sleep_manager.reset()
-        sleep_thread = threading.Thread(target=sleep_manager.sleep, args=(2 + question["duration"],))
-        sleep_thread.start()
-        sleep_thread.join()
+
+        if settings.get("endOnAllAnswered"):
+            #Threading used to stop sleep whenever all user answered
+            sleep_manager.reset()
+            sleep_thread = threading.Thread(target=sleep_manager.sleep, args=(2 + question["duration"],))
+            sleep_thread.start()
+            sleep_thread.join()
+        else:
+            # 2sec for progress bar to appear and first delay,
+            time.sleep(2 + question["duration"])
         data = {
             "question_correct_answer": question["correct_answers"]
         }
@@ -517,7 +539,7 @@ def handle_edit_question(res) -> None:
     """
     Handle configuration edit requests.
 
-    :param message: Dictionary containing the key, value, and passcode
+    :param res: Dictionary containing the key, value, and passcode
     """
     for question in questionary.root.findall('question'):
         if question.find('title').text == res['key']:
@@ -565,6 +587,7 @@ def handle_set_settings(res) -> None:
     with open("settings.json", "w") as f:
         json.dump(settings, f)
 
+    # Announce every client the new settings
     for client in client_list+board_list+host_list:
         emit("settings", settings, to=client.sid)
 
