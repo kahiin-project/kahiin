@@ -16,12 +16,12 @@ function submitUsername() {
 }
 
 function sendAnswer(answer) {
-  elementToShow = ["loader", "loader-text"];
-  elementToShow.forEach(element => {
+  elementsToShow = ["loader", "loader-text"];
+  elementsToShow.forEach(element => {
     document.getElementById(element).style.display = "block";
   });
-  elementToHide = ["buttons", "send_button"];
-  elementToHide.forEach(element => {
+  elementsToHide = ["buttons", "send_button"];
+  elementsToHide.forEach(element => {
     document.getElementById(element).style.display = "none";
   });
   socket.emit("sendAnswer", {"answers":[answer], "question_number": question_number});
@@ -40,12 +40,12 @@ function editAnswer(answer) {
 }};
 
 function sendMCQ() {
-  elementToShow = ["loader", "loader-text"];
-  elementToShow.forEach(element => {
+  elementsToShow = ["loader", "loader-text"];
+  elementsToShow.forEach(element => {
     document.getElementById(element).style.display = "block";
   });
-  elementToHide = ["buttons", "send_button"];
-  elementToHide.forEach(element => {
+  elementsToHide = ["buttons", "send_button"];
+  elementsToHide.forEach(element => {
     document.getElementById(element).style.display = "none";
   });
   socket.emit("sendAnswer", {"answers":answer_list, "question_number": question_number});
@@ -65,12 +65,12 @@ socket.on("error", (res) => {
     location.reload();
   } else {
     alert(glossary[res]);
-    elementToShow = ["form"];
-    elementToShow.forEach(element => {
+    elementsToShow = ["form"];
+    elementsToShow.forEach(element => {
       document.getElementById(element).style.display = "block";
     });
-    elementToHide = ["loader", "loader-text"];
-    elementToHide.forEach(element => {
+    elementsToHide = ["loader", "loader-text"];
+    elementsToHide.forEach(element => {
       document.getElementById(element).style.display = "none";
     });
     }
@@ -101,12 +101,12 @@ socket.on("language", (res) => {
 });
 
 socket.on("guestConnected", (res) => {
-  elementToShow = ["loader", "loader-text"];
-  elementToShow.forEach(element => {
+  elementsToShow = ["loader", "loader-text"];
+  elementsToShow.forEach(element => {
     document.getElementById(element).style.display = "block";
   });
-  elementToHide = ["form"];
-  elementToHide.forEach(element => {
+  elementsToHide = ["form"];
+  elementsToHide.forEach(element => {
     document.getElementById(element).style.display = "none";
   });
 
@@ -114,12 +114,12 @@ socket.on("guestConnected", (res) => {
 // ---------------------- Socket.io Game -------------------------
 
 socket.on("questionStart", (res) => {
-  elementToHide = ["loader", "loader-text"];
-  elementToShow.forEach(element => {
+  elementsToHide = ["loader", "loader-text"];
+  elementsToHide.forEach(element => {
     document.getElementById(element).style.display = "none";
   });
-  elementToShow = ["buttons"];
-  elementToShow.forEach(element => {
+  elementsToShow = ["buttons"];
+  elementsToShow.forEach(element => {
     document.getElementById(element).style.display = "block";
   });
   question_number = res["question_number"]
@@ -240,8 +240,8 @@ socket.on("questionEnd", (res) => {
 });
 
 socket.on("gameEnd", (res) => {
-  elementToShow = ["loader-text", "loader"];
-  elementToShow.forEach(element => {
+  elementsToShow = ["loader-text", "loader"];
+  elementsToShow.forEach(element => {
     document.getElementById(element).style.display = "block";
   });
 });

@@ -269,7 +269,7 @@ socket.on('leaderboard', (res) => {
 });
 
 socket.on("questionEnd", (res) => {
-  const elementsToHide = ["timer", "timerbar"];
+  elementsToHide = ["timer", "timerbar"];
   elementsToHide.forEach(id => {
       document.getElementById(id).style.opacity = 0;
   });
@@ -286,7 +286,7 @@ socket.on("questionEnd", (res) => {
 });
 
 socket.on("gameEnd", (res) => {
-  const elementsToHide = ["question", "question_number", "answers_div", "leaderboard-container", "loader"];
+  elementsToHide = ["question", "question_number", "answers_div", "leaderboard-container", "loader"];
   elementsToHide.forEach(id => {
       document.getElementById(id).style.opacity = 0;
   });

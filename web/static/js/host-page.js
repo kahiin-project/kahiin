@@ -24,8 +24,8 @@ function startSession() {
 
 function nextQuestion() {
   question_count += 1;
-  elementToHide = ["next_question", "show_leaderboard"];
-  elementToHide.forEach(element => {
+  elementsToHide = ["next_question", "show_leaderboard"];
+  elementsToHide.forEach(element => {
     document.getElementById(element).style.display = "none";
   });
   socket.emit("nextQuestion", {passcode, question_count});
@@ -79,8 +79,8 @@ function navigate(index){
   for(let i = 0; i < 5; i++){
     document.getElementById(`nav_button_${i}`).style.borderLeft = "none";
   }
-  elementToHide = ["play_div", "settings_div", "create_div"];
-  elementToHide.forEach(element => {
+  elementsToHide = ["play_div", "settings_div", "create_div"];
+  elementsToHide.forEach(element => {
     document.getElementById(element).style.display = "none";
   });
   document.getElementById(`nav_button_${index}`).style.borderLeft = "solid #494949 5px";
@@ -113,12 +113,12 @@ function navigate(index){
 
 socket.on("error", (res) => {
   if (res=="InvalidPasscode") {
-    elementToHide = ["start_game", "next_question", "nav"];
-    elementToHide.forEach(element => {
+    elementsToHide = ["start_game", "next_question", "nav"];
+    elementsToHide.forEach(element => {
       document.getElementById(element).style.display = "none";
     });
-    elementToShow = ["form", "error"];
-    elementToShow.forEach(element => {
+    elementsToShow = ["form", "error"];
+    elementsToShow.forEach(element => {
       document.getElementById(element).style.display = "block";
     });
     document.getElementById("passcode").value = "";
@@ -144,7 +144,7 @@ socket.on("language", (res) => {
 });
 
 socket.on("settings", (res) => {
-  document.getElementById("language").value = "fr" 
+  document.getElementById("language").value = res.language
   dyslexicModeButton = document.getElementById("dyslexicModeButton");
   dyslexicModeButton.className = res.dyslexicMode ? "on" : "off";
   dyslexicModeButton.innerHTML = res.dyslexicMode ? "ON" : "OFF";
@@ -178,27 +178,27 @@ socket.on("hostConnected", (res) => {
 socket.on("startGame", (res) => {
   question_count = 0;
   socket.emit("nextQuestion", {passcode, question_count});
-  elementToHide = ["start_game", "get_spreadsheet", "start_game_will_remove_data", "show_leaderboard", "next_question"];
-  elementToHide.forEach(element => {
+  elementsToHide = ["start_game", "get_spreadsheet", "start_game_will_remove_data", "show_leaderboard", "next_question"];
+  elementsToHide.forEach(element => {
     document.getElementById(element).style.display = "none";
   });
 
 });
 
 socket.on("questionEnd", (res) => {
-  elementToShow = ["next_question", "show_leaderboard"];
-  elementToHide.forEach(element => {
+  elementsToShow = ["next_question", "show_leaderboard"];
+  elementsToShow.forEach(element => {
     document.getElementById(element).style.display = "block";
   });
 });
 
 socket.on("gameEnd", (res) => {
-  elementToShow = ["start_game", "get_spreadsheet", "start_game_will_remove_data"];
-  elementToHide.forEach(element => {
+  elementsToShow = ["start_game", "get_spreadsheet", "start_game_will_remove_data"];
+  elementsToShow.forEach(element => {
     document.getElementById(element).style.display = "block";
   });
-  elementToHide = ["next_question", "show_leaderboard"];
-  elementToHide.forEach(element => {
+  elementsToHide = ["next_question", "show_leaderboard"];
+  elementsToHide.forEach(element => {
     document.getElementById(element).style.display = "none";
   });
   question_count = 0;
