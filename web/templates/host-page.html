@@ -45,6 +45,8 @@
       </button>
     </nav>
     <div id="play_div" style="display: none;" class="nav_content">
+      <h1>${glossary["Play"]}</h1>
+      <h2>${glossary["Party"]}</h2>
       <button id="start_game" onclick="startSession()">
         ${glossary["StartGame"]}
       </button>
@@ -58,7 +60,8 @@
       <button id="get_spreadsheet" style="display: none;" onclick="getSpreadsheet()">
         ${glossary["GetSpreadsheet"]}
       </button>
-      <input type="text" id="kick_player_name" placeholder='Jean Mark' />
+      <h2>${glossary["AdminSpace"]}</h2>
+      <input type="text" id="kick_player_name" placeholder='Tristan' />
       <button id="kick_player_button" onclick="kickPlayer()">
         ${glossary["KickPlayer"]}
       </button>

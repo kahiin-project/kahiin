@@ -170,10 +170,10 @@ nav button img{
     cursor: text;
     width: calc(100% - 115px);
 }
-.nav_content .apply-button{
+.nav_content .apply-button, .nav_content #start_game{
     background: #387fcf;
 }
-.nav_content .apply-button:hover{
+.nav_content .apply-button:hover, .nav_content #start_game:hover{
     background: #3473bb;
 }
 .nav_content .apply-button.dyslexic{
@@ -192,4 +192,11 @@ nav button img{
 #language.dyslexic{
     padding: 0;
     padding-left: 10px;
+}
+
+.nav_content #kick_player_button{
+    background: #cf3838;
+}
+.nav_content #kick_player_button:hover{
+    background: #c03737;
 }

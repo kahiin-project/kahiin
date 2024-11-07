@@ -39,7 +39,9 @@
         "StartGameWillRemoveData": "Redemarrer le jeu supprimera toutes les données",
         "KickPlayer": "Expulser le joueur",
         "NoQuestionary": "Veuillez sélectionner un questionnaire",
-        "NoBoardConnected": "Aucun tableau connecté"
+        "NoBoardConnected": "Aucun tableau connecté",
+        "Party": "Partie",
+        "AdminSpace": "Espace Administrateur"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -81,7 +83,9 @@
         "StartGameWillRemoveData": "Starting the game will remove all data",
         "KickPlayer": "Kick player",
         "NoQuestionary": "Please select a questionary",
-        "NoBoardConnected": "No board connected"
+        "NoBoardConnected": "No board connected",
+        "Party": "Party",
+        "AdminSpace": "Admin space"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -123,7 +127,9 @@
         "StartGameWillRemoveData": "Iniciar el juego eliminará todos los datos",
         "KickPlayer": "Expulsar jugador",
         "NoQuestionary": "Por favor seleccione un cuestionario",
-        "NoBoardConnected": "No hay tablero conectado"
+        "NoBoardConnected": "No hay tablero conectado",
+        "Party": "Partido",
+        "AdminSpace": "Espacio de administración"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -165,7 +171,9 @@
         "StartGameWillRemoveData": "Avviare il gioco rimuoverà tutti i dati",
         "KickPlayer": "Cacciare il giocatore",
         "NoQuestionary": "Si prega di selezionare un questionario",
-        "NoBoardConnected": "Nessuna lavagna connessa"
+        "NoBoardConnected": "Nessuna lavagna connessa",
+        "Party": "Partita",
+        "AdminSpace": "Spazio amministrativo"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -207,6 +215,8 @@
         "StartGameWillRemoveData": "Das Starten des Spiels löscht alle Daten",
         "KickPlayer": "Spieler rauswerfen",
         "NoQuestionary": "Bitte wählen Sie einen Fragebogen aus",
-        "NoBoardConnected": "Keine Tafel verbunden"
+        "NoBoardConnected": "Keine Tafel verbunden",
+        "Party": "Spiel",
+        "AdminSpace": "Administratorbereich"
     }
 }
