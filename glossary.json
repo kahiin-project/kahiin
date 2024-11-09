@@ -41,7 +41,8 @@
         "NoQuestionary": "Veuillez sélectionner un questionnaire",
         "NoBoardConnected": "Aucun tableau connecté",
         "Party": "Partie",
-        "AdminSpace": "Espace Administrateur"
+        "AdminSpace": "Espace Administrateur",
+        "PlayerName": "Nom du Joueur"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -85,7 +86,8 @@
         "NoQuestionary": "Please select a questionary",
         "NoBoardConnected": "No board connected",
         "Party": "Party",
-        "AdminSpace": "Admin space"
+        "AdminSpace": "Admin space",
+        "PlayerName": "Player's name"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -129,7 +131,8 @@
         "NoQuestionary": "Por favor seleccione un cuestionario",
         "NoBoardConnected": "No hay tablero conectado",
         "Party": "Partido",
-        "AdminSpace": "Espacio de administración"
+        "AdminSpace": "Espacio de administración",
+        "PlayerName": "Nombre del jugador"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -173,7 +176,8 @@
         "NoQuestionary": "Si prega di selezionare un questionario",
         "NoBoardConnected": "Nessuna lavagna connessa",
         "Party": "Partita",
-        "AdminSpace": "Spazio amministrativo"
+        "AdminSpace": "Spazio amministrativo",
+        "PlayerName": "Nome del giocatore"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -217,6 +221,7 @@
         "NoQuestionary": "Bitte wählen Sie einen Fragebogen aus",
         "NoBoardConnected": "Keine Tafel verbunden",
         "Party": "Spiel",
-        "AdminSpace": "Administratorbereich"
+        "AdminSpace": "Administratorbereich",
+        "PlayerName": "Spielername"
     }
 }

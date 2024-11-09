@@ -24,9 +24,10 @@ function startSession() {
 
 function nextQuestion() {
   question_count += 1;
-  elementsToHide = ["next_question", "show_leaderboard"];
-  elementsToHide.forEach(element => {
-    document.getElementById(element).style.display = "none";
+  elementsToDisable = ["next_question", "show_leaderboard"];
+  elementsToDisable.forEach(element => {
+    document.getElementById(element).style.background = "#e8e8e8";
+    document.getElementById(element).setAttribute("disabled", true);
   });
   socket.emit("nextQuestion", {passcode, question_count});
 }
@@ -141,6 +142,7 @@ socket.on("language", (res) => {
   body.innerHTML = replaced;
   document.getElementById("body").style.display = "block";
   document.getElementById("passcode").placeholder = glossary["Passcode"];
+  document.getElementById("kick_player_name").placeholder = glossary["PlayerName"];
 });
 
 socket.on("settings", (res) => {
@@ -182,13 +184,19 @@ socket.on("startGame", (res) => {
   elementsToHide.forEach(element => {
     document.getElementById(element).style.display = "none";
   });
-
+  elementsToShow= ["next_question", "show_leaderboard"];
+  elementsToShow.forEach(element => {
+    document.getElementById(element).style.display = "block";
+    document.getElementById(element).style.background = "#e8e8e8";
+    document.getElementById(element).setAttribute("disabled", true);
+  });
 });
 
 socket.on("questionEnd", (res) => {
-  elementsToShow = ["next_question", "show_leaderboard"];
-  elementsToShow.forEach(element => {
-    document.getElementById(element).style.display = "block";
+  elementsToEnable = ["next_question", "show_leaderboard"];
+  elementsToEnable.forEach(element => {
+    document.getElementById(element).style.background = "";
+    document.getElementById(element).removeAttribute("disabled") ;
   });
 });
 

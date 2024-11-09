@@ -170,10 +170,11 @@ nav button img{
     cursor: text;
     width: calc(100% - 115px);
 }
-.nav_content .apply-button, .nav_content #start_game{
+.nav_content .apply-button, .nav_content #next_question, .nav_content #show_leaderboard, .nav_content #get_spreadsheet{
     background: #387fcf;
+    margin-bottom: 5px;
 }
-.nav_content .apply-button:hover, .nav_content #start_game:hover{
+.nav_content .apply-button:hover, .nav_content #next_question:hover, .nav_content #show_leaderboard:hover, #get_spreadsheet:hover{
     background: #3473bb;
 }
 .nav_content .apply-button.dyslexic{
@@ -199,4 +200,10 @@ nav button img{
 }
 .nav_content #kick_player_button:hover{
     background: #c03737;
+}
+.nav_content #start_game{
+    background: #49cf38;
+}
+.nav_content #start_game:hover{
+    background: #47c037;
 }

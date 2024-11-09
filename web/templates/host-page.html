@@ -50,10 +50,10 @@
       <button id="start_game" onclick="startSession()">
         ${glossary["StartGame"]}
       </button>
-      <button id="next_question" style="display: none;" onclick="nextQuestion()">
+      <button id="next_question" style="display: none;" disabled="true" onclick="nextQuestion()">
         ${glossary["NextQuestion"]}
       </button>
-      <button id="show_leaderboard" style="display: none;" onclick="showLeaderboard()">
+      <button id="show_leaderboard" style="display: none;" disabled="true" onclick="showLeaderboard()">
         ${glossary["ShowLeaderboard"]}
       </button>
       <p id="start_game_will_remove_data" style="margin-left: 50px; color: gray;display: none;">${glossary["StartGameWillRemoveData"]}</p>
@@ -61,7 +61,7 @@
         ${glossary["GetSpreadsheet"]}
       </button>
       <h2>${glossary["AdminSpace"]}</h2>
-      <input type="text" id="kick_player_name" placeholder='Tristan' />
+      <input type="text" id="kick_player_name" placeholder='' />
       <button id="kick_player_button" onclick="kickPlayer()">
         ${glossary["KickPlayer"]}
       </button>
