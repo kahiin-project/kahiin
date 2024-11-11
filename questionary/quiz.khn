@@ -1,7 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
 <questionary>
     <title>Test Quiz</title>
     <questions>
-        <question>
+        <question type="mcq" duration="20">
             <title>
             # Test Question Answer A
             - L'équation de la droite : $y = mx + b$ 
@@ -17,10 +18,8 @@
                 <answer>a</answer>
                 <answer>b</answer>
             </correct_answers>
-            <duration>20</duration>
-            <type>mcq</type>
         </question>
-        <question>
+        <question type="uniqueanswer" duration="20">
             <title>Test Question Answer B</title>
             <shown_answers>
                 <answer>Seulement</answer>
@@ -31,10 +30,8 @@
                 <answer>Seulement</answer>
                 <answer>Réponses</answer>
             </correct_answers>
-            <duration>20</duration>
-            <type>uniqueanswer</type>
         </question>
-        <question>
+        <question type="mcq" duration="20">
             <title>Test Question Answer C</title>
             <shown_answers>
                 <answer>Vrai</answer>
@@ -44,10 +41,8 @@
                 <answer>Vrai</answer>
                 <answer>Faux</answer>
             </correct_answers>
-            <duration>20</duration>
-            <type>mcq</type>
         </question>
-        <question>
+        <question type="mcq" duration="20">
             <title>Test Question Answer D</title>
             <shown_answers>
                 <answer>a</answer>
@@ -59,8 +54,6 @@
                 <answer>a</answer>
                 <answer>b</answer>
             </correct_answers>
-            <duration>20</duration>
-            <type>uniqueanswer</type>
         </question>
     </questions>
 </questionary>
