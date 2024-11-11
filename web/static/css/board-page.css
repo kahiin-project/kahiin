@@ -145,8 +145,7 @@
   top: 80px;
   bottom: 100%;
   margin: 0;
-  padding-top: 15px;
-  padding-bottom: 10px;
+  padding: 40px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   border: none;
   color: black;
@@ -154,6 +153,8 @@
   font-size: 40px;
   transition: 1s;
   font-weight: normal;
+  overflow: scroll;
+  z-index: 1;
 }
 
 #question_number{
@@ -457,4 +458,30 @@
   background: linear-gradient(45deg, #20B2AA, #81c8be);
   border-radius: 20px 20px 0px 0px;
   box-shadow: 0 4px 15px rgba(129, 200, 190, 0.5);
+}
+
+#question h1, #question h2, #question h3, #question h4, #question p, #question span{
+  margin: 0;
+}
+
+.hljs{
+  width: 80%;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 0.5px solid #b7bbbd;
+  border-radius: 15px;
+  text-align: left;
+  font-size: 25px;
+  font-family: monospace;
+  margin: 15px;
+}
+.hljs span{
+  font-family: monospace;
+}
+pre code.hljs{
+  padding: 40px;
+  padding-right: 0;
+  padding-top: 20px;
 }

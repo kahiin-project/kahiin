@@ -156,6 +156,7 @@ socket.on("questionStart", (res) => {
         {left: "\$$", right: "\$$", display: true}
     ]
   });
+  hljs.highlightAll();
 
   switch (res["question_possible_answers"].length) {
     case 2:

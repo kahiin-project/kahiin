@@ -55,6 +55,7 @@
                 <answer>b</answer>
             </correct_answers>
         </question>
+    </questions>
 	<questions>
 		<question type="uniqueanswer" duration="20">
 			<title>### Fonction python :
@@ -72,8 +73,8 @@ def moyenne(tableau) :
                 </answer>
 				<answer>0</answer>
 				<answer>\begin{align}
-    E_0 &= mc^2 \\
-    E &= \frac{mc^2}{\sqrt{1-\frac{v^2}{c^2}}}
+    E_0 &amp;= mc^2 \\
+    E &amp;= \frac{mc^2}{\sqrt{1-\frac{v^2}{c^2}}}
   \end{align} </answer>
 				<answer>1</answer>
 			</shown_answers>
