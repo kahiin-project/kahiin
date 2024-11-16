@@ -65,12 +65,15 @@
       <button id="kick_player_button" onclick="kickPlayer()">
         ${glossary["KickPlayer"]}
       </button>
+      <h2>${glossary["Select"]}</h2>
+      <input type="search" id="search_select_questionary" placeholder="search" onchange="search(this.value,'select')">
+      <ul id="questionary_select_list"></ul>
     </div>
     <div id="create_div" class="nav_content" style="display: none;">
       <h1>${glossary["Create"]}</h1>
-      <h2>${glossary["Select"]}</h2>
-      <input type="search" id="search_questionary" placeholder="search" onchange="search()">
-      <ul id="questionary_list"></ul>
+      <h2>${glossary["Edit"]}</h2>
+      <input type="search" id="search_edit_questionary" placeholder="search" onchange="search(this.value,'edit')">
+      <ul id="questionary_edit_list"></ul>
     </div>
     <div id="settings_div" class="nav_content" style="display: none;" >
       <h1>${glossary["Settings"]}</h1>

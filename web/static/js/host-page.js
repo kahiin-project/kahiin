@@ -114,9 +114,8 @@ function navigate(index){
   }
 }
 
-function search(){
-  searchText = document.getElementById("search_questionary").value
-  document.querySelectorAll(".questionary").forEach(element => {
+function search(searchText,page){
+  document.querySelectorAll(`#questionary_${page}_list .questionary`).forEach(element => {
     if (element.innerHTML.toLowerCase().includes(searchText.toLowerCase())) {
       element.style.display = "block";
     } else {
@@ -158,7 +157,8 @@ socket.on("language", (res) => {
   document.getElementById("body").style.display = "block";
   document.getElementById("passcode").placeholder = glossary["Passcode"];
   document.getElementById("kick_player_name").placeholder = glossary["PlayerName"];
-  document.getElementById("search_questionary").placeholder = glossary["Search"];
+  document.getElementById("search_edit_questionary").placeholder = glossary["Search"];
+  document.getElementById("search_select_questionary").placeholder = glossary["Search"];
 });
 
 socket.on("settings", (res) => {
@@ -249,10 +249,13 @@ socket.on("spreadsheet", (res) => {
 // ---------------------- Socket.io Create -------------------------
 
 socket.on("ListOfQuestionary", (res) => {
-  const questionary_list = document.getElementById("questionary_list");
-  questionary_list.innerHTML = "";
+  const questionary_select_list = document.getElementById("questionary_select_list");
+  const questionary_edit_list = document.getElementById("questionary_edit_list");
+  questionary_select_list.innerHTML = "";
+  questionary_edit_list.innerHTML = "";
   res.questionaries.forEach(questionary => {
-    questionary_list.innerHTML += `<button onclick="selectQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
+    questionary_select_list.innerHTML += `<button onclick="selectQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
+    questionary_edit_list.innerHTML += `<button onclick="editQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
   }
   );
 });

@@ -44,7 +44,8 @@
         "AdminSpace": "Espace Administrateur",
         "PlayerName": "Nom du Joueur",
         "Select":"Sélectionner",
-        "Search":"Rechercher"
+        "Search":"Rechercher",
+        "Edit":"Éditer"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -91,7 +92,8 @@
         "AdminSpace": "Admin space",
         "PlayerName": "Player's name",
         "Select":"Select",
-        "Search":"Search"
+        "Search":"Search",
+        "Edit":"Edit"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -138,7 +140,8 @@
         "AdminSpace": "Espacio de administración",
         "PlayerName": "Nombre del jugador",
         "Select":"Seleccionar",
-        "Search":"Buscar"
+        "Search":"Buscar",
+        "Edit":"Editar"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -185,7 +188,8 @@
         "AdminSpace": "Spazio amministrativo",
         "PlayerName": "Nome del giocatore",
         "Select":"Selezionare",
-        "Search":"Ricerca"
+        "Search":"Ricerca",
+        "Edit":"Modificare"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -232,6 +236,7 @@
         "AdminSpace": "Administratorbereich",
         "PlayerName": "Spielername",
         "Select":"Auswählen",
-        "Search":"Suchen"
+        "Search":"Suchen",
+        "Edit":"Bearbeiten"
     }
 }
