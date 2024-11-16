@@ -114,6 +114,17 @@ function navigate(index){
   }
 }
 
+function search(){
+  searchText = document.getElementById("search_questionary").value
+  document.querySelectorAll(".questionary").forEach(element => {
+    if (element.innerHTML.toLowerCase().includes(searchText.toLowerCase())) {
+      element.style.display = "block";
+    } else {
+      element.style.display = "none";
+    }
+  })
+}
+
 // ---------------------- Socket.io Main -------------------------
 
 socket.on("error", (res) => {
@@ -147,6 +158,7 @@ socket.on("language", (res) => {
   document.getElementById("body").style.display = "block";
   document.getElementById("passcode").placeholder = glossary["Passcode"];
   document.getElementById("kick_player_name").placeholder = glossary["PlayerName"];
+  document.getElementById("search_questionary").placeholder = glossary["Search"];
 });
 
 socket.on("settings", (res) => {
