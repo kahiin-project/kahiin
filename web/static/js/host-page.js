@@ -71,6 +71,10 @@ function editSettingsButton(setting) {
 
 function selectQuestionary(questionary_name) {
   socket.emit("selectQuestionary", {passcode: passcode, questionary_name: questionary_name});
+  document.querySelectorAll(".questionary").forEach(element => {
+    element.style.background ="";
+  })
+  document.getElementById(questionary_name).style.background = "#49cf38" ;
   alert(glossary["QuestionarySelected"]);
 }
 
@@ -236,7 +240,7 @@ socket.on("ListOfQuestionary", (res) => {
   const questionary_list = document.getElementById("questionary_list");
   questionary_list.innerHTML = "";
   res.questionaries.forEach(questionary => {
-    questionary_list.innerHTML += `<button onclick="selectQuestionary('${questionary}')" class="questionary">${questionary}</button>`;
+    questionary_list.innerHTML += `<button onclick="selectQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
   }
   );
 });

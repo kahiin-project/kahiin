@@ -19,6 +19,7 @@
 }
   
 #passcode{
+    margin-left: calc(50% - 126px) ;
     height: 50px;
     border-radius: 10px;
     border: solid 1px #bbbbbb;
@@ -170,11 +171,11 @@ nav button img{
     cursor: text;
     width: calc(100% - 115px);
 }
-.nav_content .apply-button, .nav_content #next_question, .nav_content #show_leaderboard, .nav_content #get_spreadsheet{
+.nav_content .apply-button, .nav_content #next_question, .nav_content #show_leaderboard, .nav_content #get_spreadsheet, .nav_content .questionary{
     background: #387fcf;
     margin-bottom: 5px;
 }
-.nav_content .apply-button:hover, .nav_content #next_question:hover, .nav_content #show_leaderboard:hover, #get_spreadsheet:hover{
+.nav_content .apply-button:hover, .nav_content #next_question:hover, .nav_content #show_leaderboard:hover, #get_spreadsheet:hover, .nav_content .questionary:hover{
     background: #3473bb;
 }
 .nav_content .apply-button.dyslexic{

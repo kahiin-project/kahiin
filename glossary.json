@@ -42,7 +42,8 @@
         "NoBoardConnected": "Aucun tableau connecté",
         "Party": "Partie",
         "AdminSpace": "Espace Administrateur",
-        "PlayerName": "Nom du Joueur"
+        "PlayerName": "Nom du Joueur",
+        "Select":"Sélectionner"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -87,7 +88,8 @@
         "NoBoardConnected": "No board connected",
         "Party": "Party",
         "AdminSpace": "Admin space",
-        "PlayerName": "Player's name"
+        "PlayerName": "Player's name",
+        "Select":"Select"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -132,7 +134,8 @@
         "NoBoardConnected": "No hay tablero conectado",
         "Party": "Partido",
         "AdminSpace": "Espacio de administración",
-        "PlayerName": "Nombre del jugador"
+        "PlayerName": "Nombre del jugador",
+        "Select":"Seleccionar"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -177,7 +180,8 @@
         "NoBoardConnected": "Nessuna lavagna connessa",
         "Party": "Partita",
         "AdminSpace": "Spazio amministrativo",
-        "PlayerName": "Nome del giocatore"
+        "PlayerName": "Nome del giocatore",
+        "Select":"Selezionare"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -222,6 +226,7 @@
         "NoBoardConnected": "Keine Tafel verbunden",
         "Party": "Spiel",
         "AdminSpace": "Administratorbereich",
-        "PlayerName": "Spielername"
+        "PlayerName": "Spielername",
+        "Select":"Auswählen"
     }
 }
