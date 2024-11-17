@@ -9,6 +9,10 @@ from base64 import b64encode
 import random
 import threading
 import os
+import platform
+import asyncio
+import hypercorn.asyncio
+from hypercorn.config import Config
 
 def get_settings():
     with open("settings.json", "r") as f:
@@ -26,7 +30,7 @@ def get_glossary():
 
 # Initialize Flask application and SocketIO
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='threading')
 
 # Set static and template folders
 app.static_folder = 'web/static'
@@ -593,7 +597,15 @@ def handle_set_settings(res) -> None:
 
 
 def start_flask():
-    socketio.run(app, debug=True, port=8080, host="0.0.0.0")
+    socketio.run(app, debug=False, port=8080, host="0.0.0.0", allow_unsafe_werkzeug=True, use_reloader=False)
+
 
 if __name__ == '__main__':
     start_flask()
+    
+else:
+    app.config['DEBUG'] = False
+    app.config['USE_DEBUGGER'] = False
+    os.chdir(os.path.dirname(__file__))
+    
+
