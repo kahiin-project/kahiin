@@ -13,7 +13,20 @@ import platform
 import asyncio
 import hypercorn.asyncio
 from hypercorn.config import Config
+from flask import Flask
+from flask_socketio import SocketIO
+from threading import Lock
+import eventlet
 
+def background_task():
+    """Example background task."""
+    count = 0
+    while True:
+        with thread_lock:
+            count += 1
+            socketio.emit('message', {'data': f'Message {count}'})
+        eventlet.sleep(1)
+        
 def get_settings():
     with open("settings.json", "r") as f:
         return json.load(f)
@@ -30,7 +43,10 @@ def get_glossary():
 
 # Initialize Flask application and SocketIO
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode='threading')
+socketio = SocketIO(app, async_mode='threading',  async_handlers=True)
+
+thread_lock = Lock()
+background_thread = None
 
 # Set static and template folders
 app.static_folder = 'web/static'
@@ -260,6 +276,10 @@ def route_landing_page() -> str:
 @socketio.on('connect')
 def handle_connect() -> None:
     """Handle client connection events."""
+    global background_thread
+    with thread_lock:
+        if background_thread is None:
+            background_thread = socketio.start_background_task(background_task)
     data = get_settings()
     del data["adminPassword"]
     emit("language", get_glossary())
