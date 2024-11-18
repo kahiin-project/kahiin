@@ -506,7 +506,7 @@ def handle_list_questionary(res) -> None:
     :param code: Passcode provided by the host
     """
     questionaries = os.listdir("questionary")
-        
+    questionaries.sort()
     emit("ListOfQuestionary", {"questionaries": questionaries})
     
 @socketio.on('selectQuestionary')
@@ -533,27 +533,15 @@ def handle_select_questionary(res) -> None:
     #     })
     
 
-@socketio.on('editQuestion')
-@verification_wrapper
-def handle_edit_question(res) -> None:
-    """
-    Handle configuration edit requests.
-
-    :param res: Dictionary containing the key, value, and passcode
-    """
-    for question in questionary.root.findall('question'):
-        if question.find('title').text == res['key']:
-            question.find('title').text = res['value']
-            break
-    questionary.root.write('quiz.khn')
-
-
-@socketio.on("getQuestions")
-@verification_wrapper
-def handle_get_questions(res) -> None:
-    """Handle requests for the list of questions."""
-    emit("questions", {"questions": questionary["questions"]})
-
+@socketio.on('createQuestionary')
+def create_questionary() -> None:
+    list_questionaries = os.listdir("questionary")
+    questionary_index = 1
+    while f"new_questionary{questionary_index}.khn" in list_questionaries :
+            questionary_index += 1
+    file = open(f"questionary/new_questionary{questionary_index}.khn","w")
+    file.close()
+    #emit(f"new_questionary{quesitonary_index}.khn")
 
 @socketio.on("getSettings")
 def handle_get_settings(code: str) -> None:

@@ -77,6 +77,15 @@ function selectQuestionary(questionary_name) {
   document.getElementById(questionary_name).style.background = "#49cf38" ;
 }
 
+function createQuestionary() {
+  socket.emit("createQuestionary")
+  socket.emit("listQuestionary", {passcode: passcode})
+}
+
+function editQuestionary(questionary_name) {
+  document.getElementById("create_div").style.display = "none";
+  document.getElementById("edit_div").style.display = "block";
+}
 
 // ---------------------- Functions Navigation -------------------------
 function navigate(index){

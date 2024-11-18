@@ -71,9 +71,16 @@
     </div>
     <div id="create_div" class="nav_content" style="display: none;">
       <h1>${glossary["Create"]}</h1>
+      <button id="create_questionary" onclick="createQuestionary()">${glossary["CreateNewQuestionary"]}</button>
       <h2>${glossary["Edit"]}</h2>
       <input type="search" id="search_edit_questionary" placeholder="search" onkeyup="search('edit')">
       <ul id="questionary_edit_list"></ul>
+    </div>
+    <div id="edit_div" class="nav_content" style="display: none;">
+      <h1>${glossary["Edit"]}</h1>
+      <h2>${glossary["Questionary"]}</h2>
+      <input type="text" id="edit_questionary_name" placeholder="Questionary Name" onchange="editQuestionaryName()">
+      <h2>${glossary["Questions"]}</h2>
     </div>
     <div id="settings_div" class="nav_content" style="display: none;" >
       <h1>${glossary["Settings"]}</h1>

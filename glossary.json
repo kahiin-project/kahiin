@@ -45,7 +45,8 @@
         "PlayerName": "Nom du Joueur",
         "Select":"Sélectionner",
         "Search":"Rechercher",
-        "Edit":"Éditer"
+        "Edit":"Éditer",
+        "CreateNewQuestionary":"Créer un nouveau questionaire"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -93,7 +94,8 @@
         "PlayerName": "Player's name",
         "Select":"Select",
         "Search":"Search",
-        "Edit":"Edit"
+        "Edit":"Edit",
+        "CreateNewQuestionary":"Create a new questionary"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -141,7 +143,8 @@
         "PlayerName": "Nombre del jugador",
         "Select":"Seleccionar",
         "Search":"Buscar",
-        "Edit":"Editar"
+        "Edit":"Editar",
+        "CreateNewQuestionary":"Crea un nuevo cuestionario"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -189,7 +192,8 @@
         "PlayerName": "Nome del giocatore",
         "Select":"Selezionare",
         "Search":"Ricerca",
-        "Edit":"Modificare"
+        "Edit":"Modificare",
+        "CreateNewQuestionary":"Crea un nuovo questionario"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -237,6 +241,7 @@
         "PlayerName": "Spielername",
         "Select":"Auswählen",
         "Search":"Suchen",
-        "Edit":"Bearbeiten"
+        "Edit":"Bearbeiten",
+        "CreateNewQuestionary":"Erstelle einen neuen Fragebogen"
     }
 }
