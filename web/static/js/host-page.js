@@ -75,7 +75,6 @@ function selectQuestionary(questionary_name) {
     element.style.background ="";
   })
   document.getElementById(questionary_name).style.background = "#49cf38" ;
-  alert(glossary["QuestionarySelected"]);
 }
 
 
@@ -114,7 +113,8 @@ function navigate(index){
   }
 }
 
-function search(searchText,page){
+function search(page){
+  searchText = document.getElementById(`search_${page}_questionary`).value
   document.querySelectorAll(`#questionary_${page}_list .questionary`).forEach(element => {
     if (element.innerHTML.toLowerCase().includes(searchText.toLowerCase())) {
       element.style.display = "block";
