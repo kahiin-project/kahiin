@@ -534,18 +534,33 @@ def handle_select_questionary(res) -> None:
     
 
 @socketio.on('createQuestionary')
-def handle_create_questionary() -> None:
+@verification_wrapper
+def handle_create_questionary(res) -> None:
     list_questionaries = os.listdir("questionary")
     questionary_index = 1
     while f"new_questionary{questionary_index}.khn" in list_questionaries :
             questionary_index += 1
     file = open(f"questionary/new_questionary{questionary_index}.khn","w")
     file.close()
-    emit("quetionaryCreated",f"new_questionary{questionary_index}.khn")
+    emit("editingQuestionnary",f"new_questionary{questionary_index}.khn")
 
 @socketio.on("editQuestionaryName")
+@verification_wrapper
 def handle_edit_questionary_name(res) -> None:
-    os.rename("questionary/" + res["old_name"], "questionary/"+res["new_name"])
+    list_questionaries = os.listdir("questionary")
+    forbiden_characters = '/\|,.;:!?*"><'
+    invalid_characters = False
+    for character in forbiden_characters :
+        invalid_characters += character in res["new_name"]
+    if res["new_name"] == "" :
+        emit('error', "EmptyName")
+    elif invalid_characters :
+        emit('error', "SpecialCharacters")
+    elif res["new_name"] + ".khn" in list_questionaries :
+        emit('error', "AlreadyExist")
+    else :
+        os.rename("questionary/" + res["old_name"], "questionary/"+res["new_name"]+".khn")
+        emit("editingQuestionnary",res["new_name"]+".khn")
     
 
 @socketio.on("getSettings")

@@ -47,7 +47,10 @@
         "Search":"Rechercher",
         "Edit":"Éditer",
         "CreateNewQuestionary":"Créer un nouveau questionaire",
-        "Questionary":"Questionaire"
+        "Questionary":"Questionaire",
+        "EmptyName":"Le nom du questionaire ne peut pas être vide",
+        "SpecialCharacters":"Le nom du questionaire ne peut pas contenir de caractère spécial",
+        "AlreadyExist":"Le nom du questionnaire ne peut pas être vide"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -97,7 +100,10 @@
         "Search":"Search",
         "Edit":"Edit",
         "CreateNewQuestionary":"Create a new questionary",
-        "Questionary":"Questionary"
+        "Questionary":"Questionary",
+        "EmptyName":"Questionary's name cannot be empty",
+        "SpecialCharacters":"Questionary's name cannot contain special character",
+        "AlreadyExist":"Questionary's name already exist"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -147,7 +153,10 @@
         "Search":"Buscar",
         "Edit":"Editar",
         "CreateNewQuestionary":"Crea un nuevo cuestionario",
-        "Questionary":"Cuestionario"
+        "Questionary":"Cuestionario",
+        "EmptyName":"El nombre del cuestionario no puede estar vacío",
+        "SpecialCharacters":"El nombre del cuestionario no puede contener caracteres especiales",
+        "AlreadyExist":"El nombre del cuestionario ya existe"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -197,7 +206,10 @@
         "Search":"Ricerca",
         "Edit":"Modificare",
         "CreateNewQuestionary":"Crea un nuovo questionario",
-        "Questionary":"Questionario"
+        "Questionary":"Questionario",
+        "EmptyName":"Il nome del questionario non può essere vuoto",
+        "SpecialCharacters":"Il nome del questionario non può contenere caratteri speciali",
+        "AlreadyExist":"Il nome del questionario esiste già"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -247,6 +259,9 @@
         "Search":"Suchen",
         "Edit":"Bearbeiten",
         "CreateNewQuestionary":"Erstelle einen neuen Fragebogen",
-        "Questionary":"Fragebogen"
+        "Questionary":"Fragebogen",
+        "EmptyName":"Der Name des Fragebogens darf nicht leer sein",
+        "SpecialCharacters":"Der Name des Fragebogens darf keine Sonderzeichen enthalten",
+        "AlreadyExist":"Der Name des Fragebogens existiert bereits"
     }
 }
