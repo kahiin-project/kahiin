@@ -78,8 +78,8 @@
     </div>
     <div id="edit_div" class="nav_content" style="display: none;">
       <h1>${glossary["Edit"]}</h1>
-      <h2>${glossary["Questionary"]}</h2>
-      <input type="text" id="edit_questionary_name" placeholder="Questionary Name" onchange="editQuestionaryName()">
+      <h2 id = "questionary_name">${glossary["Questionary"]}</h2>
+      <input type="text" id="edit_questionary_name" placeholder="Questionary Name" onchange="editQuestionaryName(this.value)">
       <h2>${glossary["Questions"]}</h2>
     </div>
     <div id="settings_div" class="nav_content" style="display: none;" >

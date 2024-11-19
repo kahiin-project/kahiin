@@ -80,11 +80,39 @@ function selectQuestionary(questionary_name) {
 function createQuestionary() {
   socket.emit("createQuestionary")
   socket.emit("listQuestionary", {passcode: passcode})
+  socket.on("quetionaryCreated", (res) => {
+    editQuestionary(res)
+  })
 }
 
 function editQuestionary(questionary_name) {
   document.getElementById("create_div").style.display = "none";
+  questionary_word = document.getElementById("questionary_name").innerHTML.split(" - ")[0]
+  document.getElementById("questionary_name").innerHTML = questionary_word + " - " + questionary_name ;
   document.getElementById("edit_div").style.display = "block";
+}
+
+function editQuestionaryName(new_name) {
+  questionary_word = document.getElementById("questionary_name").innerHTML.split(" - ")[0];
+  old_name = document.getElementById("questionary_name").innerHTML.split(" - ")[1];
+  forbiden_characters = [".","?","!",":",",","<",">","|","/"] ;
+  invalid_characters = false
+  already_exist = false
+  forbiden_characters.forEach(element => {
+    if (new_name.includes(element)) {
+      invalid_characters = true
+    }})
+  document.querySelectorAll("#questionary_edit_list .questionary").forEach(element => {
+    if (element.innerHTML == new_name + ".khn") {
+      already_exist = true
+    }})
+  if(new_name==""){alert("Questionary's name cannot be empty")}
+  else if (invalid_characters){alert("Questionary's name cannot contain special characters")}
+  else if (already_exist){alert("A questionary with this name already exist")}
+  else {
+    document.getElementById("questionary_name").innerHTML = questionary_word + " - " + new_name +".khn";
+    socket.emit("editQuestionaryName", {old_name: old_name, new_name: new_name + ".khn"})
+  }
 }
 
 // ---------------------- Functions Navigation -------------------------
@@ -92,7 +120,7 @@ function navigate(index){
   for(let i = 0; i < 5; i++){
     document.getElementById(`nav_button_${i}`).style.borderLeft = "none";
   }
-  elementsToHide = ["play_div", "settings_div", "create_div"];
+  elementsToHide = ["play_div", "settings_div", "create_div","edit_div"];
   elementsToHide.forEach(element => {
     document.getElementById(element).style.display = "none";
   });

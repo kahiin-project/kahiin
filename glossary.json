@@ -46,7 +46,8 @@
         "Select":"Sélectionner",
         "Search":"Rechercher",
         "Edit":"Éditer",
-        "CreateNewQuestionary":"Créer un nouveau questionaire"
+        "CreateNewQuestionary":"Créer un nouveau questionaire",
+        "Questionary":"Questionaire"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -95,7 +96,8 @@
         "Select":"Select",
         "Search":"Search",
         "Edit":"Edit",
-        "CreateNewQuestionary":"Create a new questionary"
+        "CreateNewQuestionary":"Create a new questionary",
+        "Questionary":"Questionary"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -144,7 +146,8 @@
         "Select":"Seleccionar",
         "Search":"Buscar",
         "Edit":"Editar",
-        "CreateNewQuestionary":"Crea un nuevo cuestionario"
+        "CreateNewQuestionary":"Crea un nuevo cuestionario",
+        "Questionary":"Cuestionario"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -193,7 +196,8 @@
         "Select":"Selezionare",
         "Search":"Ricerca",
         "Edit":"Modificare",
-        "CreateNewQuestionary":"Crea un nuovo questionario"
+        "CreateNewQuestionary":"Crea un nuovo questionario",
+        "Questionary":"Questionario"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -242,6 +246,7 @@
         "Select":"Auswählen",
         "Search":"Suchen",
         "Edit":"Bearbeiten",
-        "CreateNewQuestionary":"Erstelle einen neuen Fragebogen"
+        "CreateNewQuestionary":"Erstelle einen neuen Fragebogen",
+        "Questionary":"Fragebogen"
     }
 }

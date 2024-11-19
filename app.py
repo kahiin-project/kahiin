@@ -534,14 +534,19 @@ def handle_select_questionary(res) -> None:
     
 
 @socketio.on('createQuestionary')
-def create_questionary() -> None:
+def handle_create_questionary() -> None:
     list_questionaries = os.listdir("questionary")
     questionary_index = 1
     while f"new_questionary{questionary_index}.khn" in list_questionaries :
             questionary_index += 1
     file = open(f"questionary/new_questionary{questionary_index}.khn","w")
     file.close()
-    #emit(f"new_questionary{quesitonary_index}.khn")
+    emit("quetionaryCreated",f"new_questionary{questionary_index}.khn")
+
+@socketio.on("editQuestionaryName")
+def handle_edit_questionary_name(res) -> None:
+    os.rename("questionary/" + res["old_name"], "questionary/"+res["new_name"])
+    
 
 @socketio.on("getSettings")
 def handle_get_settings(code: str) -> None:
