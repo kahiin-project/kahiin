@@ -74,16 +74,32 @@ function selectQuestionary(questionary_name) {
     element.style.background ="";
   })
   document.getElementById(questionary_name).style.background = "#49cf38" ;
-  alert(glossary["QuestionarySelected"]);
 }
 
+function createQuestionary() {
+  socket.emit("createQuestionary", {passcode: passcode})
+}
+
+function editQuestionary(questionary_name) {
+  document.getElementById("edit_questionary_name").value = "";
+  document.getElementById("create_div").style.display = "none";
+  socket.emit("listQuestionary", {passcode: passcode});
+  questionary_word = document.getElementById("questionary_name").innerHTML.split(" - ")[0];
+  document.getElementById("questionary_name").innerHTML = questionary_word + " - " + questionary_name ;
+  document.getElementById("edit_div").style.display = "block";
+}
+
+function editQuestionaryName(new_name) {
+  old_name = document.getElementById("questionary_name").innerHTML.split(" - ")[1];
+  socket.emit("editQuestionaryName", {passcode: passcode, old_name: old_name, new_name: new_name})
+}
 
 // ---------------------- Functions Navigation -------------------------
 function navigate(index){
   for(let i = 0; i < 5; i++){
     document.getElementById(`nav_button_${i}`).style.borderLeft = "none";
   }
-  elementsToHide = ["play_div", "settings_div", "create_div"];
+  elementsToHide = ["play_div", "settings_div", "create_div","edit_div"];
   elementsToHide.forEach(element => {
     document.getElementById(element).style.display = "none";
   });
@@ -113,7 +129,8 @@ function navigate(index){
   }
 }
 
-function search(searchText,page){
+function search(page){
+  searchText = document.getElementById(`search_${page}_questionary`).value
   document.querySelectorAll(`#questionary_${page}_list .questionary`).forEach(element => {
     if (element.innerHTML.toLowerCase().includes(searchText.toLowerCase())) {
       element.style.display = "block";
@@ -190,6 +207,7 @@ socket.on("hostConnected", (res) => {
   document.getElementById("nav").style.display = "block";
   socket.emit("listQuestionary", {passcode: passcode});
 });
+
 // ---------------------- Socket.io Game -------------------------
 
 socket.on("startGame", (res) => {
@@ -258,3 +276,7 @@ socket.on("ListOfQuestionary", (res) => {
   }
   );
 });
+
+socket.on("editingQuestionnary", (res) => {
+  editQuestionary(res)
+})

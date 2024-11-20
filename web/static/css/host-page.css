@@ -169,13 +169,13 @@ nav button img{
 .nav_content input{
     margin-bottom: 5px;
     cursor: text;
-    width: calc(100% - 115px);
+    box-sizing: border-box;
 }
-.nav_content .apply-button, .nav_content #next_question, .nav_content #show_leaderboard, .nav_content #get_spreadsheet, .nav_content .questionary{
+.nav_content .apply-button, .nav_content #next_question, .nav_content #show_leaderboard, .nav_content #get_spreadsheet, .nav_content .questionary, .nav_content #create_questionary{
     background: #387fcf;
     margin-bottom: 5px;
 }
-.nav_content .apply-button:hover, .nav_content #next_question:hover, .nav_content #show_leaderboard:hover, #get_spreadsheet:hover, .nav_content .questionary:hover{
+.nav_content .apply-button:hover, .nav_content #next_question:hover, .nav_content #show_leaderboard:hover, #get_spreadsheet:hover, .nav_content .questionary:hover, .nav_content #create_questionary:hover{
     background: #3473bb;
 }
 .nav_content .apply-button.dyslexic{
@@ -207,4 +207,8 @@ nav button img{
 }
 .nav_content #start_game:hover{
     background: #47c037;
+}
+
+#questionary_select_list, #questionary_edit_list {
+    padding-left: 0px;
 }
