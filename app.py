@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request
-from flask_socketio import SocketIO, emit
 import qrcode as qrcodemaker
 from io import BytesIO
 import time
@@ -14,9 +13,12 @@ import asyncio
 import hypercorn.asyncio
 from hypercorn.config import Config
 from flask import Flask
-from flask_socketio import SocketIO
+from aioflask import ASGIApp
 from threading import Lock
-import eventlet
+import socketio
+import asyncio
+from typing import Any, Callable, Dict, Optional
+from functools import wraps
 
 def background_task():
     """Example background task."""
@@ -42,12 +44,81 @@ def get_glossary():
 
 
 # Initialize Flask application and SocketIO
+
+
+class SocketManager:
+    """Custom Socket.IO manager implementation with Flask integration"""
+    
+    def __init__(self, flask_app: Flask = None):
+        if flask_app is None:
+            flask_app = Flask(__name__)
+            
+        self.flask_app = flask_app
+        self.sio = socketio.AsyncServer(async_mode='asyncio', cors_allowed_origins='*')
+        self.app = socketio.ASGIApp(self.sio, self.flask_app)
+        self.background_tasks = {}
+        self.event_handlers = {}
+        
+        # Configuration de la route Flask par défaut
+        @self.flask_app.route('/')
+        def hello_world():
+            return 'Hello, World!'
+    
+    def on(self, event: str) -> Callable:
+        """Décorateur pour enregistrer les gestionnaires d'événements"""
+        def decorator(f: Callable) -> Callable:
+            @wraps(f)
+            async def wrapper(*args, **kwargs):
+                return await f(*args, **kwargs)
+            
+            self.event_handlers[event] = wrapper
+            self.sio.on(event)(wrapper)
+            return wrapper
+        return decorator
+    
+    async def emit(self, event: str, data: Any, room: Optional[str] = None) -> None:
+        """Émet un événement aux clients connectés"""
+        if room:
+            await self.sio.emit(event, data, room=room)
+        else:
+            await self.sio.emit(event, data)
+    
+    def background_task(self, task: Callable) -> None:
+        """Enregistre une tâche de fond"""
+        async def wrapped_task():
+            while True:
+                await task()
+                await asyncio.sleep(0.1)  # Évite de surcharger le CPU
+                
+        task_name = task.__name__
+        if task_name not in self.background_tasks:
+            self.background_tasks[task_name] = asyncio.create_task(wrapped_task())
+    
+    async def start(self, host: str = 'localhost', port: int = 8000) -> None:
+        """Démarre le serveur Socket.IO avec Flask"""
+        # Configuration du serveur Socket.IO
+        server = socketio.AsyncServer(async_mode='asyncio', cors_allowed_origins='*')
+        
+        # Intégration avec Flask
+        app = socketio.ASGIApp(server, self.flask_app)
+        
+        # Enregistrement des gestionnaires d'événements
+        for event, handler in self.event_handlers.items():
+            server.on(event)(handler)
+        
+        # Démarrage du serveur
+        web = asyncio.create_task(
+            asyncio.get_event_loop().create_server(
+                app, host, port
+            )
+        )
+        await web
+
+# Exemple d'utilisation:
+
+
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode='threading',  async_handlers=True)
-
-thread_lock = Lock()
-background_thread = None
-
+socket_manager = SocketManager(app)
 # Set static and template folders
 app.static_folder = 'web/static'
 app.template_folder = 'web/templates'
@@ -621,11 +692,4 @@ def start_flask():
 
 
 if __name__ == '__main__':
-    start_flask()
-    
-else:
-    app.config['DEBUG'] = False
-    app.config['USE_DEBUGGER'] = False
-    os.chdir(os.path.dirname(__file__))
-    
-
+    asyncio.run(socket_manager.start())
