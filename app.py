@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request
-from flask_socketio import SocketIO, emit
+from flask import render_template
+from .kahiin_websocket import ws_manager, background_task, flask_app as app
 import qrcode as qrcodemaker
 from io import BytesIO
 import time
@@ -9,6 +9,8 @@ from base64 import b64encode
 import random
 import threading
 import os
+import asyncio
+import socket
 
 def get_settings():
     with open("settings.json", "r") as f:
@@ -24,10 +26,7 @@ def get_glossary():
 
 
 
-# Initialize Flask application and SocketIO
-app = Flask(__name__)
-socketio = SocketIO(app)
-
+# Initialize Flask application and ws_manager
 # Set static and template folders
 app.static_folder = 'web/static'
 app.template_folder = 'web/templates'
@@ -61,14 +60,14 @@ sleep_manager = SleepManager()
 class GameTab:
     """Class representing a connected client."""
 
-    def __init__(self, sid: str, connections: list) -> None:
+    def __init__(self, websocket, connections: list) -> None:
         """
         Initialize a new Gametab instance.
 
         :param sid: Session ID of the client
         :param username: Username of the client
         """
-        self.sid = sid
+        self.websocket = websocket
         self.connections = connections
         self.connections.append(self)
 
@@ -78,8 +77,8 @@ client_list = []
 
 
 class Client(GameTab):
-    def __init__(self, sid: str, username: str, connections: list) -> None:
-        super().__init__(sid, connections)
+    def __init__(self, websocket, username: str, connections: list) -> None:
+        super().__init__(websocket, connections)
         self.username = username
         self.score = 0
         self.time_begin = 0
@@ -113,8 +112,8 @@ board_list = []
 
 
 class Board(GameTab):
-    def __init__(self, sid: str, connections: list) -> None:
-        super().__init__(sid, connections)
+    def __init__(self, websocket, connections: list) -> None:
+        super().__init__(websocket, connections)
 
 
 host_list = []
@@ -122,8 +121,8 @@ host_list = []
 
 
 class Host(GameTab):
-    def __init__(self, sid: str, connections: list) -> None:
-        super().__init__(sid, connections)
+    def __init__(self, websocket, connections: list) -> None:
+        super().__init__(websocket, connections)
 
 
 class Game:
@@ -213,16 +212,18 @@ game = Game()
 ## ----------------- Functions ----------------- ##
 
 def verification_wrapper(func):
-    def wrap(*args, **kwargs):
+    async def wrap(*args, **kwargs):
         real_passcode = get_passcode()
-        guessed_passcode = args[0] if type(args[0]) == str else args[0]["passcode"]
+        # Vérifier si args[1] est un dict ou une string
+        guessed_passcode = args[1] if isinstance(args[1], str) else args[1]["passcode"]
+        websocket = args[0]
         if guessed_passcode == real_passcode:
-            return func(*args, **kwargs)
+            # Exécuter la coroutine au lieu de l'appeler directement
+            return await func(*args, **kwargs)
         else:
-            emit('error', "InvalidPasscode")
-            return    
+            await ws_manager.emit('error', "InvalidPasscode", to=websocket)
+            return None
     return wrap
-
 
 ## ----------------- Routes ----------------- ##
 
@@ -250,157 +251,161 @@ def route_landing_page() -> str:
     """Render the landing page."""
     return render_template('landing-page.html')
 
-## ----------------- SocketIO Connections ----------------- ##
+## ----------------- ws_manager Connections ----------------- ##
 
 
-@socketio.on('connect')
-def handle_connect() -> None:
+@ws_manager.on('connect')
+async def handle_connect(websocket) -> None:
     """Handle client connection events."""
     data = get_settings()
     del data["adminPassword"]
-    emit("language", get_glossary())
-    emit("settings", data)
+    await ws_manager.emit("language", get_glossary(), to=websocket)
+    await ws_manager.emit("settings", data, to=websocket)
 
-
-@socketio.on('boardConnect')
+@ws_manager.on('boardConnect')
 @verification_wrapper
-def handle_board_connect(passcode: str) -> None:
+async def handle_board_connect(websocket, passcode: str) -> None:
     """
     Handle board connection requests.
 
     :param code: Passcode provided by the board
     """
     if game.running:
-        emit('error', "GameAlreadyRunning")
+        await ws_manager.emit('error', "GameAlreadyRunning")
         return
-    Board(sid=request.sid, connections=board_list)
-    emit('boardConnected')
-    qr_img = qrcodemaker.make(f"http://{request.host}/board")
+    Board(websocket=websocket, connections=board_list)
+    await ws_manager.emit('boardConnected', to=websocket)
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('10.254.254.254', 1))
+        IP = s.getsockname()[0]
+    except Exception:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    qr_img = qrcodemaker.make(f"http://{IP}/board")
     buffered = BytesIO()
     qr_img.save(buffered, format="JPEG")
     qr_img_str = b64encode(buffered.getvalue()).decode()
-    emit('qrcode', f"data:image/jpeg;base64,{qr_img_str}", to=request.sid)
+    await ws_manager.emit('qrcode', f"data:image/jpeg;base64,{qr_img_str}", to=websocket)
     for c in client_list:
-        emit('newUser', {'username': c.username, 'sid': c.sid})
+        await ws_manager.emit('newUser', data={'username': c.username}, to=websocket)
 
 
-@socketio.on('hostConnect')
+@ws_manager.on('hostConnect')
 @verification_wrapper
-def handle_host_connect(passcode: str) -> None:
-    Host(sid=request.sid, connections=host_list)
-    emit('hostConnected')
+async def handle_host_connect(websocket, passcode: str) -> None:
+    Host(websocket=websocket, connections=host_list)
+    await ws_manager.emit('hostConnected', data={}, to=websocket)
 
 
-@socketio.on('disconnect')
-def handle_disconnect() -> None:
-    """Handle client disconnection events."""
-    sessid = request.sid
-
-    client = next((client for client in client_list if client.sid == sessid), None) # Get first client with the sessid, is used to not iter the list multiple times
-    if client:
-        for board in board_list:
-            emit('rmUser', {'username': client.username}, to=board.sid)
-        client_list.remove(client)
-        if len(client_list) == 0:
-            for client in board+host:
-                emit("error", "NoClientConnected", to=client.sid)
-                emit("gameEnd", to=client.sid)
-        return
-
-    board = next((board for board in board_list if board.sid == sessid), None)
-    if sessid in [board.sid for board in board_list]:
-        board_list.remove(board)
-        if len(board_list == 0):
-            for client in client_list+host_list:
-                emit("error", "NoBoardConnected", to=client.sid)
-                emit("gameEnd", to=client.sid)
-        return
-
-    host = next((host for host in host_list if host.sid == sessid), None)
-    if host:
-        host_list.remove(host)
-        if len(host_list) == 0:
-            for client in client_list+board_list:
-                emit("error", "NoHostConnected", to=client.sid)
-                emit("gameEnd", to=client.sid)
-        return
-    
-
-@socketio.on('guestConnect')
-def handle_connect(username: str) -> None:
+@ws_manager.on('guestConnect')
+async def handle_connect(websocket, username: str) -> None:
     """
     Handle new user connection requests.
 
     :param username: Username provided by the new user
     """
-    sessid = request.sid
     # Check if the username is already taken
     if game.running:
-        emit('error', "GameAlreadyRunning")
+        await ws_manager.emit('error', "GameAlreadyRunning", to=websocket)
     elif any(c.username == username for c in client_list):
-        emit('error', "UsernameAlreadyTaken")
-    elif any(c.sid == sessid for c in client_list):
-        emit('error', "UserAlreadyConnected")
+        await ws_manager.emit('error', "UsernameAlreadyTaken", to=websocket)
+    elif any(c.websocket == websocket for c in client_list):
+        await ws_manager.emit('error', "UserAlreadyConnected", to=websocket)
     elif len(username) > 40 or len(username) < 1:
-        emit('error', "InvalidUsername")
+        await ws_manager.emit('error', "InvalidUsername", to=websocket)
     else:
-        Client(sid=sessid, username=username, connections=client_list)
-        emit('guestConnected')
+        Client(websocket=websocket, username=username, connections=client_list)
+        await ws_manager.emit('guestConnected', to=websocket)
         for board in board_list:
-            emit('newUser', {'username': username, 'sid': sessid}, to=board.sid)
+            await ws_manager.emit('newUser', {'username': username}, to=board.websocket)
             
-@socketio.on('kickPlayer')
+@ws_manager.on('disconnect')
+async def handle_disconnect(websocket) -> None:
+    """Handle client disconnection events."""
+    target_websocket = websocket
+    client = next((client for client in client_list if client.websocket == target_websocket), None) # Get first client with the target_websocket, is used to not iter the list multiple times
+    if client:
+        for board in board_list:
+            await ws_manager.emit('rmUser', {'username': client.username}, to=board.websocket)
+        client_list.remove(client)
+        if len(client_list) == 0:
+            for client in board+host:
+                await ws_manager.emit("error", "NoClientConnected", to=client.websocket)
+                await ws_manager.emit("gameEnd", to=client.websocket)
+        return
+
+    board = next((board for board in board_list if board.websocket == target_websocket), None)
+    if target_websocket in [board.websocket for board in board_list]:
+        board_list.remove(board)
+        if len(board_list == 0):
+            for client in client_list+host_list:
+                await ws_manager.emit("error", "NoBoardConnected", to=client.websocket)
+                await ws_manager.emit("gameEnd", to=client.websocket)
+        return
+
+    host = next((host for host in host_list if host.websocket == target_websocket), None)
+    if host:
+        host_list.remove(host)
+        if len(host_list) == 0:
+            for client in client_list+board_list:
+                await ws_manager.emit("error", "NoHostConnected", to=client.websocket)
+                await ws_manager.emit("gameEnd", to=client.websocket)
+        return
+    
+@ws_manager.on('kickPlayer')
 @verification_wrapper
-def handle_kick_player(res) -> None:
+async def handle_kick_player(websocket,res) -> None:
     for client in client_list:
         if client.username == res["username"]:
             client_list.remove(client)
-            emit('error','Kicked', to=client.sid)
+            await ws_manager.emit('error','Kicked', to=client.websocket)
             for board in board_list:
-                emit('rmUser', {'username': client.username}, to=board.sid)
+                await ws_manager.emit('rmUser', {'username': client.username}, to=board.websocket)
             return
-    emit('error', "UserNotFound")
+    await ws_manager.emit('error', "UserNotFound", to=websocket)
 
-## ----------------- SocketIO Game Events ----------------- ##
+## ----------------- ws_manager Game Events ----------------- ##
 
-@socketio.on('startSession')
+@ws_manager.on('startSession')
 @verification_wrapper
-def handle_start_game(code: str) -> None:
+async def handle_start_game(websocket, code: str) -> None:
     if game.running:
-        emit('error', "GameAlreadyRunning")
+        await ws_manager.emit('error', "GameAlreadyRunning", to=websocket)
         return
     if questionary.root is None:
-        emit('error', "NoQuestionary")
+        await ws_manager.emit('error', "NoQuestionary", to=websocket)
         return
     if len(client_list) == 0:
-        emit('error', "NoUsersConnected")
+        await ws_manager.emit('error', "NoUsersConnected", to=websocket)
         return
     if len(board_list) == 0:
-        emit('error', "NoBoardConnected")
+        await ws_manager.emit('error', "NoBoardConnected", to=websocket)
         return
     game.reset()
     game.running = True
     for client in client_list + board_list + host_list:
-        emit('startGame', to=client.sid)
+        await ws_manager.emit('startGame', to=client.websocket)
 
 
-@socketio.on("nextQuestion")
+@ws_manager.on("nextQuestion")
 @verification_wrapper
-def handle_next_question(res) -> None:
+async def handle_next_question(websocket, res) -> None:
     settings = get_settings()
     question_number = res["question_count"]
     # Reset all old user answer for the new question
     for client in client_list:
         client.user_answer = ""
     if len(client_list) == 0:
-        emit('error', "NoUsersConnected")
+        await ws_manager.emit('error', "NoUsersConnected", to=websocket)
         return
     if question_number == len(questionary.questionary["questions"]):
         data = {
             "game_lead": game.display()[0],
         }
         for client in client_list+board_list+host_list:
-            emit("gameEnd", data, to=client.sid)
+            await ws_manager.emit("gameEnd", data, to=client.websocket)
         return
     else:
         question_not_answered = list(filter(lambda q: q is not None, questionary.questionary["questions"]))
@@ -414,7 +419,7 @@ def handle_next_question(res) -> None:
             "question_count": len(questionary.questionary["questions"]),
         }
         for client in client_list + board_list + host_list:
-            emit("questionStart", data, to=client.sid)
+            await ws_manager.emit("questionStart", data, to=client.websocket)
         for client in client_list:
             client.time_begin = time.time()
             client.expected_response = question["correct_answers"]
@@ -438,26 +443,26 @@ def handle_next_question(res) -> None:
         for client in client_list:
             client.evalScore()
         for client in client_list+board_list+host_list:
-            emit("questionEnd", data, to=client.sid)
+            await ws_manager.emit("questionEnd", data, to=client.websocket)
 
 
 
-@socketio.on('showLeaderboard')
+@ws_manager.on('showLeaderboard')
 @verification_wrapper
-def handle_show_leaderboard(code: str) -> None:
+async def handle_show_leaderboard(websocket, code: str) -> None:
     game_lead, promoted_users = game.display()
     for client in board_list:
-        emit('leaderboard', {
-            "promoted_users": promoted_users, "game_lead": game_lead}, to=client.sid)
+        await ws_manager.emit('leaderboard', {
+            "promoted_users": promoted_users, "game_lead": game_lead}, to=client.websocket)
 
 
 
-@socketio.on('sendAnswer')
-def handle_answer(res) -> None:
+@ws_manager.on('sendAnswer')
+async def handle_answer(websocket, res) -> None:
     user_answer = res["answers"]
-    sessid = request.sid
+    target_websocket = websocket
     for client in client_list:
-        if client.sid == sessid:
+        if client.websocket == target_websocket:
             client.time_end = time.time()
             client.user_answer = user_answer
             if get_settings()["endOnAllAnswered"]:
@@ -465,10 +470,10 @@ def handle_answer(res) -> None:
                     sleep_manager.stop()
             return
     
-    emit('error' , "UserNotFound")
+    await ws_manager.emit('error' , "UserNotFound", to=websocket)
 
-@socketio.on('getSpreadsheet')
-def handle_get_spreadsheet(res) -> None:
+@ws_manager.on('getSpreadsheet')
+async def handle_get_spreadsheet(websocket, res) -> None:
     csv = []
     csv.append("Username,Score,MaxPossibleScore")
     client_list.sort(key=lambda x: x.score, reverse=True)
@@ -480,13 +485,13 @@ def handle_get_spreadsheet(res) -> None:
             }
     
     for host in host_list:
-        emit('spreadsheet', data, to=host.sid)
+        await ws_manager.emit('spreadsheet', data, to=host.websocket)
         
-## ----------------- SocketIO Configuration Events ----------------- ##
+## ----------------- ws_manager Configuration Events ----------------- ##
 
-@socketio.on('sendNewQuestionary')
+@ws_manager.on('sendNewQuestionary')
 @verification_wrapper
-def handle_new_questionary(res) -> None:
+async def handle_new_questionary(websocket, res) -> None:
     """
     Handle requests to send the questionary to the host.
 
@@ -497,9 +502,9 @@ def handle_new_questionary(res) -> None:
     with open(os.path.join("questionary", res["filename"]), "wb") as f:
         f.write(res["questionaire_data"])
     
-@socketio.on('listQuestionary')
+@ws_manager.on('listQuestionary')
 @verification_wrapper
-def handle_list_questionary(res) -> None:
+async def handle_list_questionary(websocket, res) -> None:
     """
     Handle requests to list all the questionaries.
 
@@ -507,11 +512,11 @@ def handle_list_questionary(res) -> None:
     """
     questionaries = os.listdir("questionary")
     questionaries.sort()
-    emit("ListOfQuestionary", {"questionaries": questionaries})
+    await ws_manager.emit("ListOfQuestionary", {"questionaries": questionaries}, to=websocket)
     
-@socketio.on('selectQuestionary')
+@ws_manager.on('selectQuestionary')
 @verification_wrapper
-def handle_select_questionary(res) -> None:
+async def handle_select_questionary(websocket, res) -> None:
     questionary.tree = ET.parse(os.path.join("questionary", res["questionary_name"]))
     questionary.root = questionary.tree.getroot()
     # questionary.questionary = {"questions": []}
@@ -533,51 +538,51 @@ def handle_select_questionary(res) -> None:
     #     })
     
 
-@socketio.on('createQuestionary')
+@ws_manager.on('createQuestionary')
 @verification_wrapper
-def handle_create_questionary(res) -> None:
+async def handle_create_questionary(websocket, res) -> None:
     list_questionaries = os.listdir("questionary")
     questionary_index = 1
     while f"new_questionary{questionary_index}.khn" in list_questionaries :
             questionary_index += 1
     file = open(f"questionary/new_questionary{questionary_index}.khn","w")
     file.close()
-    emit("editingQuestionnary",f"new_questionary{questionary_index}.khn")
+    await ws_manager.emit("editingQuestionnary",f"new_questionary{questionary_index}.khn", to=websocket)
 
-@socketio.on("editQuestionaryName")
+@ws_manager.on("editQuestionaryName")
 @verification_wrapper
-def handle_edit_questionary_name(res) -> None:
+async def handle_edit_questionary_name(websocket, res) -> None:
     list_questionaries = os.listdir("questionary")
     forbiden_characters = '/\|,.;:!?*"><'
     invalid_characters = False
     for character in forbiden_characters :
         invalid_characters += character in res["new_name"]
     if res["new_name"] == "" :
-        emit('error', "EmptyName")
+        await ws_manager.emit('error', "EmptyName", to=websocket)
     elif invalid_characters :
-        emit('error', "SpecialCharacters")
+        await ws_manager.emit('error', "SpecialCharacters")
     elif res["new_name"] + ".khn" in list_questionaries :
-        emit('error', "AlreadyExist")
+        await ws_manager.emit('error', "AlreadyExist", to=websocket)
     else :
         os.rename("questionary/" + res["old_name"], "questionary/"+res["new_name"]+".khn")
-        emit("editingQuestionnary",res["new_name"]+".khn")
+        await ws_manager.emit("editingQuestionnary",res["new_name"]+".khn", to=websocket)
     
 
-@socketio.on("getSettings")
-def handle_get_settings(code: str) -> None:
+@ws_manager.on("getSettings")
+async def handle_get_settings(websocket, code: str) -> None:
     """Handle requests to get settings."""
     if get_passcode == code:
-        emit("settings", get_settings())
+        await ws_manager.emit("settings", get_settings(), to=websocket)
     else:
         data = get_settings()
         del data["adminPassword"]
-        emit("settings", data)
+        await ws_manager.emit("settings", data, to=websocket)
 
 
 
-@socketio.on("setSettings")
+@ws_manager.on("setSettings")
 @verification_wrapper
-def handle_set_settings(res) -> None:
+async def handle_set_settings(websocket, res) -> None:
     """Handle requests to set a specific setting."""
     try:
         with open("settings.json", "r") as f:
@@ -597,11 +602,14 @@ def handle_set_settings(res) -> None:
 
     # Announce every client the new settings
     for client in client_list+board_list+host_list:
-        emit("settings", settings, to=client.sid)
+        await ws_manager.emit("settings", settings, to=client.websocket)
 
 
 def start_flask():
-    socketio.run(app, debug=True, port=8080, host="0.0.0.0")
+    ws_manager.add_background_task(background_task())
+    asyncio.run(ws_manager.start())
 
 if __name__ == '__main__':
     start_flask()
+else:
+    os.chdir(os.path.dirname(__file__))

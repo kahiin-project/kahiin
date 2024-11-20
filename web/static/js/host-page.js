@@ -1,4 +1,3 @@
-const socket = io();
 
 // ---------------------- Variables -------------------------
 var question_count = 0;
