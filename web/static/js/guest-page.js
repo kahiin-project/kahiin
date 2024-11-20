@@ -1,4 +1,4 @@
-const socket = io();
+
 // ---------------------- Variables -------------------------
 
 var answer_list= [];
