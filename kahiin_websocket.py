@@ -5,9 +5,9 @@ from dataclasses import dataclass, field
 from typing import Dict, Set, Callable, Any, Optional, Coroutine
 from collections import defaultdict
 from flask import Flask
-import time
 import logging
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
 from websockets.server import WebSocketServerProtocol
 
@@ -28,7 +28,8 @@ class WebSocketManager:
         self.flask_app = flask_app
         
         self.executor = ThreadPoolExecutor(max_workers=10)
-        
+    
+    
     def on(self, event_name: str):
         """Décorateur pour enregistrer les gestionnaires d'événements"""
         def decorator(func):
@@ -74,25 +75,39 @@ class WebSocketManager:
         self.clients.discard(websocket)
         for room in self.rooms.values():
             room.clients.discard(websocket)
+        if 'disconnect' in self.event_handlers:
+            await self.event_handlers['disconnect'](websocket)
 
     async def handle_client(self, websocket: WebSocketServerProtocol, path: str = None):
         try:
             self.clients.add(websocket)
+            last_ping = time.time()
             
             if 'connect' in self.event_handlers:
                 await self.event_handlers['connect'](websocket)
-                
+
             async for message in websocket:
                 try:
                     data = json.loads(message)
                     event = data.get('event')
-                    payload = data.get('data')
                     
+                    # Gestion du heartbeat
+                    if event == 'ping':
+                        last_ping = time.time()
+                        await websocket.send(json.dumps({'event': 'pong'}))
+                        continue
+
+                    payload = data.get('data')
                     if event in self.event_handlers:
-                        # Attendre la coroutine avec await
                         await self.event_handlers[event](websocket, payload)
+
                 except json.JSONDecodeError:
                     logging.error(f"Invalid JSON received: {message}")
+                    
+                if time.time() - last_ping > 5:
+                    # Send disconnect event to server
+                    await self.handle_disconnect(websocket)
+                    raise websockets.exceptions.ConnectionClosed(1000, "Heartbeat timeout")
                     
         except websockets.exceptions.ConnectionClosed:
             pass
@@ -145,32 +160,7 @@ class WebSocketManager:
             ws_server.close()
             await ws_server.wait_closed()
 
-def create_app():
-    ws_manager = WebSocketManager(flask_app)
-    return flask_app, ws_manager
-
-app, ws_manager = create_app()
-
-@ws_manager.on('connect')
-async def handle_connect(websocket):
-    """Gestion de la connexion client"""
-    data = {"setting1": "value1", "setting2": "value2"}
-    await ws_manager.emit("settings", data)
-
-
-async def background_task():
-    """Tâche de fond exemple"""
-    while True:
-        try:
-            await ws_manager.emit('background_update', {'timestamp': time.time()}, )
-        except Exception as e:
-            logging.error(f"Error in background task: {e}")
-        await asyncio.sleep(5)
-
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO,
-                       format='%(asctime)s - %(levelname)s - %(message)s')
     
-    ws_manager.add_background_task(background_task())
 
-    asyncio.run(ws_manager.start())
+app = flask_app
+ws_manager = WebSocketManager(flask_app)

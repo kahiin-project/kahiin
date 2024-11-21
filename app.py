@@ -1,5 +1,4 @@
 from flask import render_template
-from .kahiin_websocket import ws_manager, background_task, flask_app as app
 import qrcode as qrcodemaker
 from io import BytesIO
 import time
@@ -7,11 +6,15 @@ import json
 import xml.etree.ElementTree as ET
 from base64 import b64encode
 import random
-import threading
 import os
 import asyncio
 import socket
 
+try:
+    from kahiin_websocket import ws_manager, flask_app as app
+except ImportError:
+    from .kahiin_websocket import ws_manager, flask_app as app
+    
 def get_settings():
     with open("settings.json", "r") as f:
         return json.load(f)
@@ -45,10 +48,13 @@ class Questionary:
 questionary = Questionary()
 class SleepManager:
     def __init__(self):
-        self._stop_event = threading.Event()
+        self._stop_event = asyncio.Event()
 
-    def sleep(self, duration):
-        self._stop_event.wait(timeout=duration)
+    async def sleep(self, duration):
+        try:
+            await asyncio.wait_for(self._stop_event.wait(), timeout=duration)
+        except asyncio.TimeoutError:
+            pass
 
     def stop(self):
         self._stop_event.set()
@@ -331,7 +337,7 @@ async def handle_disconnect(websocket) -> None:
             await ws_manager.emit('rmUser', {'username': client.username}, to=board.websocket)
         client_list.remove(client)
         if len(client_list) == 0:
-            for client in board+host:
+            for client in board_list+host_list:
                 await ws_manager.emit("error", "NoClientConnected", to=client.websocket)
                 await ws_manager.emit("gameEnd", to=client.websocket)
         return
@@ -339,7 +345,7 @@ async def handle_disconnect(websocket) -> None:
     board = next((board for board in board_list if board.websocket == target_websocket), None)
     if target_websocket in [board.websocket for board in board_list]:
         board_list.remove(board)
-        if len(board_list == 0):
+        if len(board_list) == 0:
             for client in client_list+host_list:
                 await ws_manager.emit("error", "NoBoardConnected", to=client.websocket)
                 await ws_manager.emit("gameEnd", to=client.websocket)
@@ -425,16 +431,8 @@ async def handle_next_question(websocket, res) -> None:
             client.expected_response = question["correct_answers"]
             client.question_type = question["type"]
             client.timer_time = question["duration"]
-
-        if settings.get("endOnAllAnswered"):
-            #Threading used to stop sleep whenever all user answered
-            sleep_manager.reset()
-            sleep_thread = threading.Thread(target=sleep_manager.sleep, args=(2 + question["duration"],))
-            sleep_thread.start()
-            sleep_thread.join()
-        else:
-            # 2sec for progress bar to appear and first delay,
-            time.sleep(2 + question["duration"])
+            
+        await sleep_manager.sleep(2 + question["duration"])
         data = {
             "question_correct_answer": question["correct_answers"]
         }
@@ -455,15 +453,12 @@ async def handle_show_leaderboard(websocket, code: str) -> None:
         await ws_manager.emit('leaderboard', {
             "promoted_users": promoted_users, "game_lead": game_lead}, to=client.websocket)
 
-
-
 @ws_manager.on('sendAnswer')
 async def handle_answer(websocket, res) -> None:
     user_answer = res["answers"]
     target_websocket = websocket
     for client in client_list:
         if client.websocket.id == target_websocket.id:
-            logging.info(f"User found: {client.username}")
             client.time_end = time.time()
             client.user_answer = user_answer
             if get_settings()["endOnAllAnswered"]:
