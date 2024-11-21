@@ -30,7 +30,6 @@
     width: 250px;
 }
 
-  
 #submit{
     position: relative;
     background: #ebebeb;
@@ -61,10 +60,40 @@
     padding: 0;
 }
 
+@media(min-width: 751px) {
+    nav button {
+        font-size: 115%;
+        padding-left: 70px;
+    }
+    nav button img {left: 15px}
+    nav {width:16%}
+    .nav_content h1 {font-size: 50px}
+    .nav_content h2 {font-size: 30px}
+    .nav_content select, .nav_content button, .nav_content input {font-size: 20px}
+}
+
+@media(max-width: 1050px) {
+    nav button {font-size: 75%}
+}
+@media(max-width: 750px) {
+    nav button {
+        font-size: 0px ;
+        padding-left: 0px;
+    }
+    nav button img {left: calc(50% - 20px)}
+    nav {width:16%}
+    .nav_content h1 {font-size: 35px}
+    .nav_content h2 {font-size: 25px}
+    .nav_content select, .nav_content button, .nav_content input {font-size: 15px}
+}
+@media(max-width: 500px) {
+    nav button img {left: calc(50% - 20px)}
+    nav {width:80px}
+}
+
 nav{
     position: absolute;
     height: 100%;
-    width: 300px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
     display: none;
 }
@@ -78,10 +107,8 @@ nav button{
     left: 0;
     height: 80px;
     text-align: left;
-    padding-left: 70px;
     padding-top: 15px;
     padding-bottom: 10px;
-    font-size: 18px;
     border: none;
     cursor: pointer;
     background: #f0f0f0;
@@ -97,7 +124,6 @@ nav button.dyslexic{
 }
 nav button img{
     position: absolute;
-    left: 15px;
     top: 20px;
     height: 40px;
     width: 40px;
@@ -105,7 +131,7 @@ nav button img{
 
 .nav_content{
     position: absolute;
-    left: 300px;
+    left: 16%;
     right: 0;
     top: 0;
     bottom: 0;
@@ -113,12 +139,10 @@ nav button img{
     overflow-y: scroll;
 }
 .nav_content h1{
-    font-size: 50px;
     padding-left: 50px;
     margin-top: 50px;
 }
 .nav_content h2{
-    font-size: 30px;
     padding-left: 50px;
     margin-top: 50px;
     font-weight: normal;
@@ -126,7 +150,6 @@ nav button img{
 .nav_content select, .nav_content button, .nav_content input{
     margin-left: 50px;
     width: calc(100% - 100px);
-    font-size: 20px;
     background: #f0f0f0;
     border: solid .5px #a7a7a7;
     padding-bottom: 5px;
