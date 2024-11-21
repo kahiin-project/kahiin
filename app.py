@@ -462,14 +462,14 @@ async def handle_answer(websocket, res) -> None:
     user_answer = res["answers"]
     target_websocket = websocket
     for client in client_list:
-        if client.websocket == target_websocket:
+        if client.websocket.id == target_websocket.id:
+            logging.info(f"User found: {client.username}")
             client.time_end = time.time()
             client.user_answer = user_answer
             if get_settings()["endOnAllAnswered"]:
                 if all(client.user_answer for client in client_list):
                     sleep_manager.stop()
             return
-    
     await ws_manager.emit('error' , "UserNotFound", to=websocket)
 
 @ws_manager.on('getSpreadsheet')
@@ -606,7 +606,7 @@ async def handle_set_settings(websocket, res) -> None:
 
 
 def start_flask():
-    ws_manager.add_background_task(background_task())
+    # ws_manager.add_background_task(background_task())
     asyncio.run(ws_manager.start())
 
 if __name__ == '__main__':
