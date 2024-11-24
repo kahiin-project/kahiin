@@ -268,6 +268,7 @@ async def handle_connect(websocket) -> None:
     filtered_data = {key: value for key, value in data.items() if key == "dyslexicMode" or key == "language"}
     print(filtered_data)
     await ws_manager.emit("settings", filtered_data, to=websocket)
+    await ws_manager.emit("glossary", get_glossary(), to=websocket)
 
 @ws_manager.on('boardConnect')
 @verification_wrapper

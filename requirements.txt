@@ -1,5 +1,5 @@
-flask==2.1.3
-Werkzeug==2.2.2
+flask
+Werkzeug
 aioflask
 hypercorn
 simple-websocket
