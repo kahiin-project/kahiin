@@ -51,7 +51,7 @@
         "EmptyName":"Le nom du questionaire ne peut pas être vide",
         "SpecialCharacters":"Le nom du questionaire ne peut pas contenir de caractère spécial",
         "AlreadyExist":"Le nom du questionnaire ne peut pas être vide",
-        "Quesions":"Questions"
+        "Questions":"Questions"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -105,7 +105,7 @@
         "EmptyName":"Questionary's name cannot be empty",
         "SpecialCharacters":"Questionary's name cannot contain special character",
         "AlreadyExist":"Questionary's name already exist",
-        "Quesions":"Questions"
+        "Questions":"Questions"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -159,7 +159,7 @@
         "EmptyName":"El nombre del cuestionario no puede estar vacío",
         "SpecialCharacters":"El nombre del cuestionario no puede contener caracteres especiales",
         "AlreadyExist":"El nombre del cuestionario ya existe",
-        "Quesions":"Preguntas"
+        "Questions":"Preguntas"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -213,7 +213,7 @@
         "EmptyName":"Il nome del questionario non può essere vuoto",
         "SpecialCharacters":"Il nome del questionario non può contenere caratteri speciali",
         "AlreadyExist":"Il nome del questionario esiste già",
-        "Quesions":"Domande"
+        "Questions":"Domande"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -267,6 +267,6 @@
         "EmptyName":"Der Name des Fragebogens darf nicht leer sein",
         "SpecialCharacters":"Der Name des Fragebogens darf keine Sonderzeichen enthalten",
         "AlreadyExist":"Der Name des Fragebogens existiert bereits",
-        "Quesions":"Fragen"
+        "Questions":"Fragen"
     }
 }
