@@ -104,7 +104,7 @@ class WebSocketManager:
                 except json.JSONDecodeError:
                     logging.error(f"Invalid JSON received: {message}")
                     
-                if time.time() - last_ping > 5:
+                if time.time() - last_ping > 15:
                     # Send disconnect event to server
                     await self.handle_disconnect(websocket)
                     raise websockets.exceptions.ConnectionClosed(1000, "Heartbeat timeout")

@@ -63,7 +63,7 @@ class WebSocketHandler {
             if (this.ws.readyState === WebSocket.OPEN) {
                 this.emit('ping', {});
             }
-        }, 2000); // Heartbeat toutes les 30 secondes
+        }, 5000);
     }
 
     stopHeartbeat() {
