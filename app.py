@@ -431,11 +431,13 @@ async def handle_next_question(websocket, res) -> None:
             client.expected_response = question["correct_answers"]
             client.question_type = question["type"]
             client.timer_time = question["duration"]
-            
+            client.user_answer = None
         await sleep_manager.sleep(2 + question["duration"])
         data = {
             "question_correct_answer": question["correct_answers"]
         }
+        sleep_manager.stop()
+        sleep_manager.reset()
         if settings["randomOrder"]:
             questionary.questionary["questions"][questionary.questionary["questions"].index(question)] = None
         for client in client_list:
@@ -464,6 +466,7 @@ async def handle_answer(websocket, res) -> None:
             if get_settings()["endOnAllAnswered"]:
                 if all(client.user_answer for client in client_list):
                     sleep_manager.stop()
+                    sleep_manager.reset()
             return
     await ws_manager.emit('error' , "UserNotFound", to=websocket)
 

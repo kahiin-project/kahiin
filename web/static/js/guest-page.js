@@ -235,7 +235,6 @@ function sendMCQ() {
         }
       }
     }
-    socket.emit("getSettings", "");
   });
 
   socket.on("questionEnd", (res) => {
