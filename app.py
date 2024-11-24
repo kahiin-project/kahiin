@@ -337,28 +337,31 @@ async def handle_disconnect(websocket) -> None:
         for board in board_list:
             await ws_manager.emit('rmUser', {'username': client.username}, to=board.websocket)
         client_list.remove(client)
-        if len(client_list) == 0:
-            for client in board_list+host_list:
-                await ws_manager.emit("error", "NoClientConnected", to=client.websocket)
-                await ws_manager.emit("gameEnd", to=client.websocket)
+        if game.running:
+            if len(client_list) == 0:
+                for client in board_list+host_list:
+                    await ws_manager.emit("error", "NoClientConnected", to=client.websocket)
+                    await ws_manager.emit("gameEnd", to=client.websocket)
         return
 
     board = next((board for board in board_list if board.websocket == target_websocket), None)
     if target_websocket in [board.websocket for board in board_list]:
         board_list.remove(board)
-        if len(board_list) == 0:
-            for client in client_list+host_list:
-                await ws_manager.emit("error", "NoBoardConnected", to=client.websocket)
-                await ws_manager.emit("gameEnd", to=client.websocket)
+        if game.running:
+            if len(board_list) == 0:
+                for client in client_list+host_list:
+                    await ws_manager.emit("error", "NoBoardConnected", to=client.websocket)
+                    await ws_manager.emit("gameEnd", to=client.websocket)
         return
 
     host = next((host for host in host_list if host.websocket == target_websocket), None)
     if host:
         host_list.remove(host)
-        if len(host_list) == 0:
-            for client in client_list+board_list:
-                await ws_manager.emit("error", "NoHostConnected", to=client.websocket)
-                await ws_manager.emit("gameEnd", to=client.websocket)
+        if game.running:
+            if len(host_list) == 0:
+                for client in client_list+board_list:
+                    await ws_manager.emit("error", "NoHostConnected", to=client.websocket)
+                    await ws_manager.emit("gameEnd", to=client.websocket)
         return
     
 @ws_manager.on('kickPlayer')
