@@ -19,17 +19,17 @@
     <div id="form">
       <input type="password" id="passcode" placeholder="passcode" onchange="submitPasscode()" />
       <p id="error"></p>
-      <button id="submit" onclick="submitPasscode()">${glossary["Submit"]}</button>
+      <button id="submit" onclick="submitPasscode()">{{glossary["Submit"]}}</button>
     </div>
     <nav id="nav">
       <div class="header"></div>
       <button id="nav_button_0" style="top: 160px;" onclick="navigate(0);">
         <img src="static/icon/play.svg">
-        ${glossary["Play"]}
+        {{glossary["Play"]}}
       </button>
       <button id="nav_button_1" style="top: 250px;" onclick="navigate(1);">
         <img src="static/icon/create.svg">
-        ${glossary["Create"]}
+        {{glossary["Create"]}}
       </button>
       <button id="nav_button_2" style="top: 340px;" onclick="navigate(2);">
         <img src="static/icon/database.svg">
@@ -37,54 +37,54 @@
       </button>
       <button id="nav_button_3" style="top: 430px;" onclick="navigate(3);">
         <img src="static/icon/settings.svg">
-        ${glossary["Settings"]}
+        {{glossary["Settings"]}}
       </button>
       <button id="nav_button_4" style="bottom: 10px;" onclick="navigate(4);">
         <img src="static/icon/account.svg">
-        ${glossary["Account"]}
+        {{glossary["Account"]}}
       </button>
     </nav>
     <div id="play_div" style="display: none;" class="nav_content">
-      <h1>${glossary["Play"]}</h1>
-      <h2>${glossary["Party"]}</h2>
+      <h1>{{glossary["Play"]}}</h1>
+      <h2>{{glossary["Party"]}}</h2>
       <button id="start_game" onclick="startSession()">
-        ${glossary["StartGame"]}
+        {{glossary["StartGame"]}}
       </button>
       <button id="next_question" style="display: none;" disabled="true" onclick="nextQuestion()">
-        ${glossary["NextQuestion"]}
+        {{glossary["NextQuestion"]}}
       </button>
       <button id="show_leaderboard" style="display: none;" disabled="true" onclick="showLeaderboard()">
-        ${glossary["ShowLeaderboard"]}
+        {{glossary["ShowLeaderboard"]}}
       </button>
-      <p id="start_game_will_remove_data" style="margin-left: 50px; color: gray;display: none;">${glossary["StartGameWillRemoveData"]}</p>
+      <p id="start_game_will_remove_data" style="margin-left: 50px; color: gray;display: none;">{{glossary["StartGameWillRemoveData"]}}</p>
       <button id="get_spreadsheet" style="display: none;" onclick="getSpreadsheet()">
-        ${glossary["GetSpreadsheet"]}
+        {{glossary["GetSpreadsheet"]}}
       </button>
-      <h2>${glossary["AdminSpace"]}</h2>
+      <h2>{{glossary["AdminSpace"]}}</h2>
       <input type="text" id="kick_player_name" placeholder='' />
       <button id="kick_player_button" onclick="kickPlayer()">
-        ${glossary["KickPlayer"]}
+        {{glossary["KickPlayer"]}}
       </button>
-      <h2>${glossary["Select"]}</h2>
+      <h2>{{glossary["Select"]}}</h2>
       <input type="search" id="search_select_questionary" placeholder="search" onkeyup="search('select')">
       <ul id="questionary_select_list"></ul>
     </div>
     <div id="create_div" class="nav_content" style="display: none;">
-      <h1>${glossary["Create"]}</h1>
-      <button id="create_questionary" onclick="createQuestionary()">${glossary["CreateNewQuestionary"]}</button>
-      <h2>${glossary["Edit"]}</h2>
+      <h1>{{glossary["Create"]}}</h1>
+      <button id="create_questionary" onclick="createQuestionary()">{{glossary["CreateNewQuestionary"]}}</button>
+      <h2>{{glossary["Edit"]}}</h2>
       <input type="search" id="search_edit_questionary" placeholder="search" onkeyup="search('edit')">
       <ul id="questionary_edit_list"></ul>
     </div>
     <div id="edit_div" class="nav_content" style="display: none;">
-      <h1>${glossary["Edit"]}</h1>
-      <h2 id = "questionary_name">${glossary["Questionary"]}</h2>
+      <h1>{{glossary["Edit"]}}</h1>
+      <h2 id = "questionary_name">{{glossary["Questionary"]}}</h2>
       <input type="text" id="edit_questionary_name" placeholder="Questionary Name" onchange="editQuestionaryName(this.value)">
-      <h2>${glossary["Questions"]}</h2>
+      <h2>{{glossary["Questions"]}}</h2>
     </div>
     <div id="settings_div" class="nav_content" style="display: none;" >
-      <h1>${glossary["Settings"]}</h1>
-      <h2>${glossary["Language"]}</h2>
+      <h1>{{glossary["Settings"]}}</h1>
+      <h2>{{glossary["Language"]}}</h2>
       <select id="language" onchange=changeLanguage()>
         <option value="en">🇬🇧 English</option>
         <option value="fr">🇫🇷 Français</option>
@@ -92,17 +92,17 @@
         <option value="it">🇮🇹 Italiano</option>
         <option value="de">🇩🇪 Deutsch</option>
       </select>
-      <p style="margin-left: 50px; color: gray;">${glossary["ChangeLanguageWillRefresh"]}</p>
-      <h2>${glossary["DyslexicMode"]}</h2>
-      <button class="" id='dyslexicModeButton' onclick="editSettingsButton('dyslexicMode')" ></button>
-      <h2>${glossary["RandomOrder"]}</h2>
-      <button class="" id='randomOrderButton' onclick="editSettingsButton('randomOrder')"></button>
-      <h2>${glossary["EndOnAllAnswered"]}</h2>
-      <button class="" id='endOnAllAnsweredButton' onclick="editSettingsButton('endOnAllAnswered')"></button>
-      <h2>${glossary["AdminPassword"]}</h2>
+      <p style="margin-left: 50px; color: gray;">{{glossary["ChangeLanguageWillRefresh"]}}</p>
+      <h2>{{glossary["DyslexicMode"]}}</h2>
+      <button class={{"on" if settings["dyslexicMode"] else "off"}} id='dyslexicModeButton' onclick="editSettingsButton('dyslexicMode')">{{"ON" if settings["dyslexicMode"] else "OFF"}}</button>
+      <h2>{{glossary["RandomOrder"]}}</h2>
+      <button class={{"on" if settings["randomOrder"] else "off"}} id='randomOrderButton' onclick="editSettingsButton('randomOrder')">{{"ON" if settings["randomOrder"] else "OFF"}}</button>
+      <h2>{{glossary["EndOnAllAnswered"]}}</h2>
+      <button class={{"on" if settings["endOnAllAnswered"] else "off"}} id='endOnAllAnsweredButton' onclick="editSettingsButton('endOnAllAnswered')">{{"ON" if settings["endOnAllAnswered"] else "OFF"}}</button>
+      <h2>{{glossary["AdminPassword"]}}</h2>
       <input type="password" id="new_password" placeholder="New Password">
       <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
-      <button class="apply-button" onclick="applyNewPassword()">${glossary["Apply"]}</button>
+      <button class="apply-button" onclick="applyNewPassword()">{{glossary["Apply"]}}</button>
       <div style="height: 50px"></div>
     </div>
   </body>

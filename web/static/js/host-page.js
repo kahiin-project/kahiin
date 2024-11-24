@@ -72,6 +72,16 @@ function changeLanguage() {
 
 function editSettingsButton(setting) {
     socket.emit('setSettings', { passcode, settings: { [setting]: document.getElementById(`${setting}Button`).innerHTML !== "ON" } });
+    document.getElementById(`${setting}Button`).innerHTML = document.getElementById(`${setting}Button`).innerHTML === "ON" ? "OFF" : "ON";
+    const button = document.getElementById(`${setting}Button`);
+    if (button.classList.contains("off")) {
+        button.classList.remove("off");
+        button.classList.add("on");
+    } else {
+        button.classList.remove("on");
+        button.classList.add("off");
+    }
+
 }
 
 // ---------------------- Functions Create -------------------------
@@ -170,34 +180,19 @@ function setupSocketListeners() {
         }
     });
 
-    socket.on("language", (res) => {
-        glossary = res;
-        const body = document.getElementById("body");
-        const regex = /\$\{glossary\["([A-Za-z]+)"\]\}/g;
-        const replaced = body.innerHTML.replace(regex, (match, key) => {
-            return glossary[key] || match;
-        });
-        body.innerHTML = replaced;
-        document.getElementById("body").style.display = "block";
-        document.getElementById("passcode").placeholder = glossary["Passcode"];
-        document.getElementById("kick_player_name").placeholder = glossary["PlayerName"];
-        document.getElementById("search_edit_questionary").placeholder = glossary["Search"];
-        document.getElementById("search_select_questionary").placeholder = glossary["Search"];
-    });
-
     socket.on("settings", (res) => {
         document.getElementById("language").value = res.language;
-        const dyslexicModeButton = document.getElementById("dyslexicModeButton");
-        dyslexicModeButton.className = res.dyslexicMode ? "on" : "off";
-        dyslexicModeButton.innerHTML = res.dyslexicMode ? "ON" : "OFF";
+        // const dyslexicModeButton = document.getElementById("dyslexicModeButton");
+        // dyslexicModeButton.className = res.dyslexicMode ? "on" : "off";
+        // dyslexicModeButton.innerHTML = res.dyslexicMode ? "ON" : "OFF";
 
-        const randomOrderButton = document.getElementById("randomOrderButton");
-        randomOrderButton.className = res.randomOrder ? "on" : "off";
-        randomOrderButton.innerHTML = res.randomOrder ? "ON" : "OFF";
+        // const randomOrderButton = document.getElementById("randomOrderButton");
+        // randomOrderButton.className = res.randomOrder ? "on" : "off";
+        // randomOrderButton.innerHTML = res.randomOrder ? "ON" : "OFF";
 
-        const endOnAllAnsweredButton = document.getElementById("endOnAllAnsweredButton");
-        endOnAllAnsweredButton.className = res.endOnAllAnswered ? "on" : "off";
-        endOnAllAnsweredButton.innerHTML = res.endOnAllAnswered ? "ON" : "OFF";
+        // const endOnAllAnsweredButton = document.getElementById("endOnAllAnsweredButton");
+        // endOnAllAnsweredButton.className = res.endOnAllAnswered ? "on" : "off";
+        // endOnAllAnsweredButton.innerHTML = res.endOnAllAnswered ? "ON" : "OFF";
 
         const elements = document.querySelectorAll('*');
         elements.forEach(element => {

@@ -34,18 +34,18 @@
     <div id="form">
       <input type="password" id="passcode" placeholder="passcode" onchange="submitPasscode()" />
       <p id="error"></p>
-      <button id="submit" onclick="submitPasscode()">${glossary["Submit"]}</button>
+      <button id="submit" onclick="submitPasscode()">{{glossary["Submit"]}}</button>
     </div>
     <img id="qrcode" src ="">
-    <h2 id="scan">${glossary["ScanMe"]}</h2>
+    <h2 id="scan">{{glossary["ScanMe"]}}</h2>
     <div id="list">
-      <h1 id="title_player_list">${glossary["PlayerList"]}</h1>
+      <h1 id="title_player_list">{{glossary["PlayerList"]}}</h1>
       <ul id="users"></ul>
     </div>
     <h1 id="question"></h1>
     <h2 id="question_number"></h2>
     <span id="loader" style="display: none"></span>
-    <p id="loader-text">${glossary["WaitingForHost"]}</p>
+    <p id="loader-text">{{glossary["WaitingForHost"]}}</p>
     <div id="answers_div"></div>
     <div class="container">
       <div id="timerbar" class="progressbar-wrapper">
@@ -58,7 +58,7 @@
         <ul id="leaderboard-top-items"></ul>
       </div>
       <div id="promoted-list">
-        <h1>${glossary["WonPlaces"]}</h1>
+        <h1>{{glossary["WonPlaces"]}}</h1>
         <ul id="promoted-list-items"></ul>
       </div>
     </div>

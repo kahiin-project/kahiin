@@ -15,14 +15,14 @@ try:
 except ImportError:
     from .kahiin_websocket import ws_manager, flask_app as app
     
-def get_settings():
+def get_settings() -> dict:
     with open("settings.json", "r") as f:
         return json.load(f)
     
 def get_passcode():
     return get_settings()["adminPassword"]
 
-def get_glossary():
+def get_glossary() -> dict:
     with open("glossary.json", "r") as g:
         with open("settings.json", "r") as s:
             return json.load(g)[json.load(s)["language"]]
@@ -237,25 +237,25 @@ def verification_wrapper(func):
 @app.route('/host')
 def route_host() -> str:
     """Render the host page."""
-    return render_template('host-page.html')
+    return render_template('host-page.html', glossary=get_glossary(), settings=get_settings())
 
 
 @app.route('/guest')
 def route_homepage() -> str:
     """Render the homepage."""
-    return render_template('guest-page.html')
+    return render_template('guest-page.html', glossary=get_glossary())
 
 
 @app.route('/board')
 def route_board_page() -> str:
     """Render the board page."""
-    return render_template('board-page.html')
+    return render_template('board-page.html', glossary=get_glossary())
 
 
 @app.route('/')
 def route_landing_page() -> str:
     """Render the landing page."""
-    return render_template('landing-page.html')
+    return render_template('landing-page.html', glossary=get_glossary())
 
 ## ----------------- ws_manager Connections ----------------- ##
 
@@ -264,9 +264,10 @@ def route_landing_page() -> str:
 async def handle_connect(websocket) -> None:
     """Handle client connection events."""
     data = get_settings()
-    del data["adminPassword"]
-    await ws_manager.emit("language", get_glossary(), to=websocket)
-    await ws_manager.emit("settings", data, to=websocket)
+    # Remove all settings except dyslexic mode before sending
+    filtered_data = {key: value for key, value in data.items() if key == "dyslexicMode" or key == "language"}
+    print(filtered_data)
+    await ws_manager.emit("settings", filtered_data, to=websocket)
 
 @ws_manager.on('boardConnect')
 @verification_wrapper
@@ -598,9 +599,12 @@ async def handle_set_settings(websocket, res) -> None:
     with open("settings.json", "w") as f:
         json.dump(settings, f)
 
-    # Announce every client the new settings
-    for client in client_list+board_list+host_list:
-        await ws_manager.emit("settings", settings, to=client.websocket)
+    # if it's dyslexic mode, send the new settings
+    settings = get_settings()
+    if res["settings"].get("dyslexicMode") is not None:
+        for client in host_list+client_list+board_list:
+            await ws_manager.emit("settings", settings, to=client.websocket)
+    
 
 
 def start_flask():
