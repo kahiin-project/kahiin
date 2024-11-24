@@ -114,6 +114,11 @@ function editQuestionaryName(new_name) {
     socket.emit("listQuestionary", { passcode });
 }
 
+function deleteQuestionary() {
+    const questionary_name = document.getElementById("edit_questionary_name").value;
+    socket.emit("deleteQuestionary", { passcode, questionary_name });
+}
+
 // ---------------------- Functions Navigation -------------------------
 function navigate(index) {
     for (let i = 0; i < 5; i++) {
@@ -279,6 +284,12 @@ function setupSocketListeners() {
             questionary_edit_list.innerHTML += `<button onclick="editQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
         });
     });
+
+    socket.on("deletedQuestionnary", (res) => {
+        socket.emit("listQuestionary", { passcode });
+        navigate(1);
+    });
+    
 }
 
 // Initialisation au chargement de la page

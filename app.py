@@ -517,7 +517,7 @@ async def handle_new_questionary(websocket, res) -> None:
     """
     # rename automatically the file to khn
     filename = filename.split(".")[0] + ".khn"
-    with open(os.path.join("questionary", res["filename"]), "wb") as f:
+    with open(os.path.join("questionnaire", res["filename"]), "wb") as f:
         f.write(res["questionaire_data"])
     
 @ws_manager.on('listQuestionary')
@@ -528,14 +528,14 @@ async def handle_list_questionary(websocket, res) -> None:
 
     :param code: Passcode provided by the host
     """
-    questionaries = os.listdir("questionary")
+    questionaries = os.listdir("questionnaire")
     questionaries.sort()
     await ws_manager.emit("ListOfQuestionary", {"questionaries": questionaries}, to=websocket)
     
 @ws_manager.on('selectQuestionary')
 @verification_wrapper
 async def handle_select_questionary(websocket, res) -> None:
-    questionary.tree = ET.parse(os.path.join("questionary", res["questionary_name"]))
+    questionary.tree = ET.parse(os.path.join("questionnaire", res["questionary_name"]))
     questionary.root = questionary.tree.getroot()
     # questionary.questionary = {"questions": []}
     # for question in questionary.root.findall('question'):
@@ -559,18 +559,24 @@ async def handle_select_questionary(websocket, res) -> None:
 @ws_manager.on('createQuestionary')
 @verification_wrapper
 async def handle_create_questionary(websocket, res) -> None:
-    list_questionaries = os.listdir("questionary")
+    list_questionaries = os.listdir("questionnaire")
     questionary_index = 1
-    while f"new_questionary{questionary_index}.khn" in list_questionaries :
+    while f"new_questionnaire{questionary_index}.khn" in list_questionaries :
             questionary_index += 1
-    file = open(f"questionary/new_questionary{questionary_index}.khn","w")
+    file = open(f"questionnaire/new_questionnaire{questionary_index}.khn","w")
     file.close()
-    await ws_manager.emit("editingQuestionnary",f"new_questionary{questionary_index}.khn", to=websocket)
+    await ws_manager.emit("editingQuestionnary",f"new_questionnaire{questionary_index}.khn", to=websocket)
+
+@ws_manager.on('deleteQuestionary')
+@verification_wrapper
+async def handle_delete_questionary(websocket, res) -> None:
+    os.remove("questionnaire/"+res["questionary_name"])
+    await ws_manager.emit("deletedQuestionnary", to=websocket)
 
 @ws_manager.on("editQuestionaryName")
 @verification_wrapper
 async def handle_edit_questionary_name(websocket, res) -> None:
-    list_questionaries = os.listdir("questionary")
+    list_questionaries = os.listdir("questionnaire")
     forbiden_characters = '/\|,.;:!?*"><'
     invalid_characters = False
     for character in forbiden_characters :
@@ -584,7 +590,7 @@ async def handle_edit_questionary_name(websocket, res) -> None:
     elif res["new_name"] in list_questionaries :
         await ws_manager.emit('error', "AlreadyExist", to=websocket)
     else :
-        os.rename("questionary/" + res["old_name"], "questionary/"+res["new_name"])
+        os.rename("questionnaire/" + res["old_name"], "questionnaire/"+res["new_name"])
         await ws_manager.emit("editingQuestionnary",res["new_name"], to=websocket)
     
 
