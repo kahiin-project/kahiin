@@ -84,6 +84,10 @@ function setupSocketListeners() {
       }
     });
   });
+
+  socket.on("glossary", (res) => {
+    glossary = res;
+  });
   
   socket.on("qrcode", (res) => {
     document.getElementById("qrcode").src = res;

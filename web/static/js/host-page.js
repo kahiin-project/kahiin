@@ -163,7 +163,7 @@ function search(page) {
 function setupSocketListeners() {
     socket.on("error", (res) => {
         if (res == "InvalidPasscode") {
-            const elementsToHide = ["start_game", "next_question", "nav"];
+            const elementsToHide = ["nav"];
             elementsToHide.forEach(element => {
                 document.getElementById(element).style.display = "none";
             });
@@ -202,6 +202,10 @@ function setupSocketListeners() {
                 element.classList.remove('dyslexic');
             }
         });
+    });
+
+    socket.on("glossary", (res) => {
+        glossary = res;
     });
 
     socket.on("hostConnected", (res) => {

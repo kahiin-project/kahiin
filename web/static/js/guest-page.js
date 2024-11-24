@@ -96,6 +96,9 @@ function sendMCQ() {
     });
   });
 
+  socket.on("glossary", (res) => {
+    glossary = res;
+  });
   socket.on("guestConnected", (res) => {
     elementsToShow = ["loader", "loader-text"];
     elementsToShow.forEach(element => {
