@@ -166,7 +166,7 @@ function search(page) {
 function setupSocketListeners() {
     socket.on("error", (res) => {
         if (res == "InvalidPasscode") {
-            const elementsToHide = ["nav"];
+            const elementsToHide = ["nav", "playdiv", "settingsdiv", "creatediv", "editdiv"];
             elementsToHide.forEach(element => {
                 document.getElementById(element).style.display = "none";
             });

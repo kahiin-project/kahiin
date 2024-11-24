@@ -293,11 +293,15 @@ async def handle_board_connect(websocket, passcode: str) -> None:
         IP = '127.0.0.1'
     finally:
         s.close()
-    qr_img = qrcodemaker.make(f"http://{IP}/board")
+    qr_img = qrcodemaker.make("http://{IP}/guest")
+    qr_img = qr_img.convert("LA")
+    data = qr_img.getdata()
+    new_data = [(255, 0) if item == (255,255) else item for item in data]
+    qr_img.putdata(new_data)
     buffered = BytesIO()
-    qr_img.save(buffered, format="JPEG")
+    qr_img.save(buffered, format="PNG")
     qr_img_str = b64encode(buffered.getvalue()).decode()
-    await ws_manager.emit('qrcode', f"data:image/jpeg;base64,{qr_img_str}", to=websocket)
+    await ws_manager.emit('qrcode', f"data:image/png;base64,{qr_img_str}", to=websocket)
     for c in client_list:
         await ws_manager.emit('newUser', data={'username': c.username}, to=websocket)
 
