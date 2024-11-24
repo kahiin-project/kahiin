@@ -163,12 +163,17 @@ nav button img{
     cursor: pointer;
 }
 .nav_content select:hover, .nav_content button:hover{
-    background: #e8e8e8;
+    background: light-dark(#e8e8e8,#171717);
 }
 .nav_content button{
     border: none;
-    color: white;
+    color: white
 }
+.nav_content button[disabled="true"]{
+    background: light-dark(#e8e8e8,#171717) !important ;
+    color: light-dark(white,#252525)!important ;
+}
+
 /* ON */
 .nav_content button.on{
     background: #49cf38;
