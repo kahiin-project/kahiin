@@ -34,7 +34,6 @@ function nextQuestion() {
     question_count += 1;
     const elementsToDisable = ["next_question", "show_leaderboard"];
     elementsToDisable.forEach(element => {
-        document.getElementById(element).style.background = "#e8e8e8";
         document.getElementById(element).setAttribute("disabled", true);
     });
     socket.emit("nextQuestion", { passcode, question_count });
@@ -229,7 +228,6 @@ function setupSocketListeners() {
         const elementsToShow = ["next_question", "show_leaderboard"];
         elementsToShow.forEach(element => {
             document.getElementById(element).style.display = "block";
-            document.getElementById(element).style.background = "#e8e8e8";
             document.getElementById(element).setAttribute("disabled", true);
         });
     });

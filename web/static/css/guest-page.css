@@ -108,18 +108,18 @@
 }
 #buttons button{
     position: absolute;
-    background: #ebebeb;
+    background: light-dark(#ebebeb,#262626);
     display: block;
     width: calc(50% - 40px);
     height: calc(50% - 40px);
     padding-top: 15px;
     padding-bottom: 10px;
-    color: black;
+    color: light-dark(black,white);
     text-decoration: none;
     text-align: center;
     font-size: 40px;
     border-radius: 10px;
-    box-shadow: 0px 5px #888888;
+    box-shadow: 0px 5px light-dark(#888888,#000000);
     cursor: pointer;
     border: none;
 }
@@ -127,7 +127,7 @@
     height: calc(50% - 70px);
 }
 #buttons .b0{
-    background: #DFE6E9;
+    background: light-dark(#DFE6E9,#322b28);
     box-shadow: 0px 5px #adb2b4; 
     left: calc(50% + 10px);
 }
@@ -187,24 +187,24 @@
 
 #send_button{
     position: absolute;
-    background: #ebebeb;
+    background: light-dark(#ebebeb,#262626);
     display: block;
     bottom: 15px;
     left: 20px;
     right: 30px;
     height: 60px;
     padding: 0;
-    color: black;
+    color: light-dark(black,white);
     text-decoration: none;
     text-align: center;
     font-size: 30px;
     border-radius: 10px;
-    box-shadow: 0px 5px #888888;
+    box-shadow: 0px 5px light-dark(#888888,#000000);
     cursor: pointer;
     border: none;
 }
 #send_button:hover{
-    background: #e4e4e4;
+    background: light-dark(#e4e4e4,#1b1b1b);
 }
 #send_button:active{
     transform: translateY(5px);
