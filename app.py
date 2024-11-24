@@ -558,16 +558,18 @@ async def handle_edit_questionary_name(websocket, res) -> None:
     forbiden_characters = '/\|,.;:!?*"><'
     invalid_characters = False
     for character in forbiden_characters :
-        invalid_characters += character in res["new_name"]
-    if res["new_name"] == "" :
+        invalid_characters += character in res["new_name"][:-4]
+    if len(res["new_name"]) <= 4:
         await ws_manager.emit('error', "EmptyName", to=websocket)
+    elif res["new_name"][-4:] != ".khn":
+        await ws_manager.emit('error', "InvalidExtension", to=websocket)
     elif invalid_characters :
         await ws_manager.emit('error', "SpecialCharacters")
-    elif res["new_name"] + ".khn" in list_questionaries :
+    elif res["new_name"] in list_questionaries :
         await ws_manager.emit('error', "AlreadyExist", to=websocket)
     else :
-        os.rename("questionary/" + res["old_name"], "questionary/"+res["new_name"]+".khn")
-        await ws_manager.emit("editingQuestionnary",res["new_name"]+".khn", to=websocket)
+        os.rename("questionary/" + res["old_name"], "questionary/"+res["new_name"])
+        await ws_manager.emit("editingQuestionnary",res["new_name"], to=websocket)
     
 
 @ws_manager.on("getSettings")
