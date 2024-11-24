@@ -1,5 +1,8 @@
 #body {
     display: none;
+    background-color: Canvas;
+    color: CanvasText;
+    color-scheme: light dark;
 }
 
 #main-container{
@@ -18,13 +21,14 @@
     border-radius: 5px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 }
+@media (prefers-color-scheme: dark){#main-container img{box-shadow: rgba(255, 255, 255, 0.16) 0px 10px 36px 0px, rgba(255, 255, 255, 0.06) 0px 0px 0px 1px;}}
 #main-container h1{
     text-align: center;
     font-size: 60px;
     margin-top: 40px;
 }
 #main-container a{
-    background: #ebebeb;
+    background: light-dark(#ebebeb,#262626);
     display: block;
     width: 300px;
     height: 40px;
@@ -32,15 +36,15 @@
     margin-left: calc(50% - 150px);
     padding-top: 15px;
     padding-bottom: 10px;
-    color: black;
+    color: light-dark(black,white);
     text-decoration: none;
     text-align: center;
     font-size: 40px;
     border-radius: 10px;
-    box-shadow: 0px 5px #888888;
+    box-shadow: 0px 5px light-dark(#888888,#000000);
 }
 #main-container a:hover{
-    background: #e5e5e5;
+    background: light-dark(#e5e5e5,#2c2c2c);
 }
 #main-container a:active{
     transform: translateY(5px);

@@ -1,5 +1,8 @@
 #body {
     display: none;
+    background-color: Canvas;
+    color: CanvasText;
+    color-scheme: light dark;
 }
 
 #form{
@@ -32,24 +35,24 @@
 
 #submit{
     position: relative;
-    background: #ebebeb;
+    background: light-dark(#ebebeb,#262626);
     display: block;
     width: 250px;
     height: 60px;
     left: 50%;
     transform: translateX(-50%);
     border: none;
-    color: black;
+    color: light-dark(black,white);
     text-align: center;
-    font-size: 40px;
+    font-size: 40px;  
     border-radius: 10px;
-    box-shadow: 0px 5px #888888;
+    box-shadow: 0px 5px light-dark(#888888,#000000);
     cursor: pointer;
     margin-top: 20px;
     padding: 10px;
 }
 #submit:hover{
-    background: #e5e5e5;
+    background: light-dark(#e5e5e5,#2c2c2c) ;
 }
 #submit:active{
     transform: translateX(-50%) translateY(5px);
@@ -97,6 +100,7 @@ nav{
     box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
     display: none;
 }
+@media (prefers-color-scheme: dark){nav{box-shadow: rgba(255, 255, 255, 0.16) 0px 10px 36px 0px, rgba(255, 255, 255, 0.06) 0px 0px 0px 1px;}}
 nav .header{
     background: #494949;
     height: 150px;
@@ -111,13 +115,13 @@ nav button{
     padding-bottom: 10px;
     border: none;
     cursor: pointer;
-    background: #f0f0f0;
+    background: light-dark(#f0f0f0,#0f0f0f);
 }
 nav button:hover{
-    background: #e8e8e8;
+    background: light-dark(#e8e8e8,#171717);
 }
 nav button:active{
-    background: #e0e0e0;
+    background: light-dark(#e0e0e0,#1f1f1f);
 }
 nav button.dyslexic{
     padding-bottom: 15px;
@@ -128,6 +132,7 @@ nav button img{
     height: 40px;
     width: 40px;
 }
+@media (prefers-color-scheme: dark){nav button img{filter:invert(1)}}
 
 .nav_content{
     position: absolute;
@@ -150,7 +155,7 @@ nav button img{
 .nav_content select, .nav_content button, .nav_content input{
     margin-left: 50px;
     width: calc(100% - 100px);
-    background: #f0f0f0;
+
     border: solid .5px #a7a7a7;
     padding-bottom: 5px;
     padding-top: 8px;
