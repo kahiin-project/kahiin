@@ -280,6 +280,8 @@ async def handle_board_connect(websocket, passcode: str) -> None:
     if game.running:
         await ws_manager.emit('error', "GameAlreadyRunning")
         return
+    if any(board.websocket == websocket for board in board_list):
+        return
     Board(websocket=websocket, connections=board_list)
     await ws_manager.emit('boardConnected', to=websocket)
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -302,6 +304,11 @@ async def handle_board_connect(websocket, passcode: str) -> None:
 @ws_manager.on('hostConnect')
 @verification_wrapper
 async def handle_host_connect(websocket, passcode: str) -> None:
+    if game.running:
+        await ws_manager.emit('error', "GameAlreadyRunning", to=websocket)
+        return
+    if any(host.websocket == websocket for host in host_list):
+        return
     Host(websocket=websocket, connections=host_list)
     await ws_manager.emit('hostConnected', data={}, to=websocket)
 
@@ -316,17 +323,21 @@ async def handle_connect(websocket, username: str) -> None:
     # Check if the username is already taken
     if game.running:
         await ws_manager.emit('error', "GameAlreadyRunning", to=websocket)
-    elif any(c.username == username for c in client_list):
+        return
+    if any(c.username == username for c in client_list):
         await ws_manager.emit('error', "UsernameAlreadyTaken", to=websocket)
-    elif any(c.websocket == websocket for c in client_list):
+        return
+    if any(client.websocket == websocket for client in client_list):
         await ws_manager.emit('error', "UserAlreadyConnected", to=websocket)
-    elif len(username) > 40 or len(username) < 1:
+        return
+    if len(username) > 40 or len(username) < 1:
         await ws_manager.emit('error', "InvalidUsername", to=websocket)
-    else:
-        Client(websocket=websocket, username=username, connections=client_list)
-        await ws_manager.emit('guestConnected', to=websocket)
-        for board in board_list:
-            await ws_manager.emit('newUser', {'username': username}, to=board.websocket)
+        return
+    
+    Client(websocket=websocket, username=username, connections=client_list)
+    await ws_manager.emit('guestConnected', to=websocket)
+    for board in board_list:
+        await ws_manager.emit('newUser', {'username': username}, to=board.websocket)
             
 @ws_manager.on('disconnect')
 async def handle_disconnect(websocket) -> None:
