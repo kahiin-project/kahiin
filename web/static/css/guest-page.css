@@ -127,8 +127,8 @@
     height: calc(50% - 70px);
 }
 #buttons .b0{
-    background: light-dark(#DFE6E9,#322b28);
-    box-shadow: 0px 5px #adb2b4; 
+    background: light-dark(#DFE6E9,#252626);
+    box-shadow: 0px 5px light-dark(#adb2b4,#1B1C1C);
     left: calc(50% + 10px);
 }
 #buttons .uaButton.b0{
@@ -138,20 +138,20 @@
     top: calc(50% - 20px);
 }
 #buttons .b1{
-    background: #99eeff; 
-    box-shadow: 0px 5px #64bcce;
+    background: light-dark(#99eeff,#4F57B7); 
+    box-shadow: 0px 5px light-dark(#64bcce,#3D44A0);
     left: 20px;
     top: 20px;
 }
 #buttons .b2{
-    background: #ABD95B; 
-    box-shadow: 0px 5px #7aa82b;
+    background: light-dark(#ABD95B,#73C46C); 
+    box-shadow: 0px 5px light-dark(#7aa82b,#4BA044);
     left: calc(50% + 10px);
     top: 20px;
 }
 #buttons .b3{
-    background: #BC5BD9; 
-    box-shadow: 0px 5px #a246be;
+    background: light-dark(#BC5BD9,#AA3D94); 
+    box-shadow: 0px 5px light-dark(#a246be,#9E2686);
     left: 20px;
 }
 #buttons .uaButton.b3{
@@ -161,8 +161,8 @@
     top: calc(50% - 20px); 
 }
 #buttons .b4{
-    background: #D9955B; 
-    box-shadow: 0px 5px #c97e3d;
+    background: light-dark(#D9955B,#B7844F); 
+    box-shadow: 0px 5px light-dark(#c97e3d,#8D5B26);
     left: calc(50% + 10px);
 }
 #buttons .uaButton.b4{
