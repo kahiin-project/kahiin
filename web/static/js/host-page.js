@@ -96,20 +96,23 @@ function selectQuestionary(questionary_name) {
 
 function createQuestionary() {
     socket.emit("createQuestionary", { passcode });
+    socket.emit("listQuestionary", { passcode });
 }
 
+editing_questionary = ""
 function editQuestionary(questionary_name) {
     document.getElementById("edit_questionary_name").value = "";
     document.getElementById("create_div").style.display = "none";
     socket.emit("listQuestionary", { passcode });
-    const questionary_word = document.getElementById("questionary_name").innerHTML.split(" - ")[0];
-    document.getElementById("questionary_name").innerHTML = `${questionary_word} - ${questionary_name}`;
+    document.getElementById("edit_questionary_name").value = questionary_name;
+    editing_questionary = questionary_name;
     document.getElementById("edit_div").style.display = "block";
 }
 
 function editQuestionaryName(new_name) {
-    const old_name = document.getElementById("questionary_name").innerHTML.split(" - ")[1];
+    const old_name = editing_questionary;
     socket.emit("editQuestionaryName", { passcode, old_name, new_name });
+    socket.emit("listQuestionary", { passcode });
 }
 
 // ---------------------- Functions Navigation -------------------------

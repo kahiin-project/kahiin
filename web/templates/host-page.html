@@ -16,11 +16,15 @@
     />
   </head>
   <body id="body">
+
+    <!-- Passcode -->
     <div id="form">
       <input type="password" id="passcode" placeholder="passcode" onchange="submitPasscode()" />
       <p id="error"></p>
       <button id="submit" onclick="submitPasscode()">{{glossary["Submit"]}}</button>
     </div>
+
+    <!-- Navigation -->
     <nav id="nav">
       <div class="header"></div>
       <button id="nav_button_0" style="top: 160px;" onclick="navigate(0);">
@@ -44,6 +48,8 @@
         {{glossary["Account"]}}
       </button>
     </nav>
+
+    <!-- Play -->
     <div id="play_div" style="display: none;" class="nav_content">
       <h1>{{glossary["Play"]}}</h1>
       <h2>{{glossary["Party"]}}</h2>
@@ -69,6 +75,8 @@
       <input type="search" id="search_select_questionary" placeholder="search" onkeyup="search('select')">
       <ul id="questionary_select_list"></ul>
     </div>
+
+    <!-- Create -->
     <div id="create_div" class="nav_content" style="display: none;">
       <h1>{{glossary["Create"]}}</h1>
       <button id="create_questionary" onclick="createQuestionary()">{{glossary["CreateNewQuestionary"]}}</button>
@@ -76,12 +84,34 @@
       <input type="search" id="search_edit_questionary" placeholder="search" onkeyup="search('edit')">
       <ul id="questionary_edit_list"></ul>
     </div>
+
+    <!-- Edit -->
     <div id="edit_div" class="nav_content" style="display: none;">
       <h1>{{glossary["Edit"]}}</h1>
-      <h2 id = "questionary_name">{{glossary["Questionary"]}}</h2>
       <input type="text" id="edit_questionary_name" placeholder="Questionary Name" onchange="editQuestionaryName(this.value)">
       <h2>{{glossary["Questions"]}}</h2>
+      <table class="questions_div">
+        <colgroup>
+          <col style="width: 70%;">
+          <col style="width: 30%;">
+        </colgroup>
+        <tr>
+          <th>
+            <div id="questions_list">
+
+            </div>
+          </th>
+          <th>
+            <div id="questions_drawer">
+
+            </div>
+          </th>
+        </tr>
+      </table> 
+      <button class="delete_quiz_button">{{glossary["DeleteQuestionnaire"]}}</button>
     </div>
+
+    <!-- Settings -->
     <div id="settings_div" class="nav_content" style="display: none;" >
       <h1>{{glossary["Settings"]}}</h1>
       <h2>{{glossary["Language"]}}</h2>
@@ -105,5 +135,6 @@
       <button class="apply-button" onclick="applyNewPassword()">{{glossary["Apply"]}}</button>
       <div style="height: 50px"></div>
     </div>
+
   </body>
 </html>
