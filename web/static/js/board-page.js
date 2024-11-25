@@ -168,13 +168,13 @@ function setupSocketListeners() {
     switch (res["question_possible_answers"].length) {
       case 2:
         document.getElementById('answers_div').innerHTML = `
-          <button class="answer-block" style="background: #99eeff; top: 0; left: 0; height: 200px;">
+          <button class="answer-block" id="answer0" style="top: 0; left: 0; height: 200px;">
             ${res["question_possible_answers"][0]}
             <svg width="40" height="40" style="top: 80px;">
               <rect width="40" height="40" fill="white" />
             </svg>
           </button>
-          <button class="answer-block" style="background: #BC5BD9; top: 0; left: calc(50% + 10px); height: 200px;">
+          <button class="answer-block" id="answer1" style="top: 0; left: calc(50% + 10px); height: 200px;">
             ${res["question_possible_answers"][1]}
             <svg width="40" height="40" style="top: 80px;">
               <circle cx="20" cy="20" r="20" fill="white" />
@@ -184,48 +184,48 @@ function setupSocketListeners() {
         break;
       case 3:
         document.getElementById('answers_div').innerHTML = `
-          <button class="answer-block" style="background: #99eeff; top: 0; left: 0;">
+          <button class="answer-block" id="answer0" style="top: 0; left: 0;">
             ${res["question_possible_answers"][0]}
             <svg width="40" height="40">
               <rect width="40" height="40" fill="white" />
             </svg>
           </button>
-          <button class="answer-block" style="background: #ABD95B; top: 0; left: calc(50% + 10px);">
+          <button class="answer-block" id="answer1" style="top: 0; left: calc(50% + 10px);">
             ${res["question_possible_answers"][1]}
             <svg width="40" height="40">
               <circle cx="20" cy="20" r="20" fill="white" />
             </svg>
           </button>
-          <button class="answer-block" style="background: #BC5BD9; top: 110px; left: 0;">
+          <button class="answer-block" id="answer2" style="top: 110px; left: 0;">
             ${res["question_possible_answers"][2]}
             <svg width="40" height="40">
               <polygon points="20,2 38,38 2,38" fill="white" />
             </svg>
           </button>
-          <button class="answer-block" style="background: #DFE6E9; top: 110px; left: calc(50% + 10px);"></button>
+          <button class="answer-block" id="answer-null" style="top: 110px; left: calc(50% + 10px);"></button>
         `;
         break;
       case 4:
         document.getElementById('answers_div').innerHTML = `
-          <button class="answer-block" style="background: #99eeff; top: 0; left: 0;">
+          <button class="answer-block" id="answer0" style="background:top: 0; left: 0;">
             ${res["question_possible_answers"][0]}
             <svg width="40" height="40">
               <rect width="40" height="40" fill="white" />
             </svg>
           </button>
-          <button class="answer-block" style="background: #ABD95B; top: 0; left: calc(50% + 10px);">
+          <button class="answer-block" id="answer1" style="background:top: 0; left: calc(50% + 10px);">
             ${res["question_possible_answers"][1]}
             <svg width="40" height="40">
               <circle cx="20" cy="20" r="20" fill="white" />
             </svg>
           </button>
-          <button class="answer-block" style="background: #BC5BD9; top: 110px; left: 0;">
+          <button class="answer-block" id="answer2" style="top: 110px; left: 0;">
             ${res["question_possible_answers"][2]}
             <svg width="40" height="40">
               <polygon points="20,2 38,38 2,38" fill="white" />
             </svg>
           </button>
-          <button class="answer-block" style="background: #D9955B; top: 110px; left: calc(50% + 10px);">
+          <button class="answer-block" id="answer3" style="top: 110px; left: calc(50% + 10px);">
             ${res["question_possible_answers"][3]}
             <svg width="40" height="40">
               <polygon points="20,2 24.4,14 39.2,14 27.2,22.8 31.6,36 20,28 8.4,36 12.8,22.8 0.8,14 15.6,14" fill="white" />
