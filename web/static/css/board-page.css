@@ -70,7 +70,7 @@
   flex: 1 0 200px;
   max-width: 300px;
 }
-@media (prefers-color-scheme: dark){#list li{filter: invert(100%);}}
+@media (prefers-color-scheme: dark){#list li{filter: invert(95%) brightness(300%) hue-rotate(10deg);}}
 
 #error{
   display: none;
@@ -260,8 +260,6 @@
 @media (prefers-color-scheme: dark){#leaderboard_top{box-shadow: rgba(255, 255, 255, 0.16) 0px 1px 4px;}}
 
 #leaderboard-top-items li {
-  background-color: light-dark(#DFE6E9,#252626);
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   border-radius: 15px;
   flex: 1 0 200px;
   padding-top : 5px;
@@ -269,7 +267,7 @@
   margin-top: 10px;
   margin-bottom: 10px;
 }
-@media (prefers-color-scheme: dark){#leaderboard-top-items li{box-shadow: rgba(255, 255, 255, 0.16) 0px 1px 4px;}}
+@media (prefers-color-scheme: dark){#leaderboard-top-items li{filter: invert(95%) brightness(300%) hue-rotate(10deg);}}
 
 #leaderboard-top-items {
   list-style-type: none;
@@ -308,8 +306,6 @@
 }
 
 #promoted-list-items li {
-  background-color: light-dark(#DFE6E9,#252626);
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   border-radius: 15px;
   flex: 1 0 200px;
   padding-top : 5px;
@@ -317,7 +313,7 @@
   margin-top: 10px;
   margin-bottom: 10px;
 }
-@media (prefers-color-scheme: dark){#promoted-top-items li{box-shadow: rgba(255, 255, 255, 0.16) 0px 1px 4px;}}
+@media (prefers-color-scheme: dark){#promoted-top-items li{filter: invert(95%) brightness(300%) hue-rotate(10deg);}}
 
 .username {
   font-weight: bold;
@@ -363,6 +359,7 @@
   font-size: 25px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
+@media (prefers-color-scheme: dark){.answer-block{box-shadow: rgba(255, 255, 255, 0.16) 0px 1px 4px;}}
 
 .container {
   display: flex;
@@ -420,6 +417,7 @@
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   width: 90%;
 }
+@media (prefers-color-scheme: dark){.answer-block{box-shadow: 0 2px 5px rgba(255,255,255,0.1);}}
 
 .first::before {
   content: "🏆";
