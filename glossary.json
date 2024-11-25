@@ -54,7 +54,9 @@
         "SpecialCharacters": "Le nom du questionaire ne peut pas contenir de caractère spécial",
         "AlreadyExist": "Le nom du questionnaire ne peut pas être vide",
         "Questions": "Questions",
-        "DeleteQuestionnaire": "Supprimer le Questionnaire"
+        "DeleteQuestionnaire": "Supprimer le Questionnaire",
+        "GameNotRunning": "Aucune partie n'est en cours.",
+        "QuestionNotRunning": "Aucune question n'est en cours."
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -111,7 +113,9 @@
         "SpecialCharacters": "Questionnaire's name cannot contain special character",
         "AlreadyExist": "Questionnaire's name already exist",
         "Questions": "Questions",
-        "DeleteQuestionnaire": "Delete Questionnaire"
+        "DeleteQuestionnaire": "Delete Questionnaire",
+        "GameNotRunning": "No game is running.",
+        "QuestionNotRunning": "No question is running."
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -168,7 +172,9 @@
         "SpecialCharacters": "El nombre del cuestionario no puede contener caracteres especiales",
         "AlreadyExist": "El nombre del cuestionario ya existe",
         "Questions": "Preguntas",
-        "DeleteQuestionnaire": "Suprimir Cuestionario"
+        "DeleteQuestionnaire": "Suprimir Cuestionario",
+        "GameNotRunning": "No hay ningún juego en curso.",
+        "QuestionNotRunning": "No hay ninguna pregunta en curso."
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -225,7 +231,9 @@
         "SpecialCharacters": "Il nome del questionario non può contenere caratteri speciali",
         "AlreadyExist": "Il nome del questionario esiste già",
         "Questions": "Domande",
-        "DeleteQuestionnaire": "Cancellare il questionario"
+        "DeleteQuestionnaire": "Cancellare il questionario",
+        "GameNotRunning": "Nessun gioco è in corso.",
+        "QuestionNotRunning": "Nessuna domanda è in corso."
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -282,6 +290,8 @@
         "SpecialCharacters": "Der Name des Fragebogens darf keine Sonderzeichen enthalten",
         "AlreadyExist": "Der Name des Fragebogens existiert bereits",
         "Questions": "Fragen",
-        "DeleteQuestionnaire": "Fragebogen Löschen"
+        "DeleteQuestionnaire": "Fragebogen Löschen",
+        "GameNotRunning": "Kein Spiel läuft.",
+        "QuestionNotRunning": "Keine Frage läuft."
     }
 }
