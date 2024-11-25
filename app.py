@@ -49,18 +49,31 @@ questionary = Questionary()
 class SleepManager:
     def __init__(self):
         self._stop_event = asyncio.Event()
+        self._is_sleeping = False
+        self._current_task = None
 
     async def sleep(self, duration):
         try:
-            await asyncio.wait_for(self._stop_event.wait(), timeout=duration)
-        except asyncio.TimeoutError:
+            self._is_sleeping = True
+            self._current_task = asyncio.create_task(asyncio.sleep(duration))
+            await self._current_task
+        except asyncio.CancelledError:
             pass
+        finally:
+            self._is_sleeping = False
+            self._current_task = None
 
     def stop(self):
-        self._stop_event.set()
+        if self._current_task and not self._current_task.done():
+            self._current_task.cancel()
+        self._is_sleeping = False
 
     def reset(self):
         self._stop_event.clear()
+        self._current_task = None
+
+    def running(self):
+        return self._is_sleeping
 
 sleep_manager = SleepManager()
 class GameTab:
@@ -111,6 +124,9 @@ class Client(GameTab):
                 if self.user_answer == self.expected_response:
                     self.score += round(
                         (1 - self.response_time / self.timer_time) * 500)
+
+        self.user_answer = ""
+        self.response_time = 0
 
 
 # List to keep track of board connections
@@ -380,17 +396,6 @@ async def handle_disconnect(websocket) -> None:
                     await ws_manager.emit("gameEnd", to=client.websocket)
         return
     
-@ws_manager.on('kickPlayer')
-@verification_wrapper
-async def handle_kick_player(websocket,res) -> None:
-    for client in client_list:
-        if client.username == res["username"]:
-            client_list.remove(client)
-            await ws_manager.emit('error','Kicked', to=client.websocket)
-            for board in board_list:
-                await ws_manager.emit('rmUser', {'username': client.username}, to=board.websocket)
-            return
-    await ws_manager.emit('error', "UserNotFound", to=websocket)
 
 ## ----------------- ws_manager Game Events ----------------- ##
 
@@ -415,27 +420,36 @@ async def handle_start_game(websocket, code: str) -> None:
         await ws_manager.emit('startGame', to=client.websocket)
 
 
+
 @ws_manager.on("nextQuestion")
 @verification_wrapper
 async def handle_next_question(websocket, res) -> None:
-    settings = get_settings()
-    question_number = res["question_count"]
-    # Reset all old user answer for the new question
-    for client in client_list:
-        client.user_answer = ""
-    if len(client_list) == 0:
-        await ws_manager.emit('error', "NoUsersConnected", to=websocket)
-        return
-    if question_number == len(questionary.questionary["questions"]):
-        data = {
-            "game_lead": game.display()[0],
-        }
-        for client in client_list+board_list+host_list:
-            await ws_manager.emit("gameEnd", data, to=client.websocket)
-        return
-    else:
+    try:
+        settings = get_settings()
+        question_number = res["question_count"]
+        
+        # Reset all old user answer for the new question
+        for client in client_list:
+            client.user_answer = ""
+            
+        if len(client_list) == 0:
+            await ws_manager.emit('error', "NoUsersConnected", to=websocket)
+            return
+            
+        if question_number == len(questionary.questionary["questions"]):
+            data = {
+                "game_lead": game.display()[0],
+            }
+            for client in client_list + board_list + host_list:
+                try:
+                    await ws_manager.emit("gameEnd", data, to=client.websocket)
+                except Exception:
+                    continue
+            return
+            
         question_not_answered = list(filter(lambda q: q is not None, questionary.questionary["questions"]))
         question = random.choice(question_not_answered) if settings["randomOrder"] else questionary.questionary["questions"][question_number]
+        
         data = {
             "question_title": question["title"],
             "question_type": question["type"],
@@ -444,26 +458,64 @@ async def handle_next_question(websocket, res) -> None:
             "question_number": (len(questionary.questionary["questions"]) - len(question_not_answered) + 1) if settings["randomOrder"] else questionary.questionary["questions"].index(question) + 1,
             "question_count": len(questionary.questionary["questions"]),
         }
+
+        # Send question start to all clients
         for client in client_list + board_list + host_list:
-            await ws_manager.emit("questionStart", data, to=client.websocket)
+            try:
+                await ws_manager.emit("questionStart", data, to=client.websocket)
+            except Exception:
+                continue
+
+        # Initialize client data
+        current_time = time.time()
         for client in client_list:
-            client.time_begin = time.time()
+            client.time_begin = current_time
             client.expected_response = question["correct_answers"]
             client.question_type = question["type"]
             client.timer_time = question["duration"]
             client.user_answer = None
-        await sleep_manager.sleep(2 + question["duration"])
+            client.time_end = 0
+
+        async def timer_task():
+            try:
+                await sleep_manager.sleep(2 + question["duration"])
+                if sleep_manager.running():
+                    await end_question(question["correct_answers"])
+            except Exception:
+                pass
+
+        asyncio.create_task(timer_task())
+
+    except Exception as e:
+        print(f"Error in handle_next_question: {str(e)}")
+
+async def end_question(correct_answers):
+    """Helper function to handle question ending logic"""
+    try:
         data = {
-            "question_correct_answer": question["correct_answers"]
+            "question_correct_answer": correct_answers
         }
-        sleep_manager.stop()
-        sleep_manager.reset()
-        if settings["randomOrder"]:
-            questionary.questionary["questions"][questionary.questionary["questions"].index(question)] = None
+        
+        current_time = time.time()
         for client in client_list:
-            client.evalScore()
-        for client in client_list+board_list+host_list:
-            await ws_manager.emit("questionEnd", data, to=client.websocket)
+            if client.user_answer is None:
+                client.user_answer = []
+            if client.time_end == 0:
+                client.time_end = current_time
+            
+        for client in client_list:
+            try:
+                client.evalScore()
+            except Exception:
+                continue
+
+        for client in client_list + board_list + host_list:
+            try:
+                await ws_manager.emit("questionEnd", data, to=client.websocket)
+            except Exception:
+                continue
+    except Exception as e:
+        print(f"Error in end_question: {str(e)}")
 
 
 
@@ -485,8 +537,7 @@ async def handle_answer(websocket, res) -> None:
             client.user_answer = user_answer
             if get_settings()["endOnAllAnswered"]:
                 if all(client.user_answer for client in client_list):
-                    sleep_manager.stop()
-                    sleep_manager.reset()
+                    await end_question(client.expected_response)
             return
     await ws_manager.emit('error' , "UserNotFound", to=websocket)
 
@@ -555,6 +606,45 @@ async def handle_select_questionary(websocket, res) -> None:
     #         "type": question_type
     #     })
     
+@ws_manager.on('kickPlayer')
+@verification_wrapper
+async def handle_kick_player(websocket,res) -> None:
+    for client in client_list:
+        if client.username == res["username"]:
+            client_list.remove(client)
+            await ws_manager.emit('error','Kicked', to=client.websocket)
+            for board in board_list:
+                await ws_manager.emit('rmUser', {'username': client.username}, to=board.websocket)
+            return
+    await ws_manager.emit('error', "UserNotFound", to=websocket)
+
+@ws_manager.on('stopQuestion')
+@verification_wrapper
+async def handle_stop_game(websocket, code: str) -> None:
+    try:
+        if not game.running:
+            await ws_manager.emit("error", "GameNotRunning", to=websocket)
+            return
+        if not sleep_manager.running():
+            await ws_manager.emit("error", "QuestionNotRunning", to=websocket)
+            return
+
+        sleep_manager.stop()
+        
+        await end_question(client_list[0].expected_response)
+        
+    except Exception as e:
+        print(f"Error in handle_stop_game: {str(e)}")
+
+@ws_manager.on('pauseQuestion')
+@verification_wrapper
+async def handle_pause_game(websocket, code: str) -> None:
+    if not game.running:
+        await ws_manager.emit("error", "GameNotRunning", to=websocket)
+        return
+    if sleep_manager.running():
+        sleep_manager.stop()
+    await ws_manager.emit("pauseQuestion", to=client_list+board_list+host_list)
 
 @ws_manager.on('createQuestionary')
 @verification_wrapper
@@ -604,8 +694,6 @@ async def handle_get_settings(websocket, code: str) -> None:
         del data["adminPassword"]
         await ws_manager.emit("settings", data, to=websocket)
 
-
-
 @ws_manager.on("setSettings")
 @verification_wrapper
 async def handle_set_settings(websocket, res) -> None:
@@ -632,7 +720,6 @@ async def handle_set_settings(websocket, res) -> None:
         for client in host_list+client_list+board_list:
             await ws_manager.emit("settings", settings, to=client.websocket)
     
-
 
 def start_flask():
     # ws_manager.add_background_task(background_task())
