@@ -39,7 +39,7 @@ class WebSocketManager:
             return wrapper
         return decorator
 
-    async def emit(self, event: str, data: Any = {}, room: Optional[str] = None, to: Optional[str] = None):
+    async def emit(self, event: str, data: Any = {}, room: Optional[str] = None, to = None):
         """Émet un événement aux clients spécifiés"""
         message = json.dumps({
             'event': event,
@@ -58,16 +58,15 @@ class WebSocketManager:
         print(f"Emitting event '{event}' to {len(target_clients)} clients")
 
         for client in target_clients:
-            if not client.closed:
-                try:
-                    await client.send(message)
-                    logging.info(f"Message sent to client: {client.remote_address}")
-                except websockets.exceptions.ConnectionClosed:
-                    logging.warning(f"Connection closed for client: {client.remote_address}")
-                    await self.handle_disconnect(client)
-                except Exception as e:
-                    logging.error(f"Error sending message to client: {e}")
-                    await self.handle_disconnect(client)
+            try:
+                await client.send(message)
+                logging.info(f"Message sent to client: {client.remote_address}")
+            except websockets.exceptions.ConnectionClosed:
+                logging.warning(f"Connection closed for client: {client.remote_address}")
+                await self.handle_disconnect(client)
+            except Exception as e:
+                logging.error(f"Error sending message to client: {e}")
+                await self.handle_disconnect(client)
                     
     async def handle_disconnect(self, websocket: WebSocketServerProtocol):
         """Gère la déconnexion d'un client"""

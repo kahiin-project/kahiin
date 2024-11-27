@@ -51,9 +51,14 @@ class SleepManager:
         self._stop_event = asyncio.Event()
         self._is_sleeping = False
         self._current_task = None
+        self._duration = 0
+        self._time_start = 0
 
     async def sleep(self, duration):
+        self.duration = duration
+        self._time_start = time.time()
         try:
+            self._is_paused = False
             self._is_sleeping = True
             self._current_task = asyncio.create_task(asyncio.sleep(duration))
             await self._current_task
@@ -67,10 +72,23 @@ class SleepManager:
         if self._current_task and not self._current_task.done():
             self._current_task.cancel()
         self._is_sleeping = False
+        self._is_paused = False
+
+    def pause(self):
+        if self._current_task and not self._current_task.done():
+            self._current_task.cancel()
+        self._is_paused = True
+ 
+
+    def is_paused(self):
+        return self._is_paused
 
     def reset(self):
         self._stop_event.clear()
         self._current_task = None
+
+    def current(self):
+        return int(self.duration - (time.time() - self._time_start))
 
     def running(self):
         return self._is_sleeping
@@ -374,6 +392,8 @@ async def handle_disconnect(websocket) -> None:
                 for client in board_list+host_list:
                     await ws_manager.emit("error", "NoClientConnected", to=client.websocket)
                     await ws_manager.emit("gameEnd", to=client.websocket)
+                    game.reset()
+                    game.running = False
         return
 
     board = next((board for board in board_list if board.websocket == target_websocket), None)
@@ -384,6 +404,8 @@ async def handle_disconnect(websocket) -> None:
                 for client in client_list+host_list:
                     await ws_manager.emit("error", "NoBoardConnected", to=client.websocket)
                     await ws_manager.emit("gameEnd", to=client.websocket)
+                    game.reset()
+                    game.running = False
         return
 
     host = next((host for host in host_list if host.websocket == target_websocket), None)
@@ -394,6 +416,8 @@ async def handle_disconnect(websocket) -> None:
                 for client in client_list+board_list:
                     await ws_manager.emit("error", "NoHostConnected", to=client.websocket)
                     await ws_manager.emit("gameEnd", to=client.websocket)
+                    game.reset()
+                    game.running = False
         return
     
 
@@ -495,7 +519,8 @@ async def end_question(correct_answers):
         data = {
             "question_correct_answer": correct_answers
         }
-        
+        if sleep_manager.is_paused():
+            return
         current_time = time.time()
         for client in client_list:
             if client.user_answer is None:
@@ -514,6 +539,7 @@ async def end_question(correct_answers):
                 await ws_manager.emit("questionEnd", data, to=client.websocket)
             except Exception:
                 continue
+
     except Exception as e:
         print(f"Error in end_question: {str(e)}")
 
@@ -531,6 +557,9 @@ async def handle_show_leaderboard(websocket, code: str) -> None:
 async def handle_answer(websocket, res) -> None:
     user_answer = res["answers"]
     target_websocket = websocket
+    if sleep_manager.is_paused():
+        return
+
     for client in client_list:
         if client.websocket.id == target_websocket.id:
             client.time_end = time.time()
@@ -636,15 +665,38 @@ async def handle_stop_game(websocket, code: str) -> None:
     except Exception as e:
         print(f"Error in handle_stop_game: {str(e)}")
 
+
 @ws_manager.on('pauseQuestion')
 @verification_wrapper
 async def handle_pause_game(websocket, code: str) -> None:
-    if not game.running:
-        await ws_manager.emit("error", "GameNotRunning", to=websocket)
-        return
-    if sleep_manager.running():
-        sleep_manager.stop()
-    await ws_manager.emit("pauseQuestion", to=client_list+board_list+host_list)
+    try:
+        if not game.running:
+            await ws_manager.emit("error", "GameNotRunning", to=websocket)
+            return
+
+        # if not sleep_manager.running():
+        #     await ws_manager.emit("error", "QuestionNotRunning", to=websocket)
+        #     return
+
+        remaining_sec = sleep_manager.current()
+        if sleep_manager.is_paused():
+            sleep_manager._is_paused = False
+            async def resume_timer():
+                await sleep_manager.sleep(remaining_sec)
+                if sleep_manager.running() and not sleep_manager.is_paused():
+                    await end_question(client_list[0].expected_response)
+
+            for client in board_list + client_list:
+                await ws_manager.emit("pauseQuestion", to=client.websocket)
+
+            asyncio.create_task(resume_timer())
+        else:
+            # Pause the question
+            sleep_manager.pause()
+            for client in board_list + client_list:
+                await ws_manager.emit("pauseQuestion", to=client.websocket)
+    except Exception as e:
+        print(f"Error in handle_pause_game: {str(e)}")
 
 @ws_manager.on('createQuestionary')
 @verification_wrapper

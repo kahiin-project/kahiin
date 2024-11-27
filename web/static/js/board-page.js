@@ -38,14 +38,20 @@ function Count(duration, seconds) {
   if (document.getElementById("timer").style.opacity == 0) {
     return;
   }
+
+  if (document.getElementById("timer").classList.contains("paused")) {
+    setTimeout(() => Count(duration, seconds), 1000);
+    return;
+  }
+
+  const remainingSeconds = duration - seconds;
+  document.getElementById("timer").innerText = `${remainingSeconds}`;
+  document.getElementById("timer").style.width = `calc(${
+    (100 * (remainingSeconds + 1)) / (duration + 1)
+  }% - 30px)`;
+
   if (seconds >= 0) {
-    setTimeout(function () {
-      document.getElementById("timer").innerText = `${duration - seconds}`;
-      document.getElementById("timer").style.width = `calc(${
-        (100 * (duration - seconds + 1)) / (duration + 1)
-      }% - 30px)`;
-      Count(duration, seconds - 1);
-    }, 1000);
+    setTimeout(() => Count(duration, seconds - 1), 1000);
   }
 }
 
@@ -293,6 +299,17 @@ function setupSocketListeners() {
     }
   });
   
+  socket.on("pauseQuestion", (res) => {
+    timer = document.getElementById("timer")
+    if (timer.classList.contains("paused")) {
+      timer.classList.remove("paused")
+      timer.style.backgroundColor = ""
+    } else {
+      timer.classList.add("paused")
+      timer.style.backgroundColor = "#373D59"
+    }
+  });
+
   socket.on("gameEnd", (res) => {
     elementsToHide = ["question", "question_number", "answers_div", "leaderboard-container", "loader"];
     elementsToHide.forEach(id => {
