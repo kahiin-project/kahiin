@@ -4,3 +4,4 @@ aioflask
 hypercorn
 simple-websocket
 qrcode[pil]
+websockets
