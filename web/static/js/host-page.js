@@ -36,6 +36,10 @@ function nextQuestion() {
     elementsToDisable.forEach(element => {
         document.getElementById(element).setAttribute("disabled", true);
     });
+    const elementsToEnable = ["pass_question","pause_question"];
+    elementsToEnable.forEach(element => {
+        document.getElementById(element).removeAttribute("disabled");
+    });
     socket.emit("nextQuestion", { passcode, question_count });
 }
 
@@ -47,6 +51,14 @@ function kickPlayer() {
     const playerName = document.getElementById("kick_player_name").value;
     socket.emit("kickPlayer", { passcode, username: playerName });
     document.getElementById("kick_player_name").value = "";
+}
+
+function passQuestion() {
+    socket.emit("stopQuestion", passcode);
+}
+
+function pauseQuestion() {
+    socket.emit("pauseQuestion", passcode);
 }
 
 function getSpreadsheet() {
@@ -230,9 +242,12 @@ function setupSocketListeners() {
         elementsToHide.forEach(element => {
             document.getElementById(element).style.display = "none";
         });
-        const elementsToShow = ["next_question", "show_leaderboard"];
+        const elementsToShow = ["next_question", "show_leaderboard","pass_question","pause_question"];
         elementsToShow.forEach(element => {
             document.getElementById(element).style.display = "block";
+        });
+        const elementsToDisable = ["next_question", "show_leaderboard"];
+        elementsToDisable.forEach(element => {
             document.getElementById(element).setAttribute("disabled", true);
         });
     });
@@ -240,17 +255,20 @@ function setupSocketListeners() {
     socket.on("questionEnd", (res) => {
         const elementsToEnable = ["next_question", "show_leaderboard"];
         elementsToEnable.forEach(element => {
-            document.getElementById(element).style.background = "";
             document.getElementById(element).removeAttribute("disabled");
+        });
+        const elementsToDisable = ["pass_question","pause_question"];
+        elementsToDisable.forEach(element => {
+            document.getElementById(element).setAttribute("disabled", true);
         });
     });
 
     socket.on("gameEnd", (res) => {
-        const elementsToShow = ["start_game", "get_spreadsheet", "start_game_will_remove_data"];
+        const elementsToShow = ["start_game", "get_spreadsheet", "start_game_will_remove_data","pass_question","pause_question"];
         elementsToShow.forEach(element => {
             document.getElementById(element).style.display = "block";
         });
-        const elementsToHide = ["next_question", "show_leaderboard"];
+        const elementsToHide = ["next_question", "show_leaderboard","pass_question","pause_question"];
         elementsToHide.forEach(element => {
             document.getElementById(element).style.display = "none";
         });

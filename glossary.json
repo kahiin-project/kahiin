@@ -56,7 +56,9 @@
         "Questions": "Questions",
         "DeleteQuestionnaire": "Supprimer le Questionnaire",
         "GameNotRunning": "Aucune partie n'est en cours.",
-        "QuestionNotRunning": "Aucune question n'est en cours."
+        "QuestionNotRunning": "Aucune question n'est en cours.",
+        "PauseQuestion" : "Mettre la question en pause",
+        "PassQuestion":"Passer la question"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -115,7 +117,9 @@
         "Questions": "Questions",
         "DeleteQuestionnaire": "Delete Questionnaire",
         "GameNotRunning": "No game is running.",
-        "QuestionNotRunning": "No question is running."
+        "QuestionNotRunning": "No question is running.",
+        "PauseQuestion" : "Pause question",
+        "PassQuestion":"Skip question"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -174,7 +178,9 @@
         "Questions": "Preguntas",
         "DeleteQuestionnaire": "Suprimir Cuestionario",
         "GameNotRunning": "No hay ningún juego en curso.",
-        "QuestionNotRunning": "No hay ninguna pregunta en curso."
+        "QuestionNotRunning": "No hay ninguna pregunta en curso.",
+        "PauseQuestion" : "Pausar pregunta",
+        "PassQuestion":"Saltar pregunta"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -233,7 +239,9 @@
         "Questions": "Domande",
         "DeleteQuestionnaire": "Cancellare il questionario",
         "GameNotRunning": "Nessun gioco è in corso.",
-        "QuestionNotRunning": "Nessuna domanda è in corso."
+        "QuestionNotRunning": "Nessuna domanda è in corso.",
+        "PauseQuestion" : "Mettere in pausa la domanda",
+        "PassQuestion":"Saltare la domanda"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -292,6 +300,8 @@
         "Questions": "Fragen",
         "DeleteQuestionnaire": "Fragebogen Löschen",
         "GameNotRunning": "Kein Spiel läuft.",
-        "QuestionNotRunning": "Keine Frage läuft."
+        "QuestionNotRunning": "Keine Frage läuft.",
+        "PauseQuestion" : "Frage pausieren",
+        "PassQuestion":"Frage überspringen"
     }
 }

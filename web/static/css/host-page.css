@@ -200,11 +200,11 @@ nav button img{
     cursor: text;
     box-sizing: border-box;
 }
-.nav_content .apply-button, .nav_content #next_question, .nav_content #show_leaderboard, .nav_content #get_spreadsheet, .nav_content .questionary, .nav_content #create_questionary{
+.nav_content .apply-button, .nav_content #next_question, .nav_content #show_leaderboard, .nav_content #get_spreadsheet, .nav_content .questionary, .nav_content #create_questionary, .nav_content #pass_question, .nav_content #pause_question{
     background: light-dark(#387fcf,#418bde);
     margin-bottom: 5px;
 }
-.nav_content .apply-button:hover, .nav_content #next_question:hover, .nav_content #show_leaderboard:hover, #get_spreadsheet:hover, .nav_content .questionary:hover, .nav_content #create_questionary:hover{
+.nav_content .apply-button:hover, .nav_content #next_question:hover, .nav_content #show_leaderboard:hover, #get_spreadsheet:hover, .nav_content .questionary:hover, .nav_content #create_questionary:hover, .nav_content #pass_question:hover, .nav_content #pause_question:hover{
     background: light-dark(#3473bb,#3d7fca);
 }
 .nav_content .apply-button.dyslexic{
