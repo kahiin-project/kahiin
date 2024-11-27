@@ -74,7 +74,8 @@ function resetPassword(new_password_hash) {
         return response.json();
     })
     .then(data => {
-        return data; // Traitez les données ici
+        localStorage.clear();
+        return data;
     })
     .catch(error => {
         console.error(error);
@@ -109,14 +110,16 @@ function deleteAccount(password) {
 
 // Search Quizzes
 function searchQuizzes(params) {
-    return fetch('http://localhost:5000/quiz', {
+    const url = new URL('http://localhost:5000/quiz');
+    url.search = new URLSearchParams({
+        'token': localStorage.getItem('token'),
+        ...params
+    }).toString();
+
+    return fetch(url, {
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            'token': localStorage.getItem('token'),
-            'params': params
-        })
+        }
     })
     .then(response => {
         if (!response.ok) {
@@ -134,14 +137,16 @@ function searchQuizzes(params) {
 
 // Search Questions
 function searchQuestions(params) {
-    return fetch('http://localhost:5000/questions', {
+    const url = new URL('http://localhost:5000/questions');
+    url.search = new URLSearchParams({
+        'token': localStorage.getItem('token'),
+        ...params
+    }).toString();
+
+    return fetch(url, {
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            'token': localStorage.getItem('token'),
-            'params': params
-        })
+        }
     })
     .then(response => {
         if (!response.ok) {
@@ -159,14 +164,16 @@ function searchQuestions(params) {
 
 // Get Specific Question Content
 function getQuestionContent(id_question) {
-    return fetch('http://localhost:5000/question-content', {
+    const url = new URL('http://localhost:5000/question-content');
+    url.search = new URLSearchParams({
+        'token': localStorage.getItem('token'),
+        'id_question': id_question
+    }).toString();
+
+    return fetch(url, {
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            'token': localStorage.getItem('token'),
-            'id_question': id_question
-        })
+        }
     })
     .then(response => {
         if (!response.ok) {

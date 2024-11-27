@@ -1,5 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <questionary>
+    <subject>test</subject>
+    <language>fr</language>
     <title>Test Quiz</title>
     <questions>
         <question type="mcq" duration="20">
