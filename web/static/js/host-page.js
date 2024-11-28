@@ -13,6 +13,9 @@ function init() {
     setupSocketListeners();
 }
 
+// Call init on page load
+window.onload = init;
+
 // ---------------------- Functions Main -------------------------
 
 function hashSHA256(message) {
@@ -310,5 +313,63 @@ function setupSocketListeners() {
     
 }
 
-// Initialisation au chargement de la page
-document.addEventListener("DOMContentLoaded", init);
+
+
+
+const itemContainer = document.getElementById('questions_list')
+const draggableItems = document.querySelectorAll('.draggable-item');
+
+draggableItems.forEach(item => {
+  item.addEventListener('dragstart', dragStart);
+});
+
+function dragStart(e) {
+  e.dataTransfer.setData('text/plain', e.target.textContent);
+  e.dataTransfer.effectAllowed = 'move';
+  e.target.classList.add('dragging');
+}
+
+function dragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const draggingItem = document.querySelector('.dragging');
+  const afterElement = getDragAfterElement(e.clientY);
+  if (afterElement == null) {
+    itemContainer.appendChild(draggingItem);
+  } else {
+    itemContainer.insertBefore(draggingItem, afterElement);
+  }
+  updateItemOrder();
+}
+
+function drop(e) {
+  e.preventDefault();
+  const draggedItemText = e.dataTransfer.getData('text/plain');
+  const newItem = document.createElement('div');
+  newItem.classList.add('draggable-item');
+  newItem.textContent = draggedItemText;
+  newItem.setAttribute('draggable', 'true');
+  newItem.addEventListener('dragstart', dragStart);
+  itemContainer.appendChild(newItem);
+  updateItemOrder();
+}
+
+function getDragAfterElement(y) {
+  const draggableElements = [...itemContainer.querySelectorAll('.draggable-item:not(.dragging)')];
+  return draggableElements.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child };
+    } else {
+      return closest;
+    }
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+function updateItemOrder() {
+  const items = Array.from(itemContainer.children);
+  items.forEach((item, index) => {
+    item.style.order = index;
+  });
+}

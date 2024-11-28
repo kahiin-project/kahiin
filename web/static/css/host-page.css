@@ -254,7 +254,7 @@ nav button img{
 .delete_quiz_button{
     background: light-dark(#cf3838,#de4141);
     margin-top: 50px;
-    font-weight: bold;
+    margin-bottom: 50px;
 }
 .delete_quiz_button:hover{
     background: light-dark(#c03737,#cf4040);
@@ -264,10 +264,26 @@ nav button img{
     width: calc(100% - 100px);
 }
 .questions_div #questions_list{
-    background: #0f0;
+    background: #d0d0d0;
     height: 500px;
+    overflow-y: scroll;
 }
 .questions_div #questions_drawer{
     background: #00f;
     height: 500px;
+    overflow-y: scroll;
 }
+
+.questions_div #questions_list .question{
+    background: white;
+    height: 80px;
+    margin: 10px;
+}
+
+.draggable-item {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    margin: 5px;
+    cursor: move;
+}  
