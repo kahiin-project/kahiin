@@ -264,26 +264,37 @@ nav button img{
     width: calc(100% - 100px);
 }
 .questions_div #questions_list{
-    background: #d0d0d0;
+    background: light-dark(#f4f4f4,#252525);
     height: 500px;
     overflow-y: scroll;
 }
 .questions_div #questions_drawer{
-    background: #00f;
+    background: light-dark(#e7e7e7,#383838);
     height: 500px;
     overflow-y: scroll;
 }
 
 .questions_div #questions_list .question{
-    background: white;
-    height: 80px;
+    background: light-dark(white,#383838);
+    color: light-dark(black,white);
+    height: 91px;
     margin: 10px;
+    border: solid light-dark(#f4f4f4,#595959) 2px;
 }
 
 .draggable-item {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    margin: 5px;
+    background-color: light-dark(white, #595959);
+    color: light-dark(black, white);
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 13px;
+    padding-bottom: 10px;
+    margin: 10px;
     cursor: move;
-}  
+}
+.draggable-item:hover {
+    background-color: light-dark(#fdfdfd, #5d5d5d);
+}
+.draggable-item label {
+    cursor: move;
+}

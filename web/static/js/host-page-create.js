@@ -1,3 +1,7 @@
+
+
+// Drag and drop functionality for questions list
+
 const itemContainer = document.getElementById('questions_list')
 const draggableItems = document.querySelectorAll('.draggable-item');
 
@@ -22,9 +26,9 @@ function drop(e) {
     e.preventDefault();
     const draggedItemText = e.dataTransfer.getData('text/plain');
     const newItem = document.createElement('div');
-    newItem.classList.add('draggable-item');
+    newItem.classList.add('question');
     newItem.textContent = draggedItemText;
-    newItem.setAttribute('draggable', 'true');
+    // newItem.setAttribute('draggable', 'true');
     newItem.addEventListener('dragstart', dragStart);
     itemContainer.appendChild(newItem);
     updateItemOrder();
