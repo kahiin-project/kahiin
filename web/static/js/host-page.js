@@ -241,11 +241,11 @@ function setupSocketListeners() {
     socket.on("startGame", (res) => {
         question_count = 0;
         socket.emit("nextQuestion", { passcode, question_count });
-        const elementsToHide = ["start_game", "get_spreadsheet", "start_game_will_remove_data", "show_leaderboard", "next_question"];
+        const elementsToHide = ["start_game", "get_spreadsheet", "start_game_will_remove_data", "show_leaderboard"];
         elementsToHide.forEach(element => {
             document.getElementById(element).style.display = "none";
         });
-        const elementsToShow = ["next_question", "show_leaderboard","pass_question","pause_question"];
+        const elementsToShow = ["next_question", "show_leaderboard","pass_question","pause_question","question_number"];
         elementsToShow.forEach(element => {
             document.getElementById(element).style.display = "block";
         });
@@ -253,6 +253,10 @@ function setupSocketListeners() {
         elementsToDisable.forEach(element => {
             document.getElementById(element).setAttribute("disabled", true);
         });
+    });
+
+    socket.on("questionStart", (res) => {
+        document.getElementById("question_number").innerText = `${glossary["Question"]} ${res["question_number"]}/${res["question_count"]}`;
     });
 
     socket.on("questionEnd", (res) => {
@@ -267,11 +271,11 @@ function setupSocketListeners() {
     });
 
     socket.on("gameEnd", (res) => {
-        const elementsToShow = ["start_game", "get_spreadsheet", "start_game_will_remove_data","pass_question","pause_question"];
+        const elementsToShow = ["start_game", "get_spreadsheet", "start_game_will_remove_data"];
         elementsToShow.forEach(element => {
             document.getElementById(element).style.display = "block";
         });
-        const elementsToHide = ["next_question", "show_leaderboard","pass_question","pause_question"];
+        const elementsToHide = ["next_question", "show_leaderboard","pass_question","pause_question","question_number"];
         elementsToHide.forEach(element => {
             document.getElementById(element).style.display = "none";
         });

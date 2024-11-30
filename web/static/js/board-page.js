@@ -242,7 +242,7 @@ function setupSocketListeners() {
       default:
         console.log("Invalid data incoming");
     }
-    document.getElementById("question_number").innerText = `Question ${res["question_number"]}/${res["question_count"]}`;
+    document.getElementById("question_number").innerText = `${glossary["Question"]} ${res["question_number"]}/${res["question_count"]}`;
     duration = res["question_duration"];
     Count(duration, duration);
   });

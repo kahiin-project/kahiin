@@ -151,6 +151,13 @@ nav button img{
     margin-top: 50px;
     font-weight: normal;
 }
+.nav_content h3{
+    text-align: center;
+    margin : 0px ;
+    padding-bottom: 5px;
+    font-weight: normal;
+    font-size: 25px;
+}
 .nav_content select, .nav_content button, .nav_content input{
     margin-left: 50px;
     width: calc(100% - 100px);
@@ -169,6 +176,7 @@ nav button img{
 .nav_content button[disabled="true"]{
     background: light-dark(#e8e8e8,#171717) !important ;
     color: light-dark(white,#252525)!important ;
+    cursor : not-allowed ;
 }
 
 /* ON */
