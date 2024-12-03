@@ -271,7 +271,7 @@ nav button img{
     margin-left: 50px;
     width: calc(100% - 100px);
 }
-.questions_div #questions_list{
+.questions_div #dropbox{
     background: light-dark(#f4f4f4,#252525);
     height: 500px;
     overflow-y: scroll;
@@ -282,15 +282,17 @@ nav button img{
     overflow-y: scroll;
 }
 
-.questions_div #questions_list .question{
+.questions_div #dropbox .question{
     background: light-dark(white,#383838);
     color: light-dark(black,white);
-    height: 91px;
+    height: 60px;
     margin: 10px;
     border: solid light-dark(#f4f4f4,#595959) 2px;
+    font-size: 30px;
+    padding-top: 30px;
 }
 
-.draggable-item {
+.drawer-question {
     background-color: light-dark(white, #595959);
     color: light-dark(black, white);
     padding-left: 5px;
@@ -300,9 +302,25 @@ nav button img{
     margin: 10px;
     cursor: move;
 }
-.draggable-item:hover {
+.drawer-question:hover {
     background-color: light-dark(#fdfdfd, #5d5d5d);
 }
-.draggable-item label {
+.drawer-question label {
     cursor: move;
+}
+
+.question-div {
+    width: 100%;
+    background-color: white;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: grab;
+}
+.droppable-space {
+    height: 20px;
+}
+.dragover{
+    background: light-dark(#ececec,#595959);
 }
