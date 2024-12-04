@@ -138,37 +138,42 @@ function deleteQuestionary() {
 
 // ---------------------- Functions Navigation -------------------------
 function navigate(index) {
-    for (let i = 0; i < 5; i++) {
-        document.getElementById(`nav_button_${i}`).style.borderLeft = "none";
-    }
-    const elementsToHide = ["play_div", "settings_div", "create_div", "edit_div"];
+    const elementsToHide = ["play_div", "settings_div", "create_div", "edit_div", "login_div","signup_div", "account_div"];
     elementsToHide.forEach(element => {
         document.getElementById(element).style.display = "none";
     });
-    document.getElementById(`nav_button_${index}`).style.borderLeft = "solid #494949 5px";
-    switch (index) {
-        case 0:
-            document.getElementById("play_div").style.display = "block";
-            break;
-        case 1:
-            document.getElementById("create_div").style.display = "block";
-            break;
-        case 2:
-            // document.getElementById("settings_div").innerHTML = `
-            //   <h1>Kahiin DB</h1>
-            // `;
-            break;
-        case 3:
-            document.getElementById("settings_div").style.display = "block";
-            break;
-        case 4:
-            // document.getElementById("settings_div").innerHTML = `
-            //   <h1>${glossary["Account"]}</h1>
-            // `;
-            break;
-        default:
-            console.log("Invalid index incoming.");
-    }
+    if (index < 5) {
+        for (let i = 0; i < 5; i++) {
+            document.getElementById(`nav_button_${i}`).style.borderLeft = "none";
+        };
+        document.getElementById(`nav_button_${index}`).style.borderLeft = "solid #494949 5px";
+        switch (index) {
+            case 0:
+                document.getElementById("play_div").style.display = "block";
+                break;
+            case 1:
+                document.getElementById("create_div").style.display = "block";
+                break;
+            case 2:
+                // document.getElementById("settings_div").innerHTML = `
+                //   <h1>Kahiin DB</h1>
+                // `;
+                break;
+            case 3:
+                document.getElementById("settings_div").style.display = "block";
+                break;
+            case 4:
+                if (localStorage.getItem('token') != null){ //modifier test (l'actuel sert juste à tester la fonction)
+                    document.getElementById("account_div").style.display = "block";
+                } else {
+                    document.getElementById("login_div").style.display = "block";
+                }
+                break;
+            default:
+                console.log("Invalid index incoming.");
+    }} else {
+        document.getElementById("signup_div").style.display = "block";
+    };
 }
 
 function search(page) {
@@ -180,6 +185,25 @@ function search(page) {
             element.style.display = "none";
         }
     });
+}
+// ---------------------- Fuctions DB Front -------------------------
+
+function loginPage() {
+    if (document.getElementById("login_email").value != "", document.getElementById("login_password").value != ""){
+    login(document.getElementById("login_email").value,document.getElementById("login_password").value)
+    //réponse de la fonction login
+    document.getElementById("login_div").style.display = "none";
+    document.getElementById("account_div").style.display = "block";
+    };
+}
+
+function signupPage() {
+    if (document.getElementById("signup_password").value == document.getElementById("signup_verify").value, document.getElementById("signup_email").value != "", document.getElementById("signup_password").value != "") {
+        signup(document.getElementById("signup_email").value,document.getElementById("signup_password").value)
+        //réponse de la fonction signup
+        document.getElementById("signup_div").style.display = "none";
+        document.getElementById("account_div").style.display = "block";
+    };
 }
 
 // ---------------------- socket.io Main -------------------------

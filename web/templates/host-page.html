@@ -74,7 +74,7 @@
         {{glossary["GetSpreadsheet"]}}
       </button>
       <h2>{{glossary["AdminSpace"]}}</h2>
-      <input type="text" id="kick_player_name" placeholder='' />
+      <input type="text" id="kick_player_name" onchange="kickPlayer()" placeholder=''>
       <button id="kick_player_button" onclick="kickPlayer()">
         {{glossary["KickPlayer"]}}
       </button>
@@ -160,21 +160,25 @@
 
     <!-- Login -->
     <div id="login_div" class="nav_content" style="display: none;">
-      <h1>Login</h1>
-      <h2>email</h2>
-      <input type="text" id="login_email_input" placeholder="Your Email">
-      <h2>Password</h2>
-      <input type="text" id="login_password_input" placeholder="Your Psswrd">
+      <h1>{{glossary["Login"]}}</h1>
+      <h2>{{glossary["Email"]}}</h2>
+      <input type="email" id="login_email" placeholder="Your Email">
+      <h2>{{glossary["Password"]}}</h2>
+      <input type="password" id="login_password" placeholder="Your Password">
+      <button id="login" onclick="loginPage()">{{glossary["Login"]}}</button>
+      <p id="no_account" onclick="navigate(5)">{{glossary["DontHaveAccount"]}} <br> {{glossary["CreateAccount"]}}</p>
     </div>
 
     <!-- Signup -->
-    <div id="SignUp" class="nav_content" style="display: none;">
-      <h2>email</h2>
-      <input type="text" id="signup_email_input" placeholder="Your Email">
-      <h2>Password</h2>
-      <input type="text" id="signup_password_input" placeholder="Your Psswrd">
-      <h2>Confirm Password</h2>
-      <input type="text" id="signup_verify_input" placeholder="Confirm Your Psswrd">
+    <div id="signup_div" class="nav_content" style="display: none;">
+      <h1>{{glossary["Signup"]}}</h1>
+      <h2>{{glossary["Email"]}}</h2>
+      <input type="email" id="signup_email" placeholder="exemple@adress.com">
+      <h2>{{glossary["Password"]}}</h2>
+      <input type="password" id="signup_password" placeholder="Your Password">
+      <h2>{{glossary["ConfirmPassword"]}}</h2>
+      <input type="password" id="signup_verify" placeholder="Confirm Your Psswrd">
+      <button id="create_account" onclick="signupPage()">{{glossary["CreateAccount"]}}</button>
     </div>
 
     <!-- Account -->

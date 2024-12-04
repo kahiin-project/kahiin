@@ -59,7 +59,14 @@
         "GameNotRunning": "Aucune partie n'est en cours.",
         "QuestionNotRunning": "Aucune question n'est en cours.",
         "PauseQuestion" : "Mettre la question en pause",
-        "PassQuestion":"Passer la question"
+        "PassQuestion":"Passer la question",
+        "Login": "Connexion",
+        "Email": "Email",
+        "Password": "Mot de passe",
+        "ConfirmPassword": "Confirmer le mot de passe",
+        "DontHaveAccount": "Vous n'avez pas de compte ?",
+        "CreateAccount": "Créer un compte",
+        "Signup": "S'inscrire"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -121,7 +128,14 @@
         "GameNotRunning": "No game is running.",
         "QuestionNotRunning": "No question is running.",
         "PauseQuestion" : "Pause question",
-        "PassQuestion":"Skip question"
+        "PassQuestion": "Skip question",
+        "Login": "Login",
+        "Email": "Email",
+        "Password": "Password",
+        "ConfirmPassword": "Confirm password",
+        "DontHaveAccount": "Don't have account ?",
+        "CreateAccount": "Create account",
+        "Signup": "Signup"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -183,7 +197,14 @@
         "GameNotRunning": "No hay ningún juego en curso.",
         "QuestionNotRunning": "No hay ninguna pregunta en curso.",
         "PauseQuestion" : "Pausar pregunta",
-        "PassQuestion":"Saltar pregunta"
+        "PassQuestion":"Saltar pregunta",
+        "Login": "Iniciar sesión",
+        "Email": "Correo electrónico",
+        "Password": "Contraseña",
+        "ConfirmPassword": "Confirmar contraseña",
+        "DontHaveAccount": "¿No tienes una cuenta?",
+        "CreateAccount": "Crear cuenta",
+        "Signup": "Registrarse"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -245,7 +266,14 @@
         "GameNotRunning": "Nessun gioco è in corso.",
         "QuestionNotRunning": "Nessuna domanda è in corso.",
         "PauseQuestion" : "Mettere in pausa la domanda",
-        "PassQuestion":"Saltare la domanda"
+        "PassQuestion":"Saltare la domanda",
+        "Login": "Accedi",
+        "Email": "Email",
+        "Password": "Password",
+        "ConfirmPassword": "Conferma password",
+        "DontHaveAccount": "Non hai un account?",
+        "CreateAccount": "Crea account",
+        "Signup": "Iscriviti"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -307,6 +335,13 @@
         "GameNotRunning": "Kein Spiel läuft.",
         "QuestionNotRunning": "Keine Frage läuft.",
         "PauseQuestion" : "Frage pausieren",
-        "PassQuestion":"Frage überspringen"
+        "PassQuestion":"Frage überspringen",
+        "Login": "Anmelden",
+        "Email": "Email",
+        "Password": "Passwort",
+        "ConfirmPassword": "Passwort bestätigen",
+        "DontHaveAccount": "Kein Konto?",
+        "CreateAccount": "Konto erstellen",
+        "Signup": "Registrieren"
     }
 }
