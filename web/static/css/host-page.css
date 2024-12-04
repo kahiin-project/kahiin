@@ -290,6 +290,7 @@ nav button img{
     border: solid light-dark(#f4f4f4,#595959) 2px;
     font-size: 30px;
     padding-top: 30px;
+    cursor: move;
 }
 
 .drawer-question {

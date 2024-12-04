@@ -121,6 +121,8 @@ function editQuestionary(questionary_name) {
     document.getElementById("edit_questionary_name").value = questionary_name;
     editing_questionary = questionary_name;
     document.getElementById("edit_div").style.display = "block";
+
+    // getWholeQuestionnaire(questionary_name);
 }
 
 function editQuestionaryName(new_name) {
@@ -180,7 +182,7 @@ function search(page) {
     });
 }
 
-// ---------------------- Socket.io Main -------------------------
+// ---------------------- socket.io Main -------------------------
 
 function setupSocketListeners() {
     socket.on("error", (res) => {
@@ -236,7 +238,7 @@ function setupSocketListeners() {
         socket.emit("listQuestionary", { passcode });
     });
 
-    // ---------------------- Socket.io Game -------------------------
+    // ---------------------- socket.io Game -------------------------
 
     socket.on("startGame", (res) => {
         question_count = 0;
@@ -297,7 +299,7 @@ function setupSocketListeners() {
         window.URL.revokeObjectURL(url);
     });
 
-    // ---------------------- Socket.io Create -------------------------
+    // ---------------------- socket.io Create -------------------------
 
     socket.on("ListOfQuestionary", (res) => {
         const questionary_select_list = document.getElementById("questionary_select_list");
@@ -314,6 +316,5 @@ function setupSocketListeners() {
         socket.emit("listQuestionary", { passcode });
         navigate(1);
     });
-    
-}
 
+}

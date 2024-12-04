@@ -5,3 +5,4 @@ hypercorn
 simple-websocket
 qrcode[pil]
 websockets
+xmltodict

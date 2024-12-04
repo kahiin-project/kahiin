@@ -4,6 +4,7 @@ from io import BytesIO
 import time
 import json
 import xml.etree.ElementTree as ET
+import xmltodict
 from base64 import b64encode
 import random
 import os
@@ -771,7 +772,21 @@ async def handle_set_settings(websocket, res) -> None:
     if res["settings"].get("dyslexicMode") is not None:
         for client in host_list+client_list+board_list:
             await ws_manager.emit("settings", settings, to=client.websocket)
-    
+
+@ws_manager.on("getWholeQuestionnaire")
+@verification_wrapper
+async def handle_get_whole_questionnaire(websocket, res) -> None:
+    """Handle requests to get the whole questionnaire."""
+    code = res["passcode"]
+    questionnaire_name = res["questionnaire_name"]
+    if get_passcode() == code:
+        with open(f"questionnaire/{questionnaire_name}", "rb") as f:
+            xml_content = f.read()
+            dict_content = xmltodict.parse(xml_content)
+            json_content = json.dumps(dict_content)
+            await ws_manager.emit("wholeQuestionnaire", json_content, to=websocket)
+    else:
+        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 
 def start_flask():
     # ws_manager.add_background_task(background_task())
