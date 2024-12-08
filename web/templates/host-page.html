@@ -9,6 +9,22 @@
     <script src="/static/js/kahiin-db.js"></script>
     <script src="/static/js/Socket/socket.js"></script>
     <script src="/static/js/CryptoJs/crypto-js.min.js"></script>
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet" href="static/css/default.min.css">
+    <script src="static/js/Highlight/highlight.min.js"></script>
+
+    <!-- Markdown -->
+    <script src="/static/js/Marked/marked.min.js" crossorigin="anonymous"></script>
+
+    <!-- LATEK -->
+    <link
+      rel="stylesheet"
+      href="/static/css/KaTeX/katex.min.css"
+    />
+    <script src="/static/js/KaTeX/katex.min.js"></script>
+    <script src="/static/js/KaTeX/auto-render.min.js"></script>
+
     <link
       rel="icon"
       type="image/png"
@@ -95,7 +111,7 @@
     <!-- Edit -->
     <div id="edit_div" class="nav_content" style="display: none;">
       <h1>{{glossary["Edit"]}}</h1>
-      <input type="text" id="edit_questionary_name" placeholder="Questionary Name" onchange="editQuestionaryName(this.value)">
+      <input type="text" id="edit_questionnaire_name" placeholder="Questionary Name" onchange="editQuestionaryName(this.value)">
       <h2>{{glossary["Questions"]}}</h2>
       <table class="questions_div">
         <colgroup>
@@ -189,6 +205,6 @@
     </div>
 
     <script src="static/js/host-page.js"></script>
-    <!-- <script src="static/js/host-page-create.js"></script> -->
+    <script src="static/js/host-page-create.js"></script>
   </body>
 </html>

@@ -580,7 +580,7 @@ async def handle_get_spreadsheet(websocket, res) -> None:
         csv.append(f"{client.username},{client.score},{500*len(questionary.questionary['questions'])}")
     data = {
             "csv" : "\n".join(csv), 
-            "questionary_name": questionary.questionary["title"]
+            "questionnaire_name": questionary.questionary["title"]
             }
     
     for host in host_list:
@@ -616,7 +616,7 @@ async def handle_list_questionary(websocket, res) -> None:
 @ws_manager.on('selectQuestionary')
 @verification_wrapper
 async def handle_select_questionary(websocket, res) -> None:
-    questionary.tree = ET.parse(os.path.join("questionnaire", res["questionary_name"]))
+    questionary.tree = ET.parse(os.path.join("questionnaire", res["questionnaire_name"]))
     questionary.root = questionary.tree.getroot()
     # questionary.questionary = {"questions": []}
     # for question in questionary.root.findall('question'):
@@ -713,12 +713,12 @@ async def handle_create_questionary(websocket, res) -> None:
 @ws_manager.on('deleteQuestionary')
 @verification_wrapper
 async def handle_delete_questionary(websocket, res) -> None:
-    os.remove("questionnaire/"+res["questionary_name"])
+    os.remove("questionnaire/"+res["questionnaire_name"])
     await ws_manager.emit("deletedQuestionnary", to=websocket)
 
 @ws_manager.on("editQuestionaryName")
 @verification_wrapper
-async def handle_edit_questionary_name(websocket, res) -> None:
+async def handle_edit_questionnaire_name(websocket, res) -> None:
     list_questionaries = os.listdir("questionnaire")
     forbiden_characters = '/\|,.;:!?*"><'
     invalid_characters = False
@@ -783,7 +783,15 @@ async def handle_get_whole_questionnaire(websocket, res) -> None:
         with open(f"questionnaire/{questionnaire_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
-            json_content = json.dumps(dict_content)
+
+            questionnary = {
+                "subject": dict_content["questionary"]["subject"],
+                "language": dict_content["questionary"]["language"],
+                "title": dict_content["questionary"]["title"],
+                "questions": dict_content["questionary"]["questions"][0]["question"]
+            }
+
+            json_content = json.dumps(questionnary)
             await ws_manager.emit("wholeQuestionnaire", json_content, to=websocket)
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)

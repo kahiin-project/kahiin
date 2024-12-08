@@ -100,12 +100,12 @@ function editSettingsButton(setting) {
 
 // ---------------------- Functions Create -------------------------
 
-function selectQuestionary(questionary_name) {
-    socket.emit("selectQuestionary", { passcode, questionary_name });
+function selectQuestionary(questionnaire_name) {
+    socket.emit("selectQuestionary", { passcode, questionnaire_name });
     document.querySelectorAll(".questionary").forEach(element => {
         element.style.background = "";
     });
-    document.getElementById(questionary_name).style.background = "#49cf38";
+    document.getElementById(questionnaire_name).style.background = "#49cf38";
 }
 
 function createQuestionary() {
@@ -113,16 +113,27 @@ function createQuestionary() {
     socket.emit("listQuestionary", { passcode });
 }
 
+function getWholeQuestionnaire(questionnaire_name) {
+    socket.emit("getWholeQuestionnaire", { passcode, questionnaire_name });
+}
+
+function setupSocketListeners() {
+    socket.on("wholeQuestionnaire", (res) => {
+        console.log(res);
+    });
+}
+
 editing_questionary = ""
-function editQuestionary(questionary_name) {
-    document.getElementById("edit_questionary_name").value = "";
+function editQuestionary(questionnaire_name) {
+    document.getElementById("edit_questionnaire_name").value = "";
     document.getElementById("create_div").style.display = "none";
     socket.emit("listQuestionary", { passcode });
-    document.getElementById("edit_questionary_name").value = questionary_name;
-    editing_questionary = questionary_name;
+    document.getElementById("edit_questionnaire_name").value = questionnaire_name;
+    editing_questionary = questionnaire_name;
     document.getElementById("edit_div").style.display = "block";
 
-    // getWholeQuestionnaire(questionary_name);
+    document.getElementById('dropbox').innerHTML = '';
+    getWholeQuestionnaire(questionnaire_name);
 }
 
 function editQuestionaryName(new_name) {
@@ -132,8 +143,8 @@ function editQuestionaryName(new_name) {
 }
 
 function deleteQuestionary() {
-    const questionary_name = document.getElementById("edit_questionary_name").value;
-    socket.emit("deleteQuestionary", { passcode, questionary_name });
+    const questionnaire_name = document.getElementById("edit_questionnaire_name").value;
+    socket.emit("deleteQuestionary", { passcode, questionnaire_name });
 }
 
 // ---------------------- Functions Navigation -------------------------
@@ -316,7 +327,7 @@ function setupSocketListeners() {
         const url = window.URL.createObjectURL(blob);
         const csv_link = document.createElement('a');
         csv_link.href = url;
-        csv_link.download = `${res.questionary_name}_leaderboard_${formattedDate}.csv`;
+        csv_link.download = `${res.questionnaire_name}_leaderboard_${formattedDate}.csv`;
         document.body.appendChild(csv_link);
         csv_link.click();
         document.body.removeChild(csv_link);
@@ -339,6 +350,34 @@ function setupSocketListeners() {
     socket.on("deletedQuestionnary", (res) => {
         socket.emit("listQuestionary", { passcode });
         navigate(1);
+    });
+
+    socket.on("wholeQuestionnaire", (res) => {
+        questionnaire = JSON.parse(res);
+        questions = questionnaire.questions;
+        questions.forEach((question, index) => {
+            createDroppableSpace(index, res.questions);
+            const question_div = document.createElement('div');
+            question_div.innerHTML = question.title;
+
+            question_div.innerHTML = marked(question.title);
+            renderMathInElement(question_div, {
+            delimiters: [
+                {left: "\$", right: "\$", display: false},
+                {left: "\$$", right: "\$$", display: true}
+            ]
+            });
+            hljs.highlightAll();
+
+            question_div.classList.add('question');
+            question_div.draggable = true;
+            question_div.setAttribute('line-pos', index);
+            question_div.addEventListener('dragstart', (e) => {
+                draggedQuestion = question;
+                e.dataTransfer.setData('text/plain', '');
+            });
+            document.getElementById('dropbox').appendChild(question_div);
+        });
     });
 
 }

@@ -70,13 +70,3 @@ drawer_questions.forEach(drawer_question => {
 });
 
 updateQuestionOrder();
-
-function getWholeQuestionnaire(questionnaire_name) {
-    window.socket.emit("getWholeQuestionnaire", { passcode, questionnaire_name });
-}
-
-function setupSocketListeners() {
-    window.socket.on("wholeQuestionnaire", (res) => {
-        console.log(res);
-    });
-}
