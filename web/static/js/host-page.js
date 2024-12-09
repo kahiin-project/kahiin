@@ -371,17 +371,18 @@ function setupSocketListeners() {
     });
 
     socket.on("wholeQuestionnaire", (res) => {
+        document.getElementById('dropbox').innerHTML = '';
         questionnaire = JSON.parse(res);
         questions = questionnaire.questions;
         questions.forEach((question, index) => {
-            createDroppableSpace(index, res.questions);
+            createDroppableSpace(index);
             const question_div = document.createElement('div');
 
             question_div.classList.add('question');
             question_div.draggable = true;
             question_div.setAttribute('line-pos', index);
             question_div.addEventListener('dragstart', (e) => {
-                draggedQuestion = question;
+                draggedIndex = parseInt(index);
                 e.dataTransfer.setData('text/plain', '');
             });
             document.getElementById('dropbox').appendChild(question_div);
@@ -399,7 +400,8 @@ function setupSocketListeners() {
             });
             hljs.highlightAll();
         });
-        updateDyslexicFonts(dyslexicMode)
+        createDroppableSpace(questions.length);
+        updateDyslexicFonts(dyslexicMode);
     });
 
 }

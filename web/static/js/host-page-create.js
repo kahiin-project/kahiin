@@ -1,11 +1,10 @@
 const drawer_questions = document.querySelectorAll('.drawer-question');
 const dropbox = document.getElementById('dropbox');
 
-let questions_id = [0, 1, 2];
 let draggedIndex = null;
 let draggedQuestion = null;
 
-function createDroppableSpace(index, questions_id) {
+function createDroppableSpace(index) {
     const droppable_space = document.createElement('div');
     droppable_space.classList.add('droppable-space');
     droppable_space.setAttribute('line-pos', index);
@@ -25,41 +24,24 @@ function createDroppableSpace(index, questions_id) {
         let targetIndex = parseInt(droppable_space.getAttribute('line-pos'));
         if (draggedQuestion !== null) {
             // Copy the dragged question to the target index
-            questions_id.splice(targetIndex, 0, parseInt(draggedQuestion));
+            
+            console.log(draggedQuestion);
+
             draggedQuestion = null; // Reset draggedQuestion after copying
-            updateQuestionOrder(); // Refresh the order
         } else if (draggedIndex !== null) {
             // Move the dragged question to the target index
             if(targetIndex > draggedIndex) targetIndex--;
-            questions_id.splice(targetIndex, 0, questions_id.splice(draggedIndex, 1)[0]);
+            
+            socket.emit('moveQuestion', {
+                from: draggedIndex, 
+                to: targetIndex, 
+                questionnaire_name: document.getElementById("edit_questionnaire_name").value, 
+                passcode: passcode
+            });
+
             draggedIndex = null; // Reset draggedIndex after moving
-            updateQuestionOrder(); // Refresh the order
         }
     });
-}
-
-function updateQuestionOrder() {
-    dropbox.innerHTML = ''; // Clear previous elements
-    questions_id.forEach((question_id, index) => {
-        
-        createDroppableSpace(index, questions_id);
-
-        const question_div = document.createElement('div');
-        question_div.innerHTML = question_id;
-        question_div.classList.add('question');
-        question_div.draggable = true;
-        question_div.setAttribute('line-pos', index);
-
-        question_div.addEventListener('dragstart', (e) => {
-            draggedQuestion = null;
-            draggedIndex = index;
-            e.dataTransfer.setData('text/plain', '');
-        });
-
-        dropbox.appendChild(question_div);
-    });
-
-    createDroppableSpace(questions_id.length, questions_id);
 }
 
 drawer_questions.forEach(drawer_question => {
@@ -68,5 +50,3 @@ drawer_questions.forEach(drawer_question => {
         e.dataTransfer.setData('text/plain', '');
     });
 });
-
-updateQuestionOrder();

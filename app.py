@@ -796,6 +796,40 @@ async def handle_get_whole_questionnaire(websocket, res) -> None:
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 
+@ws_manager.on("moveQuestion")
+@verification_wrapper
+async def handle_move_question(websocket, res) -> None:
+    """Handle requests to move a question."""
+    code = res["passcode"]
+    if get_passcode() == code:
+        from_index = res["from"]
+        to_index = res["to"]
+        questionnaire_name = res["questionnaire_name"]
+        
+        with open(f"questionnaire/{questionnaire_name}", "rb") as f:
+            xml_content = f.read()
+            dict_content = xmltodict.parse(xml_content)
+            questions = dict_content["questionary"]["questions"][0]["question"]
+
+        # Move the question from from_index to to_index
+        questions.insert(to_index, questions.pop(from_index))
+
+        with open(f"questionnaire/{questionnaire_name}", "wb") as f:
+            f.write(xmltodict.unparse(dict_content).encode())
+
+        questionnary = {
+            "subject": dict_content["questionary"]["subject"],
+            "language": dict_content["questionary"]["language"],
+            "title": dict_content["questionary"]["title"],
+            "questions": questions
+        }
+
+        json_content = json.dumps(questionnary)
+        await ws_manager.emit("wholeQuestionnaire", json_content, to=websocket)
+    else:
+        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+
+
 def start_flask():
     # ws_manager.add_background_task(background_task())
     asyncio.run(ws_manager.start())
