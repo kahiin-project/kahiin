@@ -133,6 +133,22 @@ nav button img{
 }
 @media (prefers-color-scheme: dark){nav button img{filter:invert(1)}}
 
+#error_div{
+    transition: 0.5s ease-in-out;
+    display: block;
+    position:absolute;
+    background: red;
+    color: white;
+    width: 700px;
+    height: 40px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: calc(97%);
+    top:10px;
+    left: 58%;
+    transform: translateX(-50%);
+}
+
 .nav_content{
     position: absolute;
     left: 16%;

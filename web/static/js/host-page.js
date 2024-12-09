@@ -28,6 +28,16 @@ function submitPasscode() {
     socket.emit("hostConnect", passcode);
 }
 
+function printError(error) {
+    document.getElementById("error_div").innerHTML = error ;
+    document.getElementById("error_div").style.transform = "translate(-50%, 30px)" ;
+    document.getElementById("error_div").style.opacity = "1" ;
+    setTimeout(() => {
+        document.getElementById("error_div").style.transform = "translate(-50%, -30px)" ;
+        document.getElementById("error_div").style.opacity = "0" ;
+    },5000)
+}
+
 // ---------------------- Functions Game -------------------------
 function startSession() {
     socket.emit("startSession", passcode);
@@ -201,19 +211,27 @@ function search(page) {
 
 function loginPage() {
     if (document.getElementById("login_email").value != "", document.getElementById("login_password").value != ""){
-    login(document.getElementById("login_email").value,document.getElementById("login_password").value)
-    //réponse de la fonction login
-    document.getElementById("login_div").style.display = "none";
-    document.getElementById("account_div").style.display = "block";
+        login(document.getElementById("login_email").value,document.getElementById("login_password").value)
+        .then(data => {
+            document.getElementById("login_div").style.display = "none";
+            document.getElementById("account_div").style.display = "block";
+        })
+        .catch(error => {
+            console.error(error);
+        });
     };
 }
 
 function signupPage() {
     if (document.getElementById("signup_password").value == document.getElementById("signup_verify").value, document.getElementById("signup_email").value != "", document.getElementById("signup_password").value != "") {
         signup(document.getElementById("signup_email").value,document.getElementById("signup_password").value)
-        //réponse de la fonction signup
-        document.getElementById("signup_div").style.display = "none";
-        document.getElementById("account_div").style.display = "block";
+        .then(data => {
+            document.getElementById("signup_div").style.display = "none";
+            document.getElementById("login_div").style.display = "block";
+        })
+        .catch(error => {
+            console.error(error);
+        });
     };
 }
 
