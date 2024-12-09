@@ -4,6 +4,7 @@ let socket = null;
 let question_count = 0;
 let passcode = "";
 let glossary = {};
+let dyslexicMode = false;
 
 // ---------------------- Initialisation -------------------------
 
@@ -17,6 +18,17 @@ function init() {
 window.onload = init;
 
 // ---------------------- Functions Main -------------------------
+
+function updateDyslexicFonts(dyslexicMode){
+    let elements = document.querySelectorAll('*');
+    elements.forEach(element => {
+      if (dyslexicMode) {
+        element.classList.add('dyslexic');
+      } else {
+        element.classList.remove('dyslexic');
+      }
+    });
+  }
 
 function hashSHA256(message) {
     const hash = CryptoJS.SHA256(message);
@@ -125,12 +137,6 @@ function createQuestionary() {
 
 function getWholeQuestionnaire(questionnaire_name) {
     socket.emit("getWholeQuestionnaire", { passcode, questionnaire_name });
-}
-
-function setupSocketListeners() {
-    socket.on("wholeQuestionnaire", (res) => {
-        console.log(res);
-    });
 }
 
 editing_questionary = ""
@@ -271,14 +277,8 @@ function setupSocketListeners() {
         // endOnAllAnsweredButton.className = res.endOnAllAnswered ? "on" : "off";
         // endOnAllAnsweredButton.innerHTML = res.endOnAllAnswered ? "ON" : "OFF";
 
-        const elements = document.querySelectorAll('*');
-        elements.forEach(element => {
-            if (res.dyslexicMode) {
-                element.classList.add('dyslexic');
-            } else {
-                element.classList.remove('dyslexic');
-            }
-        });
+        dyslexicMode = res.dyslexicMode
+        updateDyslexicFonts(dyslexicMode);
     });
 
     socket.on("glossary", (res) => {
@@ -376,16 +376,6 @@ function setupSocketListeners() {
         questions.forEach((question, index) => {
             createDroppableSpace(index, res.questions);
             const question_div = document.createElement('div');
-            question_div.innerHTML = question.title;
-
-            question_div.innerHTML = marked(question.title);
-            renderMathInElement(question_div, {
-            delimiters: [
-                {left: "\$", right: "\$", display: false},
-                {left: "\$$", right: "\$$", display: true}
-            ]
-            });
-            hljs.highlightAll();
 
             question_div.classList.add('question');
             question_div.draggable = true;
@@ -395,7 +385,21 @@ function setupSocketListeners() {
                 e.dataTransfer.setData('text/plain', '');
             });
             document.getElementById('dropbox').appendChild(question_div);
+
+            question_title = question.title
+            .split('\n')
+            .map(line => line.trim().replace(/\s+/g, ' '))
+            .join('\n');
+            question_div.innerHTML = marked(question_title)
+            renderMathInElement(question_div, {
+                delimiters: [
+                    {left: "\$", right: "\$", display: false},
+                    {left: "\$$", right: "\$$", display: true}
+                ]
+            });
+            hljs.highlightAll();
         });
+        updateDyslexicFonts(dyslexicMode)
     });
 
 }
