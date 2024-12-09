@@ -4,6 +4,7 @@ let socket = null;
 let question_count = 0;
 let passcode = "";
 let glossary = {};
+let dyslexicMode = false;
 
 // ---------------------- Initialisation -------------------------
 
@@ -17,6 +18,17 @@ function init() {
 window.onload = init;
 
 // ---------------------- Functions Main -------------------------
+
+function updateDyslexicFonts(dyslexicMode){
+    let elements = document.querySelectorAll('*');
+    elements.forEach(element => {
+      if (dyslexicMode) {
+        element.classList.add('dyslexic');
+      } else {
+        element.classList.remove('dyslexic');
+      }
+    });
+  }
 
 function hashSHA256(message) {
     const hash = CryptoJS.SHA256(message);
@@ -247,14 +259,8 @@ function setupSocketListeners() {
         // endOnAllAnsweredButton.className = res.endOnAllAnswered ? "on" : "off";
         // endOnAllAnsweredButton.innerHTML = res.endOnAllAnswered ? "ON" : "OFF";
 
-        const elements = document.querySelectorAll('*');
-        elements.forEach(element => {
-            if (res.dyslexicMode) {
-                element.classList.add('dyslexic');
-            } else {
-                element.classList.remove('dyslexic');
-            }
-        });
+        dyslexicMode = res.dyslexicMode
+        updateDyslexicFonts(dyslexicMode);
     });
 
     socket.on("glossary", (res) => {
@@ -375,6 +381,7 @@ function setupSocketListeners() {
             });
             hljs.highlightAll();
         });
+        updateDyslexicFonts(dyslexicMode)
     });
 
 }

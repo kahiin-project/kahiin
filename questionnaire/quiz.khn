@@ -7,6 +7,7 @@
         <question type="mcq" duration="20">
             <title>
             # Test Question Answer A
+            $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$
             ```python
             for i in range(10):
                 print(i)
