@@ -18,7 +18,13 @@ code.hljs {
 */
 .hljs {
   color: #24292e;
-  background: #ffffff
+  background: #ffffff;
+  border: solid #c9c9c9 1px;
+  border-radius: 10px;
+  text-align: left;
+}
+.hljs, .hljs span{
+  font-family: monospace;
 }
 .hljs-doctag,
 .hljs-keyword,

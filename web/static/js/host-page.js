@@ -117,12 +117,6 @@ function getWholeQuestionnaire(questionnaire_name) {
     socket.emit("getWholeQuestionnaire", { passcode, questionnaire_name });
 }
 
-function setupSocketListeners() {
-    socket.on("wholeQuestionnaire", (res) => {
-        console.log(res);
-    });
-}
-
 editing_questionary = ""
 function editQuestionary(questionnaire_name) {
     document.getElementById("edit_questionnaire_name").value = "";
@@ -358,16 +352,6 @@ function setupSocketListeners() {
         questions.forEach((question, index) => {
             createDroppableSpace(index, res.questions);
             const question_div = document.createElement('div');
-            question_div.innerHTML = question.title;
-
-            question_div.innerHTML = marked(question.title);
-            renderMathInElement(question_div, {
-            delimiters: [
-                {left: "\$", right: "\$", display: false},
-                {left: "\$$", right: "\$$", display: true}
-            ]
-            });
-            hljs.highlightAll();
 
             question_div.classList.add('question');
             question_div.draggable = true;
@@ -377,6 +361,19 @@ function setupSocketListeners() {
                 e.dataTransfer.setData('text/plain', '');
             });
             document.getElementById('dropbox').appendChild(question_div);
+
+            question_title = question.title
+            .split('\n')
+            .map(line => line.trim().replace(/\s+/g, ' '))
+            .join('\n');
+            question_div.innerHTML = marked(question_title)
+            renderMathInElement(question_div, {
+                delimiters: [
+                    {left: "\$", right: "\$", display: false},
+                    {left: "\$$", right: "\$$", display: true}
+                ]
+            });
+            hljs.highlightAll();
         });
     });
 
