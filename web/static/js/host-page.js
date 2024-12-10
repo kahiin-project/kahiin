@@ -5,6 +5,8 @@ let question_count = 0;
 let passcode = "";
 let glossary = {};
 let dyslexicMode = false;
+let drawer = [];
+let draggedIndex = null;
 
 // ---------------------- Initialisation -------------------------
 
@@ -120,6 +122,31 @@ function editSettingsButton(setting) {
 
 }
 
+function createDrawerQuestionElement(id, title) {
+    const drawer_question = document.createElement('div');
+    drawer_question.classList.add('drawer-question');
+    drawer_question.draggable = true;
+    drawer_question.setAttribute('question-id', id);
+
+    const bulletLabel = document.createElement('label');
+    bulletLabel.style.display = 'inline-block';
+    bulletLabel.style.width = '50px';
+    bulletLabel.style.textAlign = 'left';
+    bulletLabel.style.color = '#c0c0c0';
+    bulletLabel.textContent = '•';
+
+    const questionLabel = document.createElement('label');
+    questionLabel.style.display = 'inline-block';
+    questionLabel.style.width = 'calc(100% - 130px)';
+    questionLabel.style.paddingRight = '60px';
+    questionLabel.textContent = title;
+
+    drawer_question.appendChild(bulletLabel);
+    drawer_question.appendChild(questionLabel);
+
+    return drawer_question;
+}
+
 // ---------------------- Functions Create -------------------------
 
 function selectQuestionary(questionnaire_name) {
@@ -139,6 +166,10 @@ function getWholeQuestionnaire(questionnaire_name) {
     socket.emit("getWholeQuestionnaire", { passcode, questionnaire_name });
 }
 
+function getDrawer() {
+    socket.emit("getDrawer", { passcode });
+}
+
 editing_questionary = ""
 function editQuestionary(questionnaire_name) {
     document.getElementById("edit_questionnaire_name").value = "";
@@ -150,6 +181,7 @@ function editQuestionary(questionnaire_name) {
 
     document.getElementById('dropbox').innerHTML = '';
     getWholeQuestionnaire(questionnaire_name);
+    getDrawer();
 }
 
 function editQuestionaryName(new_name) {
@@ -401,6 +433,20 @@ function setupSocketListeners() {
             hljs.highlightAll();
         });
         createDroppableSpace(questions.length);
+        updateDyslexicFonts(dyslexicMode);
+    });
+
+    socket.on("drawer", (res) => {
+        drawer = res;
+        const drawer_div = document.getElementById('questions_drawer');
+        drawer_div.innerHTML = '';
+        res.forEach((question, index) => {
+            const drawer_question = createDrawerQuestionElement(index, question.title.substring(0, 20) + "...");
+            drawer_div.appendChild(drawer_question);
+            drawer_question.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', e.target.getAttribute('question-id'));
+            });
+        });
         updateDyslexicFonts(dyslexicMode);
     });
 

@@ -1,7 +1,6 @@
 const drawer_questions = document.querySelectorAll('.drawer-question');
 const dropbox = document.getElementById('dropbox');
 
-let draggedIndex = null;
 let draggedQuestion = null;
 
 function createDroppableSpace(index) {
@@ -22,10 +21,18 @@ function createDroppableSpace(index) {
     droppable_space.addEventListener('drop', (e) => {
         e.preventDefault();
         let targetIndex = parseInt(droppable_space.getAttribute('line-pos'));
+        draggedQuestion = e.dataTransfer.getData('text/plain');
         if (draggedQuestion !== null) {
             // Copy the dragged question to the target index
-            
-            console.log(draggedQuestion);
+            questionToCopy = drawer[draggedQuestion];
+            console.log(questionToCopy);
+
+            socket.emit('copyQuestion', {
+                question: questionToCopy, 
+                to: targetIndex, 
+                questionnaire_name: document.getElementById("edit_questionnaire_name").value, 
+                passcode: passcode
+            });
 
             draggedQuestion = null; // Reset draggedQuestion after copying
         } else if (draggedIndex !== null) {
@@ -43,10 +50,3 @@ function createDroppableSpace(index) {
         }
     });
 }
-
-drawer_questions.forEach(drawer_question => {
-    drawer_question.addEventListener('dragstart', (e) => {
-        draggedQuestion = drawer_question.getAttribute('question-id');
-        e.dataTransfer.setData('text/plain', '');
-    });
-});
