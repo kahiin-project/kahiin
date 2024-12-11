@@ -14,6 +14,17 @@ function init() {
 
 // ---------------------- Functions Main -------------------------
 
+function updateDyslexicFonts(dyslexicMode){
+  let elements = document.querySelectorAll('*');
+  elements.forEach(element => {
+    if (dyslexicMode) {
+      element.classList.add('dyslexic');
+    } else {
+      element.classList.remove('dyslexic');
+    }
+  });
+}
+
 function generatePastelColor() {
   const r = Math.floor(Math.random() * 128 + 127);
   const g = Math.floor(Math.random() * 128 + 127);
@@ -81,14 +92,7 @@ function setupSocketListeners() {
   });
   
   socket.on("settings", (res) => {
-    let elements = document.querySelectorAll('*');
-    elements.forEach(element => {
-      if (res.dyslexicMode) {
-        element.classList.add('dyslexic');
-      } else {
-        element.classList.remove('dyslexic');
-      }
-    });
+    updateDyslexicFonts(res.dyslexicMode);
   });
 
   socket.on("glossary", (res) => {
