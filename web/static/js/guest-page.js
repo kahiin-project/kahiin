@@ -244,18 +244,19 @@ function sendMCQ() {
     });
   });
 
-  socket.on("pauseQuestion", (res) => {
-    element = ["buttons", "send_button"]
-    if (document.getElementById(element[0]).style.display === "block"){
-      element.forEach(element => {
-        document.getElementById(element).style.display = "none";
-      })
-    } else {
-      element.forEach(element => {
-        document.getElementById(element).style.display = "block";
+  socket.on("pauseQuestion", () => {
+      const elements = ["buttons", "send_button"];
+      elements.forEach(element => {
+          document.getElementById(element).style.display = "none";
       });
-    }
-  })
+  });
+
+  socket.on("unpauseQuestion", () => {
+      const elements = ["buttons", "send_button"];
+      elements.forEach(element => {
+          document.getElementById(element).style.display = "block";
+      });
+  });
 }
 
 document.addEventListener("DOMContentLoaded", init);

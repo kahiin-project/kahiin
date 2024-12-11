@@ -61,7 +61,13 @@ function passQuestion() {
 }
 
 function pauseQuestion() {
-    socket.emit("pauseQuestion", passcode);
+    if (document.getElementById("pause_question").innerHTML === glossary["UnpauseQuestion"]) {
+        socket.emit("unpauseQuestion", passcode);
+        document.getElementById("pause_question").innerHTML = glossary["PauseQuestion"];
+    } else {
+        socket.emit("pauseQuestion", passcode);
+        document.getElementById("pause_question").innerHTML = glossary["UnpauseQuestion"];
+    }
 }
 
 function getSpreadsheet() {

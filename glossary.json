@@ -58,15 +58,16 @@
         "DeleteQuestionnaire": "Supprimer le Questionnaire",
         "GameNotRunning": "Aucune partie n'est en cours.",
         "QuestionNotRunning": "Aucune question n'est en cours.",
-        "PauseQuestion" : "Mettre la question en pause",
-        "PassQuestion":"Passer la question",
+        "PauseQuestion": "Mettre la question en pause",
+        "PassQuestion": "Passer la question",
         "Login": "Connexion",
         "Email": "Email",
         "Password": "Mot de passe",
         "ConfirmPassword": "Confirmer le mot de passe",
         "DontHaveAccount": "Vous n'avez pas de compte ?",
         "CreateAccount": "Créer un compte",
-        "Signup": "S'inscrire"
+        "Signup": "S'inscrire",
+        "UnpauseQuestion": "Reprendre la question"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -127,7 +128,7 @@
         "DeleteQuestionnaire": "Delete Questionnaire",
         "GameNotRunning": "No game is running.",
         "QuestionNotRunning": "No question is running.",
-        "PauseQuestion" : "Pause question",
+        "PauseQuestion": "Pause question",
         "PassQuestion": "Skip question",
         "Login": "Login",
         "Email": "Email",
@@ -135,7 +136,8 @@
         "ConfirmPassword": "Confirm password",
         "DontHaveAccount": "Don't have account ?",
         "CreateAccount": "Create account",
-        "Signup": "Signup"
+        "Signup": "Signup",
+        "UnpauseQuestion": "Unpause question"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -196,15 +198,16 @@
         "DeleteQuestionnaire": "Suprimir Cuestionario",
         "GameNotRunning": "No hay ningún juego en curso.",
         "QuestionNotRunning": "No hay ninguna pregunta en curso.",
-        "PauseQuestion" : "Pausar pregunta",
-        "PassQuestion":"Saltar pregunta",
+        "PauseQuestion": "Pausar pregunta",
+        "PassQuestion": "Saltar pregunta",
         "Login": "Iniciar sesión",
         "Email": "Correo electrónico",
         "Password": "Contraseña",
         "ConfirmPassword": "Confirmar contraseña",
         "DontHaveAccount": "¿No tienes una cuenta?",
         "CreateAccount": "Crear cuenta",
-        "Signup": "Registrarse"
+        "Signup": "Registrarse",
+        "UnpauseQuestion": "Reanudar pregunta"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -265,15 +268,16 @@
         "DeleteQuestionnaire": "Cancellare il questionario",
         "GameNotRunning": "Nessun gioco è in corso.",
         "QuestionNotRunning": "Nessuna domanda è in corso.",
-        "PauseQuestion" : "Mettere in pausa la domanda",
-        "PassQuestion":"Saltare la domanda",
+        "PauseQuestion": "Mettere in pausa la domanda",
+        "PassQuestion": "Saltare la domanda",
         "Login": "Accedi",
         "Email": "Email",
         "Password": "Password",
         "ConfirmPassword": "Conferma password",
         "DontHaveAccount": "Non hai un account?",
         "CreateAccount": "Crea account",
-        "Signup": "Iscriviti"
+        "Signup": "Iscriviti",
+        "UnpauseQuestion": "Riprendi la domanda"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -334,14 +338,15 @@
         "DeleteQuestionnaire": "Fragebogen Löschen",
         "GameNotRunning": "Kein Spiel läuft.",
         "QuestionNotRunning": "Keine Frage läuft.",
-        "PauseQuestion" : "Frage pausieren",
-        "PassQuestion":"Frage überspringen",
+        "PauseQuestion": "Frage pausieren",
+        "PassQuestion": "Frage überspringen",
         "Login": "Anmelden",
         "Email": "Email",
         "Password": "Passwort",
         "ConfirmPassword": "Passwort bestätigen",
         "DontHaveAccount": "Kein Konto?",
         "CreateAccount": "Konto erstellen",
-        "Signup": "Registrieren"
+        "Signup": "Registrieren",
+        "UnpauseQuestion": "Frage fortsetzen"
     }
 }

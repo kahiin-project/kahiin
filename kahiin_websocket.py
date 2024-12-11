@@ -55,7 +55,8 @@ class WebSocketManager:
             # Émettre uniquement au client WebSocket actuel
             target_clients = [to] if to else []
 
-        print(f"Emitting event '{event}' to {len(target_clients)} clients")
+        if not event == 'ping':
+            logging.info(f"Emitting event '{event}' to {len(target_clients)} clients")
 
         for client in target_clients:
             try:
@@ -95,7 +96,8 @@ class WebSocketManager:
                         last_ping = time.time()
                         await websocket.send(json.dumps({'event': 'pong'}))
                         continue
-
+                    else:
+                        logging.info(f"Received event {event}")
                     payload = data.get('data')
                     if event in self.event_handlers:
                         await self.event_handlers[event](websocket, payload)

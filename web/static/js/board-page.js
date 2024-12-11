@@ -299,15 +299,16 @@ function setupSocketListeners() {
     }
   });
   
-  socket.on("pauseQuestion", (res) => {
-    timer = document.getElementById("timer")
-    if (timer.classList.contains("paused")) {
-      timer.classList.remove("paused")
-      timer.style.backgroundColor = ""
-    } else {
-      timer.classList.add("paused")
-      timer.style.backgroundColor = "#373D59"
-    }
+  socket.on("pauseQuestion", () => {
+      const timer = document.getElementById("timer");
+      timer.classList.add("paused");
+      timer.style.backgroundColor = "#373D59";
+  });
+
+  socket.on("unpauseQuestion", () => {
+      const timer = document.getElementById("timer");
+      timer.classList.remove("paused"); 
+      timer.style.backgroundColor = "";
   });
 
   socket.on("gameEnd", (res) => {
