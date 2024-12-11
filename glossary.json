@@ -67,7 +67,9 @@
         "DontHaveAccount": "Vous n'avez pas de compte ?",
         "CreateAccount": "Créer un compte",
         "Signup": "S'inscrire",
-        "UnpauseQuestion": "Reprendre la question"
+        "UnpauseQuestion": "Reprendre la question",
+        "MCQ": "Questionnaire à choix multiples",
+        "UniqueAnswer": "Réponse Unique"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -137,7 +139,9 @@
         "DontHaveAccount": "Don't have account ?",
         "CreateAccount": "Create account",
         "Signup": "Signup",
-        "UnpauseQuestion": "Unpause question"
+        "UnpauseQuestion": "Unpause question",
+        "MCQ": "Multiple Choice Questionnaire",
+        "UniqueAnswer": "Unique Answer"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -207,7 +211,9 @@
         "DontHaveAccount": "¿No tienes una cuenta?",
         "CreateAccount": "Crear cuenta",
         "Signup": "Registrarse",
-        "UnpauseQuestion": "Reanudar pregunta"
+        "UnpauseQuestion": "Reanudar pregunta",
+        "MCQ": "Cuestionario de opción múltiple",
+        "UniqueAnswer": "Respuesta Única"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -277,7 +283,9 @@
         "DontHaveAccount": "Non hai un account?",
         "CreateAccount": "Crea account",
         "Signup": "Iscriviti",
-        "UnpauseQuestion": "Riprendi la domanda"
+        "UnpauseQuestion": "Riprendi la domanda",
+        "MCQ": "Questionario a scelta multipla",
+        "UniqueAnswer": "Risposta Unica"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -347,6 +355,8 @@
         "DontHaveAccount": "Kein Konto?",
         "CreateAccount": "Konto erstellen",
         "Signup": "Registrieren",
-        "UnpauseQuestion": "Frage fortsetzen"
+        "UnpauseQuestion": "Frage fortsetzen",
+        "MCQ": "Multiple-Choice-Fragebogen",
+        "UniqueAnswer": "Einzigartige Antwort"
     }
 }

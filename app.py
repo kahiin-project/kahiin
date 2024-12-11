@@ -852,7 +852,6 @@ async def handle_copy_question(websocket, res) -> None:
     
     code = res["passcode"]
     if get_passcode() == code:
-        print(res)
         question_to_copy = res["question"]
         target_index = res["to"]
         questionnaire_name = res["questionnaire_name"]

@@ -297,12 +297,12 @@ nav button img{
 }
 .questions_div #dropbox{
     background: light-dark(#f4f4f4,#252525);
-    height: 500px;
+    height: calc(100vh - 400px);
     overflow-y: scroll;
 }
 .questions_div #questions_drawer{
     background: light-dark(#e7e7e7,#383838);
-    height: 500px;
+    height: calc(100vh - 400px);
     overflow-y: scroll;
 }
 
@@ -344,6 +344,9 @@ nav button img{
     align-items: center;
     cursor: grab;
 }
+.question-div colgroup{
+    height: 100%;
+}
 .droppable-space {
     height: 25px;
     margin-left: 25px;
@@ -353,17 +356,67 @@ nav button img{
     background: light-dark(#ececec,#595959);
 }
 
-.trash-button{
+.trash-button, .barcode-button {
     width: 40px;
     position: absolute;
     top: 15px;
-    right: 12px;
     cursor: pointer;
     filter: grayscale(100%);
     opacity: 0.5;
-    transition: 0.3s;
 }
-.trash-button:hover{
+.trash-button {
+    right: 12px;
+}
+.barcode-button {
+    right: 62px;
+}
+.trash-button:hover, .barcode-button:hover {
     opacity: 1;
     filter: grayscale(0);
+}
+.barcode-button:hover {
+    filter: hue-rotate(200deg);
+}
+.trash-button:hover {
+    filter: hue-rotate(-10deg);
+}
+@media (prefers-color-scheme: dark) {
+    .trash-button, .barcode-button {
+        filter: grayscale(100%) brightness(2);
+        opacity: 1;
+    }
+}
+
+#edit_popup_container{
+    position: absolute;
+    left: 16%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+}
+#edit_popup{
+    position: absolute;
+    left: 100px;
+    top: 100px;
+    right: 100px;
+    bottom: 100px;
+    background: light-dark(#f0f0f0,#0f0f0f);
+    opacity: 0.95;
+    border: solid 1px #a7a7a7;
+    overflow-y: scroll;
+}
+#edit_popup div{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+#edit_popup h1{
+    text-align: center;
+    margin-top: 50px;
+}
+#edit_popup p{
+    text-align: center;
 }

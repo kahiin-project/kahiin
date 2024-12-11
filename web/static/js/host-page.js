@@ -8,6 +8,7 @@ let dyslexicMode = false;
 let drawer = [];
 let draggedIndex = null;
 let draggedQuestion = null;
+let questionnaire = null;
 
 // ---------------------- Initialisation -------------------------
 
@@ -31,7 +32,17 @@ function updateDyslexicFonts(dyslexicMode){
         element.classList.remove('dyslexic');
       }
     });
-  }
+}
+
+function formatDuration(seconds) {
+    if (seconds < 60){
+        return `${seconds}s`;
+    } else {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}m ${remainingSeconds}s`;
+    }
+}
 
 function hashSHA256(message) {
     const hash = CryptoJS.SHA256(message);
@@ -202,8 +213,38 @@ function deleteQuestionary() {
     socket.emit("deleteQuestionary", { passcode, questionnaire_name });
 }
 
+function showQuestionInfos(id) {
+    if (questionnaire == null) {
+        return;
+    }
+    if (id >= questionnaire.questions.length) {
+        return;
+    }
+
+    formattedType = "";
+    switch(questionnaire.questions[id]["@type"]) {
+        case "mcq":
+            formattedType = glossary["MCQ"];
+            break;
+        case "uniqueanswer":
+            formattedType = glossary["UniqueAnswer"];
+            break;
+    }
+    document.getElementById("type_p").innerHTML = formattedType;
+
+    document.getElementById("duration_p").innerHTML = formatDuration(questionnaire.questions[id]["@duration"]);
+
+    document.getElementById("edit_popup_container").style.display = "block";
+    console.log(questionnaire.questions[id]);
+}
+
+document.getElementById("edit_popup_container").addEventListener("click", function() {
+    document.getElementById("edit_popup_container").style.display = "none";
+});
+
 // ---------------------- Functions Navigation -------------------------
 function navigate(index) {
+    document.getElementById("edit_popup_container").style.display = "none";
     const elementsToHide = ["play_div", "settings_div", "create_div", "edit_div", "login_div","signup_div", "account_div"];
     elementsToHide.forEach(element => {
         document.getElementById(element).style.display = "none";
@@ -443,10 +484,21 @@ function setupSocketListeners() {
             const trashButton = document.createElement('img');
             trashButton.classList.add('trash-button');
             trashButton.src = '/static/icon/trash.svg';
+            trashButton.title = 'Delete question';
             trashButton.addEventListener('click', () => {
                 socket.emit('deleteQuestion', { passcode, index, questionnaire_name: editing_questionnaire });
             });
             question_div.appendChild(trashButton);
+
+            const barcodeButton = document.createElement('img');
+            barcodeButton.classList.add('barcode-button');
+            barcodeButton.src = '/static/icon/barcode.svg';
+            barcodeButton.title = 'Other data';
+            barcodeButton.addEventListener('click', () => {
+                showQuestionInfos(index);
+            });
+            question_div.appendChild(barcodeButton);
+
         });
         createDroppableSpace(questions.length);
         updateDyslexicFonts(dyslexicMode);
