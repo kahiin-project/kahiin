@@ -7,6 +7,7 @@ let glossary = {};
 let dyslexicMode = false;
 let drawer = [];
 let draggedIndex = null;
+let draggedQuestion = null;
 
 // ---------------------- Initialisation -------------------------
 
@@ -176,13 +177,13 @@ function getDrawer() {
     socket.emit("getDrawer", { passcode });
 }
 
-editing_questionary = ""
+editing_questionnaire = ""
 function editQuestionary(questionnaire_name) {
     document.getElementById("edit_questionnaire_name").value = "";
     document.getElementById("create_div").style.display = "none";
     socket.emit("listQuestionary", { passcode });
     document.getElementById("edit_questionnaire_name").value = questionnaire_name;
-    editing_questionary = questionnaire_name;
+    editing_questionnaire = questionnaire_name;
     document.getElementById("edit_div").style.display = "block";
 
     document.getElementById('dropbox').innerHTML = '';
@@ -191,7 +192,7 @@ function editQuestionary(questionnaire_name) {
 }
 
 function editQuestionaryName(new_name) {
-    const old_name = editing_questionary;
+    const old_name = editing_questionnaire;
     socket.emit("editQuestionaryName", { passcode, old_name, new_name });
     socket.emit("listQuestionary", { passcode });
 }
@@ -423,6 +424,7 @@ function setupSocketListeners() {
                 draggedIndex = parseInt(index);
                 e.dataTransfer.setData('text/plain', '');
             });
+
             document.getElementById('dropbox').appendChild(question_div);
 
             question_title = question.title
@@ -437,6 +439,14 @@ function setupSocketListeners() {
                 ]
             });
             hljs.highlightAll();
+
+            const trashButton = document.createElement('img');
+            trashButton.classList.add('trash-button');
+            trashButton.src = '/static/icon/trash.svg';
+            trashButton.addEventListener('click', () => {
+                socket.emit('deleteQuestion', { passcode, index, questionnaire_name: editing_questionnaire });
+            });
+            question_div.appendChild(trashButton);
         });
         createDroppableSpace(questions.length);
         updateDyslexicFonts(dyslexicMode);
@@ -450,7 +460,7 @@ function setupSocketListeners() {
             const drawer_question = createDrawerQuestionElement(index, question.title.substring(0, 20) + "...");
             drawer_div.appendChild(drawer_question);
             drawer_question.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', e.target.getAttribute('question-id'));
+                draggedQuestion = e.target.getAttribute('question-id');
             });
         });
         updateDyslexicFonts(dyslexicMode);

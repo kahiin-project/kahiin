@@ -1,8 +1,6 @@
 const drawer_questions = document.querySelectorAll('.drawer-question');
 const dropbox = document.getElementById('dropbox');
 
-let draggedQuestion = null;
-
 function createDroppableSpace(index) {
     const droppable_space = document.createElement('div');
     droppable_space.classList.add('droppable-space');
@@ -21,11 +19,9 @@ function createDroppableSpace(index) {
     droppable_space.addEventListener('drop', (e) => {
         e.preventDefault();
         let targetIndex = parseInt(droppable_space.getAttribute('line-pos'));
-        draggedQuestion = e.dataTransfer.getData('text/plain');
         if (draggedQuestion !== null) {
             // Copy the dragged question to the target index
             questionToCopy = drawer[draggedQuestion];
-            console.log(questionToCopy);
 
             socket.emit('copyQuestion', {
                 question: questionToCopy, 

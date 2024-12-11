@@ -849,6 +849,7 @@ async def handle_move_question(websocket, res) -> None:
 @verification_wrapper
 async def handle_copy_question(websocket, res) -> None:
     """Handle requests to copy a question."""
+    
     code = res["passcode"]
     if get_passcode() == code:
         print(res)
@@ -863,6 +864,38 @@ async def handle_copy_question(websocket, res) -> None:
 
         # Copy the question to the target index
         questions.insert(target_index, question_to_copy)
+
+        with open(f"questionnaire/{questionnaire_name}", "wb") as f:
+            f.write(xmltodict.unparse(dict_content).encode())
+
+        questionnary = {
+            "subject": dict_content["questionary"]["subject"],
+            "language": dict_content["questionary"]["language"],
+            "title": dict_content["questionary"]["title"],
+            "questions": questions
+        }
+
+        json_content = json.dumps(questionnary)
+        await ws_manager.emit("wholeQuestionnaire", json_content, to=websocket)
+    else:
+        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+
+@ws_manager.on("deleteQuestion")
+@verification_wrapper
+async def handle_delete_question(websocket, res) -> None:
+    """Handle requests to delete a question."""
+    code = res["passcode"]
+    if get_passcode() == code:
+        index = res["index"]
+        questionnaire_name = res["questionnaire_name"]
+        
+        with open(f"questionnaire/{questionnaire_name}", "rb") as f:
+            xml_content = f.read()
+            dict_content = xmltodict.parse(xml_content)
+            questions = dict_content["questionary"]["questions"][0]["question"]
+
+        # Delete the question at the specified index
+        del questions[index]
 
         with open(f"questionnaire/{questionnaire_name}", "wb") as f:
             f.write(xmltodict.unparse(dict_content).encode())
