@@ -15,20 +15,22 @@ try:
     from kahiin_websocket import ws_manager, flask_app as app
 except ImportError:
     from .kahiin_websocket import ws_manager, flask_app as app
-    
+
+def relative_open(filename: str, mode: str = "r", encoding: str = None):
+    full_path = os.path.join(os.path.dirname(__file__), filename)
+    return open(full_path, mode=mode, encoding=encoding)
+
 def get_settings() -> dict:
-    with open("settings.json", "r") as f:
+    with relative_open("settings.json", "r") as f:
         return json.load(f)
-    
+
 def get_passcode():
     return get_settings()["adminPassword"]
 
 def get_glossary() -> dict:
-    with open("glossary.json", "r") as g:
-        with open("settings.json", "r") as s:
+    with relative_open("glossary.json", "r") as g:
+        with relative_open("settings.json", "r") as s:
             return json.load(g)[json.load(s)["language"]]
-
-
 
 # Initialize Flask application and ws_manager
 # Set static and template folders
@@ -603,44 +605,22 @@ async def handle_new_questionary(websocket, res) -> None:
     """
     # rename automatically the file to khn
     filename = filename.split(".")[0] + ".khn"
-    with open(os.path.join("questionnaire", res["filename"]), "wb") as f:
+    with relative_open(f"questionnaire/{res['filename']}", "wb") as f:
         f.write(res["questionaire_data"])
     
 @ws_manager.on('listQuestionary')
 @verification_wrapper
 async def handle_list_questionary(websocket, res) -> None:
-    """
-    Handle requests to list all the questionaries.
-
-    :param code: Passcode provided by the host
-    """
-    questionaries = os.listdir("questionnaire")
+    questionaries = os.listdir(os.path.join(os.path.dirname(__file__), "questionnaire"))
     questionaries.sort()
     await ws_manager.emit("ListOfQuestionary", {"questionaries": questionaries}, to=websocket)
-    
+
 @ws_manager.on('selectQuestionary')
 @verification_wrapper
 async def handle_select_questionary(websocket, res) -> None:
-    questionary.tree = ET.parse(os.path.join("questionnaire", res["questionnaire_name"]))
+    questionary.tree = ET.parse(os.path.join(os.path.dirname(__file__), "questionnaire", res["questionnaire_name"]))
     questionary.root = questionary.tree.getroot()
-    # questionary.questionary = {"questions": []}
-    # for question in questionary.root.findall('question'):
-    #     title = question.find('title').text
-    #     duration = question.find('duration').text
-    #     question_type = question.find('type').text
-    #     shown_answers = [answer.text for answer in question.find(
-    #         'shown_answers').findall('answer')]
-    #     correct_answers = [answer.text for answer in question.find(
-    #         'correct_answers').findall('answer')]
 
-    #     questionary.questionary["questions"].append({
-    #         "title": title,
-    #         "shown_answers": shown_answers,
-    #         "correct_answers": correct_answers,
-    #         "duration": int(duration),
-    #         "type": question_type
-    #     })
-    
 @ws_manager.on('kickPlayer')
 @verification_wrapper
 async def handle_kick_player(websocket,res) -> None:
@@ -729,29 +709,31 @@ async def handle_create_questionary(websocket, res) -> None:
 @ws_manager.on('deleteQuestionary')
 @verification_wrapper
 async def handle_delete_questionary(websocket, res) -> None:
-    os.remove("questionnaire/"+res["questionnaire_name"])
+    os.remove(os.path.join(os.path.dirname(__file__), "questionnaire", res["questionnaire_name"]))
     await ws_manager.emit("deletedQuestionnary", to=websocket)
 
 @ws_manager.on("editQuestionaryName")
 @verification_wrapper
 async def handle_edit_questionnaire_name(websocket, res) -> None:
-    list_questionaries = os.listdir("questionnaire")
+    list_questionaries = os.listdir(os.path.join(os.path.dirname(__file__), "questionnaire"))
     forbiden_characters = '/\|,.;:!?*"><'
     invalid_characters = False
-    for character in forbiden_characters :
+    for character in forbiden_characters:
         invalid_characters += character in res["new_name"][:-4]
     if len(res["new_name"]) <= 4:
         await ws_manager.emit('error', "EmptyName", to=websocket)
     elif res["new_name"][-4:] != ".khn":
         await ws_manager.emit('error', "InvalidExtension", to=websocket)
-    elif invalid_characters :
+    elif invalid_characters:
         await ws_manager.emit('error', "SpecialCharacters")
-    elif res["new_name"] in list_questionaries :
+    elif res["new_name"] in list_questionaries:
         await ws_manager.emit('error', "AlreadyExist", to=websocket)
-    else :
-        os.rename("questionnaire/" + res["old_name"], "questionnaire/"+res["new_name"])
-        await ws_manager.emit("editingQuestionnary",res["new_name"], to=websocket)
-    
+    else:
+        os.rename(
+            os.path.join(os.path.dirname(__file__), "questionnaire", res["old_name"]),
+            os.path.join(os.path.dirname(__file__), "questionnaire", res["new_name"])
+        )
+        await ws_manager.emit("editingQuestionnary", res["new_name"], to=websocket)
 
 @ws_manager.on("getSettings")
 async def handle_get_settings(websocket, code: str) -> None:
@@ -768,7 +750,7 @@ async def handle_get_settings(websocket, code: str) -> None:
 async def handle_set_settings(websocket, res) -> None:
     """Handle requests to set a specific setting."""
     try:
-        with open("settings.json", "r") as f:
+        with relative_open("settings.json", "r") as f:
             content = f.read().strip()
             if content:
                 settings = json.loads(content)
@@ -780,7 +762,7 @@ async def handle_set_settings(websocket, res) -> None:
     # Update the specific setting
     settings.update(res["settings"])
 
-    with open("settings.json", "w") as f:
+    with relative_open("settings.json", "w") as f:
         json.dump(settings, f)
 
     # if it's dyslexic mode, send the new settings
@@ -796,7 +778,7 @@ async def handle_get_whole_questionnaire(websocket, res) -> None:
     code = res["passcode"]
     questionnaire_name = res["questionnaire_name"]
     if get_passcode() == code:
-        with open(f"questionnaire/{questionnaire_name}", "rb") as f:
+        with relative_open(f"questionnaire/{questionnaire_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
 
@@ -822,7 +804,7 @@ async def handle_move_question(websocket, res) -> None:
         to_index = res["to"]
         questionnaire_name = res["questionnaire_name"]
         
-        with open(f"questionnaire/{questionnaire_name}", "rb") as f:
+        with relative_open(f"questionnaire/{questionnaire_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
             questions = dict_content["questionary"]["questions"][0]["question"]
@@ -830,7 +812,7 @@ async def handle_move_question(websocket, res) -> None:
         # Move the question from from_index to to_index
         questions.insert(to_index, questions.pop(from_index))
 
-        with open(f"questionnaire/{questionnaire_name}", "wb") as f:
+        with relative_open(f"questionnaire/{questionnaire_name}", "wb") as f:
             f.write(xmltodict.unparse(dict_content).encode())
 
         questionnary = {
@@ -858,7 +840,7 @@ async def handle_copy_question(websocket, res) -> None:
         target_index = res["to"]
         questionnaire_name = res["questionnaire_name"]
         
-        with open(f"questionnaire/{questionnaire_name}", "rb") as f:
+        with relative_open(f"questionnaire/{questionnaire_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
             questions = dict_content["questionary"]["questions"][0]["question"]
@@ -877,7 +859,7 @@ async def handle_copy_question(websocket, res) -> None:
                 if isinstance(correct_answers, list):
                     question["correct_answers"] = {"answer": correct_answers}
 
-        with open(f"questionnaire/{questionnaire_name}", "wb") as f:
+        with relative_open(f"questionnaire/{questionnaire_name}", "wb") as f:
             f.write(xmltodict.unparse(dict_content).encode())
 
         questionnary = {
@@ -901,7 +883,7 @@ async def handle_delete_question(websocket, res) -> None:
         index = res["index"]
         questionnaire_name = res["questionnaire_name"]
         
-        with open(f"questionnaire/{questionnaire_name}", "rb") as f:
+        with relative_open(f"questionnaire/{questionnaire_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
             questions = dict_content["questionary"]["questions"][0]["question"]
@@ -909,7 +891,7 @@ async def handle_delete_question(websocket, res) -> None:
         # Delete the question at the specified index
         del questions[index]
 
-        with open(f"questionnaire/{questionnaire_name}", "wb") as f:
+        with relative_open(f"questionnaire/{questionnaire_name}", "wb") as f:
             f.write(xmltodict.unparse(dict_content).encode())
 
         questionnary = {
@@ -930,7 +912,7 @@ async def handle_get_drawer(websocket, res) -> None:
     """Handle requests to get the drawer."""
     code = res["passcode"]
     if get_passcode() == code:
-        with open("drawer.json", "r") as f:
+        with relative_open("drawer.json", "r") as f:
             drawer = json.load(f)
             await ws_manager.emit("drawer", drawer, to=websocket)
     else:
