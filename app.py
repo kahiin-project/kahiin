@@ -849,10 +849,12 @@ async def handle_move_question(websocket, res) -> None:
 @verification_wrapper
 async def handle_copy_question(websocket, res) -> None:
     """Handle requests to copy a question."""
-    
     code = res["passcode"]
     if get_passcode() == code:
         question_to_copy = res["question"]
+        question_to_copy["@duration"] = question_to_copy.pop("duration")
+        question_to_copy["@type"] = question_to_copy.pop("type")
+
         target_index = res["to"]
         questionnaire_name = res["questionnaire_name"]
         
@@ -863,6 +865,17 @@ async def handle_copy_question(websocket, res) -> None:
 
         # Copy the question to the target index
         questions.insert(target_index, question_to_copy)
+
+        # Reformat answers
+        for question in questions:
+            if "shown_answers" in question:
+                shown_answers = question["shown_answers"]
+                if isinstance(shown_answers, list):
+                    question["shown_answers"] = {"answer": shown_answers}
+            if "correct_answers" in question:
+                correct_answers = question["correct_answers"]
+                if isinstance(correct_answers, list):
+                    question["correct_answers"] = {"answer": correct_answers}
 
         with open(f"questionnaire/{questionnaire_name}", "wb") as f:
             f.write(xmltodict.unparse(dict_content).encode())

@@ -1,6 +1,6 @@
 [
     {
-        "type": "mcq",
+        "type": "uniqueanswer",
         "duration": 20,
         "title": "Test Insertion",
         "shown_answers": ["a", "b", "c", "d"],

@@ -403,9 +403,12 @@ nav button img{
     right: 100px;
     bottom: 100px;
     background: light-dark(#f0f0f0,#0f0f0f);
-    opacity: 0.95;
     border: solid 1px #a7a7a7;
-    overflow-y: scroll;
+}
+@media (prefers-color-scheme: dark){
+    #edit_popup{
+        opacity: 0.95;
+    }
 }
 #edit_popup div{
     position: absolute;

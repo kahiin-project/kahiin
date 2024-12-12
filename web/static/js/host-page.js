@@ -234,6 +234,19 @@ function showQuestionInfos(id) {
 
     document.getElementById("duration_p").innerHTML = formatDuration(questionnaire.questions[id]["@duration"]);
 
+    shown_answers = questionnaire.questions[id]["shown_answers"].answer;
+    correct_answers = questionnaire.questions[id]["correct_answers"].answer;
+    shown_answers.forEach((answer, index) => {
+        if (correct_answers.includes(answer)) {
+            text = `✓ ${answer}`;
+            document.getElementById(`answer${index + 1}_p`).style.color = "green";
+        }else {
+            text = `✗ ${answer}`;
+            document.getElementById(`answer${index + 1}_p`).style.color = "red";
+        }
+        document.getElementById(`answer${index + 1}_p`).innerHTML = text;
+    });
+
     document.getElementById("edit_popup_container").style.display = "block";
     console.log(questionnaire.questions[id]);
 }
@@ -484,7 +497,7 @@ function setupSocketListeners() {
             const trashButton = document.createElement('img');
             trashButton.classList.add('trash-button');
             trashButton.src = '/static/icon/trash.svg';
-            trashButton.title = 'Delete question';
+            trashButton.title = glossary["DeleteQuestion"];
             trashButton.addEventListener('click', () => {
                 socket.emit('deleteQuestion', { passcode, index, questionnaire_name: editing_questionnaire });
             });
@@ -493,7 +506,7 @@ function setupSocketListeners() {
             const barcodeButton = document.createElement('img');
             barcodeButton.classList.add('barcode-button');
             barcodeButton.src = '/static/icon/barcode.svg';
-            barcodeButton.title = 'Other data';
+            barcodeButton.title = glossary["OtherData"];
             barcodeButton.addEventListener('click', () => {
                 showQuestionInfos(index);
             });
