@@ -304,6 +304,23 @@ nav button img{
     background: light-dark(#e7e7e7,#383838);
     height: calc(100vh - 400px);
     overflow-y: scroll;
+    position: relative;
+}
+.questions_div #questions_drawer button{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 45px;
+    margin: 25px;
+    box-shadow: 0 0 0 25px light-dark(#e7e7e7,#383838);
+    background: light-dark(#3473bb,#3d7fca);
+    width: calc(100% - 50px);
+    border-radius: 0;
+    font-size: 17px;
+    font-weight: bold;
+}
+.questions_div #questions_drawer button:hover{
+    background: light-dark(#3e7ac8, #4784d7);
 }
 
 .questions_div #dropbox .question{

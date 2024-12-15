@@ -74,7 +74,8 @@
         "Duration": "Durée",
         "Answers": "Réponses",
         "DeleteQuestion": "Supprimer la question",
-        "OtherData": "Autres données"
+        "OtherData": "Autres données",
+        "NewQuestion": "Nouvelle question"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -151,7 +152,8 @@
         "Duration": "Duration",
         "Answers": "Answers",
         "DeleteQuestion": "Delete question",
-        "OtherData": "Other data"
+        "OtherData": "Other data",
+        "NewQuestion": "New question"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -228,7 +230,8 @@
         "Duration": "Duración",
         "Answers": "Respuestas",
         "DeleteQuestion": "Eliminar pregunta",
-        "OtherData": "Otros datos"
+        "OtherData": "Otros datos",
+        "NewQuestion": "Nueva pregunta"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -305,7 +308,8 @@
         "Duration": "Durata",
         "Answers": "Risposte",
         "DeleteQuestion": "Elimina domanda",
-        "OtherData": "Altri dati"
+        "OtherData": "Altri dati",
+        "NewQuestion": "Nuova domanda"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -382,6 +386,7 @@
         "Duration": "Dauer",
         "Answers": "Antworten",
         "DeleteQuestion": "Frage löschen",
-        "OtherData": "Andere Daten"
+        "OtherData": "Andere Daten",
+        "NewQuestion": "Neue Frage"
     }
 }

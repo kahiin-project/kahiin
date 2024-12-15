@@ -523,7 +523,7 @@ function setupSocketListeners() {
     socket.on("drawer", (res) => {
         drawer = res;
         const drawer_div = document.getElementById('questions_drawer');
-        drawer_div.innerHTML = '';
+        drawer_div.innerHTML = `<button>${glossary["NewQuestion"]}</button>`;
         res.forEach((question, index) => {
             const drawer_question = createDrawerQuestionElement(index, question.title.substring(0, 20) + "...");
             drawer_div.appendChild(drawer_question);
