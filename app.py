@@ -700,11 +700,36 @@ async def handle_unpause_game(websocket, code: str) -> None:
 async def handle_create_questionary(websocket, res) -> None:
     list_questionaries = os.listdir("questionnaire")
     questionary_index = 1
-    while f"new_questionnaire{questionary_index}.khn" in list_questionaries :
-            questionary_index += 1
-    file = open(f"questionnaire/new_questionnaire{questionary_index}.khn","w")
-    file.close()
-    await ws_manager.emit("editingQuestionnary",f"new_questionnaire{questionary_index}.khn", to=websocket)
+    while f"new_questionnaire{questionary_index}.khn" in list_questionaries:
+        questionary_index += 1
+    filename = f"new_questionnaire{questionary_index}.khn"
+    title = f"new_questionnaire{questionary_index}"
+    
+    # Create XML content
+    questionary = ET.Element("questionary")
+    subject = ET.SubElement(questionary, "subject")
+    subject.text = "None"
+    language = ET.SubElement(questionary, "language")
+    language.text = "en"
+    title_element = ET.SubElement(questionary, "title")
+    title_element.text = title
+    questions = ET.SubElement(questionary, "questions")
+    
+    # Add a default question
+    question = ET.SubElement(questions, "question", duration="30", type="uniqueanswer")
+    question_title = ET.SubElement(question, "title")
+    question_title.text = "Default Question"
+    shown_answers = ET.SubElement(question, "shown_answers")
+    answer = ET.SubElement(shown_answers, "answer")
+    answer.text = "Default Answer"
+    correct_answers = ET.SubElement(question, "correct_answers")
+    correct_answer = ET.SubElement(correct_answers, "answer")
+    correct_answer.text = "Default Answer"
+    
+    tree = ET.ElementTree(questionary)
+    tree.write(f"questionnaire/{filename}", encoding="utf-8", xml_declaration=True)
+    
+    await ws_manager.emit("editingQuestionnary", filename, to=websocket)
 
 @ws_manager.on('deleteQuestionary')
 @verification_wrapper
