@@ -236,6 +236,9 @@ function showQuestionInfos(id) {
 
     shown_answers = questionnaire.questions[id]["shown_answers"].answer;
     correct_answers = questionnaire.questions[id]["correct_answers"].answer;
+    for(let i = 0; i < 4; i++) {
+        document.getElementById(`answer${i + 1}_p`).innerHTML = "";
+    }
     shown_answers.forEach((answer, index) => {
         if (correct_answers.includes(answer)) {
             text = `✓ ${answer}`;
