@@ -13,6 +13,32 @@ let questionnaire = null;
 // ---------------------- Initialisation -------------------------
 
 function init() {
+    var easyMDE = new EasyMDE({
+        element: document.getElementById('question_editor'),
+        toolbar: [
+          "bold", "italic", "heading", "code", "quote", "unordered-list", "ordered-list",
+          "link", "image", "table", "horizontal-rule", "guide"
+        ],
+        renderingConfig: {
+          markedOptions: {
+            renderer: new marked.Renderer(),
+            // Activer le rendu du LaTeX avec KaTeX
+            math: true,
+            sanitize: true
+          }
+        },
+        // Options KaTeX
+        renderTeX: {
+          delimiters: [
+            {left: "$", right: "$", display: true},
+            {left: "$", right: "$", display: false}
+          ],
+          throwOnError: false,
+          errorColor: '#cc0000'
+        }
+    });                 
+    easyMDE.value("")
+    
     const wsUrl = `ws://${window.location.hostname}:8000?t=${Date.now()}`;
     socket = new WebSocketHandler(wsUrl);
     setupSocketListeners();
@@ -258,10 +284,18 @@ document.getElementById("edit_popup_container").addEventListener("click", functi
     document.getElementById("edit_popup_container").style.display = "none";
 });
 
+function editQuestion(id) {
+    if (questionnaire == null) {
+        return;
+    }
+    document.getElementById("edit_div").style.display = "none";
+    document.getElementById("edit_question_div").style.display = "block";
+}
+
 // ---------------------- Functions Navigation -------------------------
 function navigate(index) {
     document.getElementById("edit_popup_container").style.display = "none";
-    const elementsToHide = ["play_div", "settings_div", "create_div", "edit_div", "login_div","signup_div", "account_div"];
+    const elementsToHide = ["play_div", "settings_div", "create_div", "edit_div", "edit_question_div", "edit_popup_container", "login_div","signup_div", "account_div"];
     elementsToHide.forEach(element => {
         document.getElementById(element).style.display = "none";
     });
@@ -523,7 +557,7 @@ function setupSocketListeners() {
     socket.on("drawer", (res) => {
         drawer = res;
         const drawer_div = document.getElementById('questions_drawer');
-        drawer_div.innerHTML = `<button>${glossary["NewQuestion"]}</button>`;
+        drawer_div.innerHTML = `<button onclick="editQuestion(0)">${glossary["NewQuestion"]}</button>`;
         res.forEach((question, index) => {
             const drawer_question = createDrawerQuestionElement(index, question.title.substring(0, 20) + "...");
             drawer_div.appendChild(drawer_question);
