@@ -312,28 +312,12 @@ function search(page) {
 // ---------------------- Fuctions DB Front -------------------------
 
 function loginPage() {
-    if (document.getElementById("login_email").value != "", document.getElementById("login_password").value != ""){
-        login(document.getElementById("login_email").value,document.getElementById("login_password").value)
-        .then(data => {
-            document.getElementById("login_div").style.display = "none";
-            document.getElementById("account_div").style.display = "block";
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    };
-}
+    login(document.getElementById("login_email").value,hashSHA256(document.getElementById("login_password").value))
+};
 
 function signupPage() {
-    if (document.getElementById("signup_password").value == document.getElementById("signup_verify").value, document.getElementById("signup_email").value != "", document.getElementById("signup_password").value != "") {
-        signup(document.getElementById("signup_email").value,document.getElementById("signup_password").value)
-        .then(data => {
-            document.getElementById("signup_div").style.display = "none";
-            document.getElementById("login_div").style.display = "block";
-        })
-        .catch(error => {
-            console.error(error);
-        });
+    if (document.getElementById("signup_password").value == document.getElementById("signup_verify").value) {
+        signup(document.getElementById("signup_email").value,hashSHA256(document.getElementById("signup_password").value))
     };
 }
 

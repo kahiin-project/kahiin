@@ -16,15 +16,19 @@ function signup(email, password_hash) {
     })
     .then(response => {
         if (!response.ok) {
+            printError("An error has occured");
             throw new Error('Network response was not ok ' + response.statusText);
         }
         return response.json();
     })
     .then(data => {
+        document.getElementById("signup_div").style.display = "none";
+        document.getElementById("login_div").style.display = "block";
         return data; // Traitez les données ici
     })
     .catch(error => {
         console.error(error);
+        printError("An error has occured");
     });
 }
 
@@ -42,16 +46,21 @@ function login(email, password_hash) {
     })
     .then(response => {
         if (!response.ok) {
+            printError("An error has occured");
             throw new Error('Network response was not ok ' + response.statusText);
         }
         return response.json();
     })
     .then(data => {
         localStorage.setItem('token', data.token);
+        document.getElementById("login_div").style.display = "none";
+        document.getElementById("account_div").style.display = "block";
         return {"message": "Logged in successfully"};
+        
     })
     .catch(error => {
         console.error(error);
+        printError("An error has occured");
     });
 }
 
