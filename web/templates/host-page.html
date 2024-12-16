@@ -17,26 +17,12 @@
     <!-- Markdown -->
     <script src="/static/js/Marked/marked.min.js" crossorigin="anonymous"></script>
 
-    <!-- KATEX -->
-    <link
-      rel="stylesheet"
-      href="/static/css/KaTeX/katex.min.css"
-    />
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="/static/css/KaTeX/katex.min.css" />
     <script src="/static/js/KaTeX/katex.min.js"></script>
-    <script src="/static/js/KaTeX/auto-render.min.js"></script>
+    <script src="/static/js/KaTeX/auto-render.min.js"></script>  
 
-    <!-- Easy MDE -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
-
-    <link
-      rel="icon"
-      type="image/png"
-      href="/static/icon/app-icon.png"
-    />
+    <link rel="icon" type="image/png" href="/static/icon/app-icon.png" />
   </head>
   <body id="body">
 
@@ -155,11 +141,7 @@
     </div>
     <div style="display: none;" id="edit_question_div" class="nav_content">
       <h1>{{glossary["EditQuestion"]}}</h1>
-      <textarea id="question_editor">
-        # Welcome to EasyMDE!
-
-        Type some **markdown** here to get started.
-      </textarea>
+      <div id="question_editor"></div>
     </div>
 
     <!-- Settings -->

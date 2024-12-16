@@ -13,32 +13,7 @@ let questionnaire = null;
 // ---------------------- Initialisation -------------------------
 
 function init() {
-    var easyMDE = new EasyMDE({
-        element: document.getElementById('question_editor'),
-        toolbar: [
-          "bold", "italic", "heading", "code", "quote", "unordered-list", "ordered-list",
-          "link", "image", "table", "horizontal-rule", "guide"
-        ],
-        renderingConfig: {
-          markedOptions: {
-            renderer: new marked.Renderer(),
-            // Activer le rendu du LaTeX avec KaTeX
-            math: true,
-            sanitize: true
-          }
-        },
-        // Options KaTeX
-        renderTeX: {
-          delimiters: [
-            {left: "$", right: "$", display: true},
-            {left: "$", right: "$", display: false}
-          ],
-          throwOnError: false,
-          errorColor: '#cc0000'
-        }
-    });                 
-    easyMDE.value("")
-    
+ 
     const wsUrl = `ws://${window.location.hostname}:8000?t=${Date.now()}`;
     socket = new WebSocketHandler(wsUrl);
     setupSocketListeners();
