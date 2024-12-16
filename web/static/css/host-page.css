@@ -440,3 +440,13 @@ nav button img{
 #edit_popup p{
     text-align: center;
 }
+
+.EasyMDEContainer{
+    margin-right: 40px;
+    margin-left: 40px;
+}
+.EasyMDEContainer div button{
+    all: unset;
+    width: 30px;
+    cursor: pointer;
+}
