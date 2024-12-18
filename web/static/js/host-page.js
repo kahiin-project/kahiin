@@ -259,13 +259,83 @@ document.getElementById("edit_popup_container").addEventListener("click", functi
     document.getElementById("edit_popup_container").style.display = "none";
 });
 
+let quill;
 function editQuestion(id) {
     if (questionnaire == null) {
         return;
     }
     document.getElementById("edit_div").style.display = "none";
     document.getElementById("edit_question_div").style.display = "block";
+    document.querySelectorAll('.ql-toolbar').forEach(toolbar => {
+        toolbar.remove();
+    });
+    quill = new Quill('#question_editor', {
+        theme: 'snow',
+        modules: {
+          toolbar: [
+            [{ 'header': [1, 2, 3, 4, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'script': 'sub'}, { 'script': 'super' }],
+            ['blockquote', 'code-block'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }]
+          ]
+        }
+      });
+      
 }
+
+function getMarkdownContent() {
+    const html = quill.root.innerHTML;
+    const turndownService = new TurndownService({
+        headingStyle: 'atx',
+        codeBlockStyle: 'fenced',
+        emDelimiter: '*'
+    });
+    
+    // Rule for underline
+    turndownService.addRule('underline', {
+        filter: ['u'],
+        replacement: function(content) {
+          return '<u>' + content + '</u>';
+        }
+    });
+
+    // Rule for stroked text
+    turndownService.addRule('strikethrough', {
+        filter: ['s', 'strike'],
+        replacement: function (content) {
+          return '~~' + content + '~~';
+        }
+    });
+      
+    // Rule for exposants
+    turndownService.addRule('superscript', {
+        filter: 'sup',
+        replacement: function (content) {
+          return '^' + content + '^';
+        }
+    });
+      
+    // Rule for indices
+    turndownService.addRule('subscript', {
+        filter: 'sub',
+        replacement: function (content) {
+          return '~' + content + '~';
+        }
+      });
+      
+    // Rule for code blocks
+    turndownService.addRule('codeBlock', {
+        filter: 'pre',
+        replacement: function (content) {
+          return `\`\`\`
+${content}\`\`\``;
+        }
+    });
+
+    const markdown = turndownService.turndown(html);
+    return markdown;
+  }  
 
 // ---------------------- Functions Navigation -------------------------
 function navigate(index) {

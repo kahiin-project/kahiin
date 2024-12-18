@@ -1,5 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<questionary><subject>test</subject><language>fr</language><title>Test Quiz</title><questions><question type="mcq" duration="20"><title># Test Question Answer A
+<questionary><subject>test</subject><language>fr</language><title>Test Quiz</title><questions>
+<question type="uniqueanswer" duration="20"><title>
+
+Qu'affiche le code suivant ?
+
+```
+ma_liste = [4, 3, 2, 1, 0]
+acc = 0
+for e in ma_liste:
+  acc += e
+print(acc)
+```
+</title>
+<shown_answers><answer>a</answer><answer>b</answer><answer>c</answer><answer>d</answer></shown_answers><correct_answers><answer>a</answer><answer>b</answer></correct_answers>
+</question>
+<question type="uniqueanswer" duration="20"><title>
+# H1
+
+## H2
+
+### H3
+
+P
+
+**Bold**
+
+*Italic*
+
+&lt;u&gt;Underlined&lt;/u&gt;
+
+~~Stroked~~
+
+~Indice~
+
+^Exposant^
+
+&gt; Quote
+
+```
+Code block
+```
+
+1.  Num List
+
+*   Dot List
+</title>
+<shown_answers><answer>a</answer><answer>b</answer><answer>c</answer><answer>d</answer></shown_answers><correct_answers><answer>a</answer><answer>b</answer></correct_answers>
+</question>
+<question type="mcq" duration="20"><title># Test Question Answer A
             $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$
             ```python
             delta = b**2 - 4*a*c
