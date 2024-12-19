@@ -147,20 +147,20 @@ function createDrawerQuestionElement(id, title) {
     drawer_question.draggable = true;
     drawer_question.setAttribute('question-id', id);
 
-    const bulletLabel = document.createElement('label');
-    bulletLabel.style.display = 'inline-block';
-    bulletLabel.style.width = '50px';
-    bulletLabel.style.textAlign = 'left';
-    bulletLabel.style.color = '#c0c0c0';
-    bulletLabel.textContent = '•';
+    const editButton = document.createElement('button');
+    const img = document.createElement('img');
+    img.src = '/static/icon/pencil.svg';
+    editButton.appendChild(img);
+    editButton.addEventListener('click', () => {
+        editQuestion(id);
+    });
+    drawer_question.appendChild(editButton);
 
     const questionLabel = document.createElement('label');
     questionLabel.style.display = 'inline-block';
     questionLabel.style.width = 'calc(100% - 130px)';
-    questionLabel.style.paddingRight = '60px';
+    questionLabel.style.paddingRight = '10px';
     questionLabel.textContent = title;
-
-    drawer_question.appendChild(bulletLabel);
     drawer_question.appendChild(questionLabel);
 
     return drawer_question;
@@ -261,11 +261,40 @@ document.getElementById("edit_popup_container").addEventListener("click", functi
 
 let quill;
 function editQuestion(id) {
+
     if (questionnaire == null) {
         return;
     }
     document.getElementById("edit_div").style.display = "none";
     document.getElementById("edit_question_div").style.display = "block";
+
+    document.getElementById("edit_question_type").value = drawer[id].type;
+    document.getElementById("edit_question_duration").value = drawer[id].duration;
+    shown_answers = drawer[id].shown_answers;
+    switch(shown_answers.length) {
+        case 2:
+            document.getElementById("edit_answer_input0").value = shown_answers[0];
+            document.getElementById("edit_answer_input1").value = shown_answers[1];
+            document.getElementById("edit_answer_input2").value = "";
+            document.getElementById("edit_answer_input3").value = "";
+            break;
+        case 3:
+            document.getElementById("edit_answer_input0").value = shown_answers[0];
+            document.getElementById("edit_answer_input1").value = shown_answers[1];
+            document.getElementById("edit_answer_input2").value = shown_answers[2];
+            document.getElementById("edit_answer_input3").value = "";
+            break;
+        case 4:
+            document.getElementById("edit_answer_input0").value = shown_answers[0];
+            document.getElementById("edit_answer_input1").value = shown_answers[1];
+            document.getElementById("edit_answer_input2").value = shown_answers[2];
+            document.getElementById("edit_answer_input3").value = shown_answers[3];
+            break;
+    }
+
+    const markdownContent = drawer[id].title;
+    const htmlContent = marked(markdownContent);
+
     document.querySelectorAll('.ql-toolbar').forEach(toolbar => {
         toolbar.remove();
     });
@@ -279,12 +308,45 @@ function editQuestion(id) {
             [{ 'list': 'ordered'}, { 'list': 'bullet' }]
           ]
         }
-      });
+    });
+
+    quill.root.innerHTML = htmlContent;
+
+    correct_answers_inputs_div = document.getElementById("correct_answers_inputs_div");
+    correct_answers_inputs_div.innerHTML = "";
+    drawer[id].shown_answers.forEach((correct_answer, index) => {
+
+        const div = document.createElement("div");
+        div.style.width = "fit-content";
+        div.style.position = "relative";
+        div.style.left = "50px";
+
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.style.width = "25px";
+        input.style.height = "25px";
+        input.style.marginLeft = "0";
+        input.style.cursor = "pointer";
+        div.appendChild(input);
+
+        const label = document.createElement("label");
+        label.style.fontSize = "25px";
+        label.style.position = "relative";
+        label.style.bottom = "3px";
+        label.style.left = "10px";
+        div.appendChild(label);
+
+        input.checked = drawer[id].correct_answers.includes(correct_answer);
+        label.innerHTML = correct_answer;
+
+        correct_answers_inputs_div.appendChild(div);
+    });
       
 }
 
 function getMarkdownQuillContent() {
-    const html = quill.root.innerHTML;
+    let html = quill.root.innerHTML;
+    html = html.replace(/<\/([a-z]+)>(\s*)([^\s<])/g, '</$1>$2\\n$3');
     const turndownService = new TurndownService({
         headingStyle: 'atx',
         codeBlockStyle: 'fenced',
@@ -307,22 +369,6 @@ function getMarkdownQuillContent() {
         }
     });
       
-    // Rule for exposants
-    turndownService.addRule('superscript', {
-        filter: 'sup',
-        replacement: function (content) {
-          return '^' + content + '^';
-        }
-    });
-      
-    // Rule for indices
-    turndownService.addRule('subscript', {
-        filter: 'sub',
-        replacement: function (content) {
-          return '~' + content + '~';
-        }
-      });
-      
     // Rule for code blocks
     turndownService.addRule('codeBlock', {
         filter: 'pre',
@@ -332,9 +378,8 @@ ${content}\`\`\``;
         }
     });
 
-    const markdown = turndownService.turndown(html);
-    return markdown;
-  }  
+    return turndownService.turndown(html);
+}
 
 // ---------------------- Functions Navigation -------------------------
 function navigate(index) {
@@ -595,7 +640,7 @@ function setupSocketListeners() {
     socket.on("drawer", (res) => {
         drawer = res;
         const drawer_div = document.getElementById('questions_drawer');
-        drawer_div.innerHTML = `<button onclick="editQuestion(0)">${glossary["NewQuestion"]}</button>`;
+        drawer_div.innerHTML = `<button class="new-question-button" onclick="editQuestion(0)">${glossary["NewQuestion"]}</button>`;
         res.forEach((question, index) => {
             const drawer_question = createDrawerQuestionElement(index, question.title.substring(0, 20) + "...");
             drawer_div.appendChild(drawer_question);

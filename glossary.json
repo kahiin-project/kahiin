@@ -73,11 +73,14 @@
         "Type": "Type",
         "Duration": "Durée",
         "Answers": "Réponses",
+        "ShownAnswers": "Réponses affichées",
+        "CorrectAnswers": "Réponses correctes",
         "DeleteQuestion": "Supprimer la question",
         "OtherData": "Autres données",
         "NewQuestion": "Nouvelle question",
         "EditQuestion": "Modifier la question",
-        "LaTeXSupport": "Cet éditeur supporte le LaTeX pour les formules mathématiques, encadrées par deux \"$\" mais ne sera affiché qu'une fois le jeu lancé."
+        "LaTeXSupport": "Cet éditeur supporte le LaTeX pour les formules mathématiques, encadrées par deux \"$\" mais ne sera affiché qu'une fois le jeu lancé.",
+        "Save": "Sauvegarder"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -153,11 +156,14 @@
         "Type": "Type",
         "Duration": "Duration",
         "Answers": "Answers",
+        "ShownAnswers": "Shown answers",
+        "CorrectAnswers": "Correct answers",
         "DeleteQuestion": "Delete question",
         "OtherData": "Other data",
         "NewQuestion": "New question",
         "EditQuestion": "Edit question",
-        "LaTeXSupport": "This editor supports LaTeX for mathematical formulas, enclosed by two \"$\" but will only be displayed once the game is launched."
+        "LaTeXSupport": "This editor supports LaTeX for mathematical formulas, enclosed by two \"$\" but will only be displayed once the game is launched.",
+        "Save": "Save"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -233,11 +239,14 @@
         "Type": "Tipo",
         "Duration": "Duración",
         "Answers": "Respuestas",
+        "ShownAnswers": "Respuestas mostradas",
+        "CorrectAnswers": "Respuestas correctas",
         "DeleteQuestion": "Eliminar pregunta",
         "OtherData": "Otros datos",
         "NewQuestion": "Nueva pregunta",
         "EditQuestion": "Editar pregunta",
-        "LaTeXSupport": "Este editor admite LaTeX para fórmulas matemáticas, encerrado por dos \"$\" pero solo se mostrará una vez que se haya lanzado el juego."
+        "LaTeXSupport": "Este editor admite LaTeX para fórmulas matemáticas, encerrado por dos \"$\" pero solo se mostrará una vez que se haya lanzado el juego.",
+        "Save": "Guardar"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -313,11 +322,14 @@
         "Type": "Tipo",
         "Duration": "Durata",
         "Answers": "Risposte",
+        "ShownAnswers": "Risposte mostrate",
+        "CorrectAnswers": "Risposte corrette",
         "DeleteQuestion": "Elimina domanda",
         "OtherData": "Altri dati",
         "NewQuestion": "Nuova domanda",
         "EditQuestion": "Modifica domanda",
-        "LaTeXSupport": "Questo editor supporta LaTeX per le formule matematiche, racchiuse da due \"$\" ma verrà visualizzato solo una volta che il gioco è stato avviato."
+        "LaTeXSupport": "Questo editor supporta LaTeX per le formule matematiche, racchiuse da due \"$\" ma verrà visualizzato solo una volta che il gioco è stato avviato.",
+        "Save": "Salvare"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -393,10 +405,13 @@
         "Type": "Art",
         "Duration": "Dauer",
         "Answers": "Antworten",
+        "ShownAnswers": "Gezeigte Antworten",
+        "CorrectAnswers": "Richtige Antworten",
         "DeleteQuestion": "Frage löschen",
         "OtherData": "Andere Daten",
         "NewQuestion": "Neue Frage",
         "EditQuestion": "Frage bearbeiten",
-        "LaTeXSupport": "Dieser Editor unterstützt LaTeX für mathematische Formeln, die von zwei \"$\" eingeschlossen sind, wird jedoch erst angezeigt, wenn das Spiel gestartet wurde."
+        "LaTeXSupport": "Dieser Editor unterstützt LaTeX für mathematische Formeln, die von zwei \"$\" eingeschlossen sind, wird jedoch erst angezeigt, wenn das Spiel gestartet wurde.",
+        "Save": "Speichern"
     }
 }
