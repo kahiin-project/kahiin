@@ -460,6 +460,7 @@ nav button img{
     font-size: 40px;
 }
 #question_editor h1, #question_editor h2, #question_editor h3, #question_editor p{
+    color: light-dark(black,white);
     text-align: center;
 }
 .ql-editor pre.ql-syntax{
@@ -475,8 +476,8 @@ nav button img{
 }
 
 #edit_question_div table{
-    width: calc(100% - 74px);
-    margin-left: 37px;
+    width: calc(100% - 100px);
+    margin-left: 50px;
     position: relative;
 }
 #edit_question_div table input{

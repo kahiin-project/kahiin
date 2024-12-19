@@ -275,7 +275,6 @@ function editQuestion(id) {
           toolbar: [
             [{ 'header': [1, 2, 3, 4, false] }],
             ['bold', 'italic', 'underline', 'strike'],
-            [{ 'script': 'sub'}, { 'script': 'super' }],
             ['blockquote', 'code-block'],
             [{ 'list': 'ordered'}, { 'list': 'bullet' }]
           ]
