@@ -232,11 +232,11 @@ nav button img{
     cursor: text;
     box-sizing: border-box;
 }
-.nav_content .apply-button, .nav_content #next_question, .nav_content #show_leaderboard, .nav_content #get_spreadsheet, .nav_content .questionary, .nav_content #create_questionary, .nav_content #pass_question, .nav_content #pause_question, .nav_content #login,.nav_content #create_account{
+.nav_content .apply-button, .nav_content #next_question, .nav_content #show_leaderboard, .nav_content #get_spreadsheet, .nav_content .questionary, .nav_content #create_questionary, .nav_content #pass_question, .nav_content #pause_question, .nav_content #login,.nav_content #create_account,.nav_content #reset_password{
     background: light-dark(#387fcf,#418bde);
     margin-bottom: 5px;
 }
-.nav_content .apply-button:hover, .nav_content #next_question:hover, .nav_content #show_leaderboard:hover, #get_spreadsheet:hover, .nav_content .questionary:hover, .nav_content #create_questionary:hover, .nav_content #pass_question:hover, .nav_content #pause_question:hover .nav_content #login:hover,.nav_content #create_account:hover{
+.nav_content .apply-button:hover, .nav_content #next_question:hover, .nav_content #show_leaderboard:hover, #get_spreadsheet:hover, .nav_content .questionary:hover, .nav_content #create_questionary:hover, .nav_content #pass_question:hover, .nav_content #pause_question:hover .nav_content #login:hover,.nav_content #create_account:hover,.nav_content #reset_password:hover{
     background: light-dark(#3473bb,#3d7fca);
 }
 .nav_content .apply-button.dyslexic{
@@ -257,10 +257,10 @@ nav button img{
     padding-left: 10px;
 }
 
-.nav_content #kick_player_button{
+.nav_content #kick_player_button,.nav_content #delete_account{
     background: light-dark(#cf3838,#de4141);
 }
-.nav_content #kick_player_button:hover{
+.nav_content #kick_player_button:hover,.nav_content #delete_account:hover{
     background: light-dark(#c03737,#cf4040);
 }
 .nav_content #start_game{

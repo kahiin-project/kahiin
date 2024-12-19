@@ -400,6 +400,16 @@ function signupPage() {
     };
 }
 
+function resetPasswordPage() {
+    if (document.getElementById("new_password").value == document.getElementById("confirm_new_password").value) {
+        resetPassword(hashSHA256(document.getElementById("new_password").value))
+    }    
+}
+
+function deleteAccountPage() {
+    deleteAccount(document.getElementById("password_delete_account").value)
+}
+
 // ---------------------- socket.io Main -------------------------
 
 function setupSocketListeners() {

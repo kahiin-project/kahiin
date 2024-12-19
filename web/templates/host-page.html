@@ -226,9 +226,9 @@
     <div id="login_div" class="nav_content" style="display: none;">
       <h1>{{glossary["Login"]}}</h1>
       <h2>{{glossary["Email"]}}</h2>
-      <input type="email" id="login_email" placeholder="Your Email">
+      <input type="email" id="login_email" placeholder="Email">
       <h2>{{glossary["Password"]}}</h2>
-      <input type="password" id="login_password" placeholder="Your Password">
+      <input type="password" id="login_password" placeholder="Password">
       <button id="login" onclick="loginPage()">{{glossary["Login"]}}</button>
       <p id="no_account" onclick="navigate(5)">{{glossary["DontHaveAccount"]}} <br> {{glossary["CreateAccount"]}}</p>
     </div>
@@ -239,9 +239,9 @@
       <h2>{{glossary["Email"]}}</h2>
       <input type="email" id="signup_email" placeholder="exemple@adress.com">
       <h2>{{glossary["Password"]}}</h2>
-      <input type="password" id="signup_password" placeholder="Your Password">
+      <input type="password" id="signup_password" placeholder="Password">
       <h2>{{glossary["ConfirmPassword"]}}</h2>
-      <input type="password" id="signup_verify" placeholder="Confirm Your Psswrd">
+      <input type="password" id="signup_verify" placeholder="Confirm Password">
       <button id="create_account" onclick="signupPage()">{{glossary["CreateAccount"]}}</button>
     </div>
 
@@ -249,7 +249,14 @@
     <div id="account_div" class="nav_content" style="display: none;">
       <h1>Account</h1>
       <h2>Personnal Informations</h2>
-      <h2>Security</h2>
+      <h2>Reset Password</h2>
+      <input type="password" id="new_password" placeholder="New Password">
+      <input type="password" id="confirm_new_password" placeholder="Confirm Password">
+      <button id="reset_password" onclick="resetPasswordPage()">Reset Password</button>
+      <h2>Delet Account</h2>
+      <p style="margin-left: 50px; color: gray;">Type your password to delete your account</p>
+      <input type="password" id="password_delete_account" placeholder="Password">
+      <button id="delete_account" onclick="deleteAccountPage()">Delete Account</button>
     </div>
 
     <script src="static/js/host-page.js"></script>
