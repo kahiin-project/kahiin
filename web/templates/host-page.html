@@ -147,7 +147,54 @@
     </div>
     <div style="display: none;" id="edit_question_div" class="nav_content">
       <h1>{{glossary["EditQuestion"]}}</h1>
+
+      <h2>{{glossary["Type"]}}</h2>
+      <select id="edit_question_type" onchange="editQuestionType()">
+        <option value="uniqueanswer">{{glossary["UniqueAnswer"]}}</option>
+        <option value="mcq">{{glossary["MCQ"]}}</option>
+      </select>
+
+      <h2>{{glossary["Duration"]}} (s)</h2>
+      <input type="number" id="edit_question_duration" onchange="editQuestionDuration()" value="20">
+
+      <h2>{{glossary["Question"]}}</h2>
+      <p>{{glossary["LaTeXSupport"]}}</p>
       <div id="question_editor"></div>
+
+      <h2>{{glossary["Answers"]}}</h1>
+      <table>
+        <tr>
+          <td>
+            <input id="edit_answer_input0" value="A">
+            <svg width="30" height="30" id="edit_answer_svg0">
+              <rect width="30" height="30"/>
+            </svg>
+          </td>
+          <td>
+            <input id="edit_answer_input1" value="B">
+            <svg width="40" height="40" id="edit_answer_svg1">
+              <circle cx="20" cy="20" r="15"/>
+            </svg>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input id="edit_answer_input2" value="C">
+            <svg width="40" height="40" id="edit_answer_svg2">
+              <polygon points="20,2 38,38 2,38"/>
+            </svg>
+          </td>
+          <td>
+            <input id="edit_answer_input3" value="D">
+            <svg width="40" height="40" id="edit_answer_svg3">
+              <polygon points="20,2 24.4,14 39.2,14 27.2,22.8 31.6,36 20,28 8.4,36 12.8,22.8 0.8,14 15.6,14"/>
+            </svg>
+          </td>
+        </tr>
+      </table>
+
+      <button class="apply-button" style="margin-top: 40px; margin-bottom: 50px;">{{glossary["Apply"]}}</button>
+
     </div>
 
     <!-- Settings -->

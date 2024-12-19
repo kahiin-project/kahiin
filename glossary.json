@@ -76,7 +76,8 @@
         "DeleteQuestion": "Supprimer la question",
         "OtherData": "Autres données",
         "NewQuestion": "Nouvelle question",
-        "EditQuestion": "Modifier la question"
+        "EditQuestion": "Modifier la question",
+        "LaTeXSupport": "Cet éditeur supporte le LaTeX pour les formules mathématiques, encadrées par deux \"$\" mais ne sera affiché qu'une fois le jeu lancé."
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -155,7 +156,8 @@
         "DeleteQuestion": "Delete question",
         "OtherData": "Other data",
         "NewQuestion": "New question",
-        "EditQuestion": "Edit question"
+        "EditQuestion": "Edit question",
+        "LaTeXSupport": "This editor supports LaTeX for mathematical formulas, enclosed by two \"$\" but will only be displayed once the game is launched."
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -234,7 +236,8 @@
         "DeleteQuestion": "Eliminar pregunta",
         "OtherData": "Otros datos",
         "NewQuestion": "Nueva pregunta",
-        "EditQuestion": "Editar pregunta"
+        "EditQuestion": "Editar pregunta",
+        "LaTeXSupport": "Este editor admite LaTeX para fórmulas matemáticas, encerrado por dos \"$\" pero solo se mostrará una vez que se haya lanzado el juego."
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -313,7 +316,8 @@
         "DeleteQuestion": "Elimina domanda",
         "OtherData": "Altri dati",
         "NewQuestion": "Nuova domanda",
-        "EditQuestion": "Modifica domanda"
+        "EditQuestion": "Modifica domanda",
+        "LaTeXSupport": "Questo editor supporta LaTeX per le formule matematiche, racchiuse da due \"$\" ma verrà visualizzato solo una volta che il gioco è stato avviato."
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -392,6 +396,7 @@
         "DeleteQuestion": "Frage löschen",
         "OtherData": "Andere Daten",
         "NewQuestion": "Neue Frage",
-        "EditQuestion": "Frage bearbeiten"
+        "EditQuestion": "Frage bearbeiten",
+        "LaTeXSupport": "Dieser Editor unterstützt LaTeX für mathematische Formeln, die von zwei \"$\" eingeschlossen sind, wird jedoch erst angezeigt, wenn das Spiel gestartet wurde."
     }
 }

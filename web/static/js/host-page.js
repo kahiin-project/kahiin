@@ -284,7 +284,7 @@ function editQuestion(id) {
       
 }
 
-function getMarkdownContent() {
+function getMarkdownQuillContent() {
     const html = quill.root.innerHTML;
     const turndownService = new TurndownService({
         headingStyle: 'atx',
