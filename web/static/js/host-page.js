@@ -13,7 +13,6 @@ let questionnaire = null;
 // ---------------------- Initialisation -------------------------
 
 function init() {
- 
     const wsUrl = `ws://${window.location.hostname}:8000?t=${Date.now()}`;
     socket = new WebSocketHandler(wsUrl);
     setupSocketListeners();
@@ -41,7 +40,10 @@ function formatDuration(seconds) {
     } else {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
-        return `${minutes}m ${remainingSeconds}s`;
+        if (remainingSeconds == 0){
+            return `${minutes}min`;
+        }
+        return `${minutes}min ${remainingSeconds}s`;
     }
 }
 
@@ -293,7 +295,7 @@ function editQuestion(id) {
     }
 
     const markdownContent = drawer[id].title;
-    const htmlContent = marked(markdownContent);
+    let htmlContent = marked(markdownContent);
 
     document.querySelectorAll('.ql-toolbar').forEach(toolbar => {
         toolbar.remove();
@@ -302,7 +304,7 @@ function editQuestion(id) {
         theme: 'snow',
         modules: {
           toolbar: [
-            [{ 'header': [1, 2, 3, 4, false] }],
+            [{ 'header': [1, 2, 3, false] }],
             ['bold', 'italic', 'underline', 'strike'],
             ['blockquote', 'code-block'],
             [{ 'list': 'ordered'}, { 'list': 'bullet' }]
@@ -310,7 +312,106 @@ function editQuestion(id) {
         }
     });
 
-    quill.root.innerHTML = htmlContent;
+    htmlContent = htmlContent.replace(/<del>/g, '<s>').replace(/<\/del>/g, '</s>');
+    htmlContent = htmlContent.replace(/<blockquote>\s*<p>(.*?)<\/p>\s*<\/blockquote>/g, '<blockquote>$1</blockquote>');
+    
+    quill.clipboard.dangerouslyPasteHTML(htmlContent);
+    for(let i = 0; i < quill.root.childNodes.length; i++) {
+        if(quill.root.childNodes[i].nodeName == "BLOCKQUOTE") {
+            quill.root.childNodes[i - 1].remove();
+        }
+    }
+
+    function refreshCorrectAnswersCheckboxes() {
+        document.getElementById("correct_answers_inputs_div").style.opacity = "0";
+        setTimeout(() => {
+            document.getElementById("correct_answers_inputs_div").innerHTML = "";
+            for(let i = 0; i < 4; i++) {
+                if(document.getElementById(`edit_answer_input${i}`).value != ""){
+                    const div = document.createElement("div");
+                    div.style.width = "fit-content";
+                    div.style.position = "relative";
+                    div.style.left = "50px";
+                    const input = document.createElement("input");
+                    input.type = "checkbox";
+                    input.style.width = "25px";
+                    input.style.height = "25px";
+                    input.style.marginLeft = "0";
+                    input.style.cursor = "pointer";
+                    div.appendChild(input);
+                    const label = document.createElement("label");
+                    label.style.fontSize = "25px";
+                    label.style.position = "relative";
+                    label.style.bottom = "3px";
+                    label.style.left = "10px";
+                    label.innerHTML = document.getElementById(`edit_answer_input${i}`).value;
+                    div.appendChild(label);
+                    document.getElementById("correct_answers_inputs_div").appendChild(div);
+                }
+            }
+            document.getElementById("correct_answers_inputs_div").style.opacity = "1";
+        }, 400);
+    }
+
+    for(let i = 0; i < 4; i++) {
+        document.getElementById(`edit_answer_input${i}`).addEventListener("change", function() {
+            let transition = false;
+            for(let j = 0; j < 4; j++) {
+                if(transition) {
+                    break;
+                }
+                if (document.getElementById(`edit_answer_input${j}`).value == "") {
+                    for (let k = j+1; k < 4; k++) {
+                        if (document.getElementById(`edit_answer_input${k}`).value != "") {
+                            transition = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if(transition) {
+                for(let j = 0; j < 4; j++) {
+                    setTimeout(() => {
+                        document.getElementById(`edit_answer_input0`).style.opacity = "0";
+                        setTimeout(() => {
+                            document.getElementById(`edit_answer_input1`).style.opacity = "0";
+                            setTimeout(() => {
+                                document.getElementById(`edit_answer_input2`).style.opacity = "0";
+                                setTimeout(() => {
+                                    document.getElementById(`edit_answer_input3`).style.opacity = "0";
+                                    for(k = j; k >= 0; k--) {
+                                        if(k != 0){
+                                            if (document.getElementById(`edit_answer_input${k - 1}`).value == "") {
+                                                document.getElementById(`edit_answer_input${k - 1}`).value = document.getElementById(`edit_answer_input${k}`).value;
+                                                document.getElementById(`edit_answer_input${k}`).value = "";
+                                            }else{
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    refreshCorrectAnswersCheckboxes();
+                                    setTimeout(() => {
+                                        document.getElementById(`edit_answer_input0`).style.opacity = "1";
+                                        setTimeout(() => {
+                                            document.getElementById(`edit_answer_input1`).style.opacity = "1";
+                                            setTimeout(() => {
+                                                document.getElementById(`edit_answer_input2`).style.opacity = "1";
+                                                setTimeout(() => {
+                                                    document.getElementById(`edit_answer_input3`).style.opacity = "1";
+                                                }, 100);
+                                            }, 100);
+                                        }, 100);
+                                    }, 100);
+                                }, 100);
+                            }, 100);
+                        }, 100);
+                    }, 100);
+                }
+            }else{
+                refreshCorrectAnswersCheckboxes();
+            }
+        });
+    }
 
     correct_answers_inputs_div = document.getElementById("correct_answers_inputs_div");
     correct_answers_inputs_div.innerHTML = "";
@@ -341,6 +442,36 @@ function editQuestion(id) {
 
         correct_answers_inputs_div.appendChild(div);
     });
+
+    document.getElementById("save_question_button").onclick = function() {
+        const title = getMarkdownQuillContent();
+        const type = document.getElementById("edit_question_type").value;
+        const duration = document.getElementById("edit_question_duration").value;
+        let shown_answers = [];
+        for(let i = 0; i < 4; i++) {
+            if(document.getElementById(`edit_answer_input${i}`).value != ""){
+                shown_answers.push(document.getElementById(`edit_answer_input${i}`).value);
+            }
+        }
+        if(shown_answers.length < 2){
+            shown_answers = [];
+            shown_answers.push(glossary["True"]);
+            shown_answers.push(glossary["False"]);
+        }
+        const correct_answers = [];
+        correct_answers_inputs_div.childNodes.forEach((div, index) => {
+            if (div.childNodes[0].checked) {
+                correct_answers.push(div.childNodes[1].innerHTML);
+            }
+        });
+
+        socket.emit("editQuestion", { passcode, id, title, type, duration, shown_answers, correct_answers });
+        document.getElementById("edit_question_div").style.display = "none";
+        document.getElementById("edit_div").style.display = "block";
+
+    }
+
+    document.getElementById("edit_question_div").scrollTop = 0;
       
 }
 

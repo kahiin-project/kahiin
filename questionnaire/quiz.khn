@@ -7,31 +7,7 @@ acc = 0
 for e in ma_liste:
   acc += e
 print(acc)
-```</title><shown_answers><answer>a</answer><answer>b</answer><answer>c</answer><answer>d</answer></shown_answers><correct_answers><answer>a</answer><answer>b</answer></correct_answers></question><question type="uniqueanswer" duration="20"><title># H1
-
-## H2
-
-### H3
-
-P
-
-**Bold**
-
-*Italic*
-
-&lt;u&gt;Underlined&lt;/u&gt;
-
-~~Stroked~~
-
-&gt; Quote
-
-```
-Code block
-```
-
-1.  Num List
-
-*   Dot List</title><shown_answers><answer>a</answer><answer>b</answer><answer>c</answer><answer>d</answer></shown_answers><correct_answers><answer>a</answer><answer>b</answer></correct_answers></question><question type="mcq" duration="20"><title># Test Question Answer A
+```</title><shown_answers><answer>a</answer><answer>b</answer><answer>c</answer><answer>d</answer></shown_answers><correct_answers><answer>a</answer><answer>b</answer></correct_answers></question><question type="mcq" duration="20"><title># Test Question Answer A
             $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$
             ```python
             delta = b**2 - 4*a*c

@@ -760,6 +760,31 @@ async def handle_edit_questionnaire_name(websocket, res) -> None:
         )
         await ws_manager.emit("editingQuestionnary", res["new_name"], to=websocket)
 
+@ws_manager.on("editQuestion")
+@verification_wrapper
+async def handle_edit_questionary(websocket, res) -> None:
+    question_id = res["id"]
+
+    with relative_open("drawer.json", "r") as f:
+        drawer = json.load(f)
+
+    # Update the drawer with the new question data
+    drawer[question_id] = {
+        "title": res["title"],
+        "type": res["type"],
+        "duration": int(res["duration"]),
+        "shown_answers": res["shown_answers"],
+        "correct_answers": res["correct_answers"]
+    }
+
+    with relative_open("drawer.json", "w") as f:
+        json.dump(drawer, f, indent=4)
+
+    with relative_open("drawer.json", "r") as f:
+        drawer = json.load(f)
+        await ws_manager.emit("drawer", drawer, to=websocket)
+    await ws_manager.emit("drawerUpdated", drawer, to=websocket)
+
 @ws_manager.on("getSettings")
 async def handle_get_settings(websocket, code: str) -> None:
     """Handle requests to get settings."""

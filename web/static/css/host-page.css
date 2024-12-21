@@ -334,6 +334,22 @@ nav button img{
     cursor: move;
     position: relative;
 }
+.questions_div #dropbox .question h1, .questions_div #dropbox .question h2, .questions_div #dropbox .question h3, .questions_div #dropbox .question p{
+    padding: 0;
+    margin: 20px;
+}
+.questions_div #dropbox .question blockquote p, .questions_div #dropbox .question ol li, .questions_div #dropbox .question ul li {
+    width: fit-content;
+    padding-left: 20px;
+    padding-right: 15px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.questions_div #dropbox .question blockquote p {
+    border-left: solid 3px #a7a7a7;
+    padding-right: 50px;
+}
 
 .drawer-question {
     position: relative;
@@ -473,12 +489,33 @@ nav button img{
     padding: 40px;
     margin: 50px;
     margin-top: 0;
-    height: calc(100% - 420px);
+    height: calc(100% - 390px);
     font-size: 40px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 #question_editor h1, #question_editor h2, #question_editor h3, #question_editor p{
     color: light-dark(black,white);
     text-align: center;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+#question_editor h1{
+    font-size: 75px;
+    height: 96px;
+}
+#question_editor h2{
+    font-size: 65px;
+    height: 72px;
+}
+#question_editor h3{
+    font-size: 48px;
+    height: 48px;
+}
+#question_editor p{
+    font-size: 40px;
+    height: 48px;
 }
 .ql-editor pre.ql-syntax{
     width: 80%;
@@ -491,6 +528,17 @@ nav button img{
     font-family: monospace;
     margin: 15px;
 }
+.ql-editor blockquote, .ql-editor ol li, .ql-editor ul li{
+    width: fit-content;
+    padding-left: 20px;
+    padding-right: 15px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.ql-editor ol li, .ql-editor ul li{
+    padding-right: 100px;
+}
 
 #edit_question_div table{
     width: calc(100% - 100px);
@@ -500,9 +548,10 @@ nav button img{
 #edit_question_div table input{
     width: 100%;
     margin: 0;
-    border-radius: 0;
     height: 50px;
     padding-left: 50px;
+    border-radius: 0;
+    transition: 0.2s;
 }
 #edit_question_div table svg{
     position: absolute;
@@ -548,4 +597,8 @@ nav button img{
 .ql-editor{
     overflow-x: hidden;
     overflow-y: scroll;
+}
+
+#correct_answers_inputs_div{
+    transition: 0.4s;
 }
