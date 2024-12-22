@@ -783,7 +783,24 @@ async def handle_edit_questionary(websocket, res) -> None:
     with relative_open("drawer.json", "r") as f:
         drawer = json.load(f)
         await ws_manager.emit("drawer", drawer, to=websocket)
-    await ws_manager.emit("drawerUpdated", drawer, to=websocket)
+
+@ws_manager.on("deleteQuestionInDrawer")
+@verification_wrapper
+async def handle_delete_question(websocket, res) -> None:
+    question_id = res["id"]
+
+    with relative_open("drawer.json", "r") as f:
+        drawer = json.load(f)
+
+    # Delete the question from the drawer
+    del drawer[question_id]
+
+    with relative_open("drawer.json", "w") as f:
+        json.dump(drawer, f, indent=4)
+
+    with relative_open("drawer.json", "r") as f:
+        drawer = json.load(f)
+        await ws_manager.emit("drawer", drawer, to=websocket)
 
 @ws_manager.on("getSettings")
 async def handle_get_settings(websocket, code: str) -> None:

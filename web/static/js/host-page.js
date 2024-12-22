@@ -472,6 +472,12 @@ function editQuestion(id) {
 
     }
 
+    document.getElementById("delete_question_button").onclick = function() {
+        socket.emit("deleteQuestionInDrawer", { passcode, id });
+        document.getElementById("edit_question_div").style.display = "none";
+        document.getElementById("edit_div").style.display = "block";
+    }
+
     document.getElementById("edit_question_div").scrollTop = 0;
       
 }

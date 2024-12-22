@@ -239,6 +239,13 @@ nav button img{
 .nav_content .apply-button:hover, .nav_content #next_question:hover, .nav_content #show_leaderboard:hover, #get_spreadsheet:hover, .nav_content .questionary:hover, .nav_content #create_questionary:hover, .nav_content #pass_question:hover, .nav_content #pause_question:hover .nav_content #login:hover,.nav_content #create_account:hover,.nav_content #reset_password:hover{
     background: light-dark(#3473bb,#3d7fca);
 }
+.nav_content .delete-button{
+    background: light-dark(#cf3838,#de4141);
+    margin-bottom: 5px;
+}
+.nav_content .delete-button:hover{
+    background: light-dark(#c03737,#cf4040);
+}
 .nav_content .apply-button.dyslexic{
     padding: 0;
     padding-left: 10px;
@@ -378,8 +385,8 @@ nav button img{
 }
 .drawer-question button{
     position: absolute;
-    right: 4px;
-    top: 4px;
+    right: 6px;
+    top: 6px;
     width: 35px;
     height: 35px;
     padding: 8px;
