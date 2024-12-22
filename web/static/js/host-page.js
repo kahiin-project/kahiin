@@ -206,8 +206,7 @@ function editQuestionary(questionnaire_name) {
 }
 
 function editQuestionaryName(new_name) {
-    const old_name = editing_questionnaire;
-    socket.emit("editQuestionaryName", { passcode, old_name, new_name });
+    socket.emit("editQuestionaryName", { passcode, old_name: editing_questionnaire, new_name });
     socket.emit("listQuestionary", { passcode });
 }
 
@@ -237,6 +236,12 @@ function showQuestionInfos(id) {
 
     document.getElementById("duration_p").innerHTML = formatDuration(questionnaire.questions[id]["@duration"]);
 
+    if(Array.isArray(questionnaire.questions[id].shown_answers)){
+        questionnaire.questions[id].shown_answers = { answer: questionnaire.questions[id].shown_answers };
+    }
+    if(Array.isArray(questionnaire.questions[id].correct_answers)){
+        questionnaire.questions[id].correct_answers = { answer: questionnaire.questions[id].correct_answers };
+    }
     shown_answers = questionnaire.questions[id].shown_answers.answer;
     correct_answers = questionnaire.questions[id].correct_answers;
     if(correct_answers == null){
@@ -247,6 +252,7 @@ function showQuestionInfos(id) {
     for(let i = 0; i < 4; i++) {
         document.getElementById(`answer${i + 1}_p`).innerHTML = "";
     }
+
     shown_answers.forEach((answer, index) => {
         if (correct_answers.includes(answer)) {
             text = `✓ ${answer}`;
@@ -421,6 +427,12 @@ function editQuestion(id) {
 
     correct_answers_inputs_div = document.getElementById("correct_answers_inputs_div");
     correct_answers_inputs_div.innerHTML = "";
+    if(Array.isArray(drawer[id].shown_answers)){
+        drawer[id].shown_answers = { answer: drawer[id].shown_answers };
+    }
+    if(Array.isArray(drawer[id].correct_answers)){
+        drawer[id].correct_answers = { answer: drawer[id].correct_answers };
+    }
     drawer[id].shown_answers.answer.forEach((correct_answer, index) => {
 
         const div = document.createElement("div");
@@ -627,6 +639,12 @@ function setupSocketListeners() {
             });
             document.getElementById("passcode").value = "";
             document.getElementById("error").innerHTML = glossary[res];
+        } else if (res == "EmptyName" || res == "SpecialCharacters" || res == "AlreadyExists") { 
+            alert(glossary[res]);
+            if(editing_questionnaire.endsWith(".khn")){
+                editing_questionnaire = editing_questionnaire.substring(0, editing_questionnaire.length - 4);
+            }
+            document.getElementById("edit_questionnaire_name").value = editing_questionnaire;
         } else {
             alert(glossary[res]);
             document.getElementById("error").style.display = "block";
@@ -830,6 +848,10 @@ function setupSocketListeners() {
     socket.on("questionAdded", (res) => {
         updateDrawer(res);
         editQuestion(drawer.length - 1);
+    });
+
+    socket.on("editingQuestionnary", (res) => {
+        editing_questionnaire = res;
     });
 
 }

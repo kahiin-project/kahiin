@@ -611,6 +611,7 @@ async def handle_new_questionary(websocket, res) -> None:
 async def handle_list_questionary(websocket, res) -> None:
     questionaries = os.listdir(os.path.join(os.path.dirname(__file__), "questionnaire"))
     questionaries.sort()
+    questionaries = [q[:-4] for q in questionaries]
     await ws_manager.emit("ListOfQuestionary", {"questionaries": questionaries}, to=websocket)
 
 @ws_manager.on('selectQuestionary')
@@ -708,9 +709,8 @@ async def handle_create_questionary(websocket, res) -> None:
     subject = ET.SubElement(questionary, "subject")
     subject.text = "None"
     language = ET.SubElement(questionary, "language")
-    language.text = "en"
-    title_element = ET.SubElement(questionary, "title")
-    title_element.text = title
+    with relative_open("settings.json", "r") as f:
+        language.text = json.load(f)["language"]
     questions = ET.SubElement(questionary, "questions")
     
     tree = ET.ElementTree(questionary)
@@ -721,6 +721,8 @@ async def handle_create_questionary(websocket, res) -> None:
 @ws_manager.on('deleteQuestionary')
 @verification_wrapper
 async def handle_delete_questionary(websocket, res) -> None:
+    if not res["questionnaire_name"].endswith(".khn"):
+        res["questionnaire_name"] += ".khn"
     os.remove(os.path.join(os.path.dirname(__file__), "questionnaire", res["questionnaire_name"]))
     await ws_manager.emit("deletedQuestionnary", to=websocket)
 
@@ -730,22 +732,29 @@ async def handle_edit_questionnaire_name(websocket, res) -> None:
     list_questionaries = os.listdir(os.path.join(os.path.dirname(__file__), "questionnaire"))
     forbiden_characters = '/\|,.;:!?*"><'
     invalid_characters = False
+    old_name = res["old_name"]
+    new_name = res["new_name"]
+
+    # Add .khn extension if not present
+    if not old_name.endswith(".khn"):
+        old_name += ".khn"
+    if not new_name.endswith(".khn"):
+        new_name += ".khn"
+
     for character in forbiden_characters:
-        invalid_characters += character in res["new_name"][:-4]
-    if len(res["new_name"]) <= 4:
+        invalid_characters += character in new_name[:-4]
+    if len(new_name) <= 4:
         await ws_manager.emit('error', "EmptyName", to=websocket)
-    elif res["new_name"][-4:] != ".khn":
-        await ws_manager.emit('error', "InvalidExtension", to=websocket)
     elif invalid_characters:
         await ws_manager.emit('error', "SpecialCharacters")
-    elif res["new_name"] in list_questionaries:
-        await ws_manager.emit('error', "AlreadyExist", to=websocket)
+    elif new_name in list_questionaries:
+        await ws_manager.emit('error', "AlreadyExists", to=websocket)
     else:
         os.rename(
-            os.path.join(os.path.dirname(__file__), "questionnaire", res["old_name"]),
-            os.path.join(os.path.dirname(__file__), "questionnaire", res["new_name"])
+            os.path.join(os.path.dirname(__file__), "questionnaire", old_name),
+            os.path.join(os.path.dirname(__file__), "questionnaire", new_name)
         )
-        await ws_manager.emit("editingQuestionnary", res["new_name"], to=websocket)
+        await ws_manager.emit("editingQuestionnary", new_name, to=websocket)
 
 @ws_manager.on("editQuestion")
 @verification_wrapper
@@ -854,6 +863,8 @@ async def handle_get_whole_questionnaire(websocket, res) -> None:
     """Handle requests to get the whole questionnaire."""
     code = res["passcode"]
     questionnaire_name = res["questionnaire_name"]
+    if not questionnaire_name.endswith(".khn"):
+        questionnaire_name += ".khn"
     if get_passcode() == code:
         with relative_open(f"questionnaire/{questionnaire_name}", "rb") as f:
             xml_content = f.read()
@@ -886,10 +897,13 @@ async def handle_get_whole_questionnaire(websocket, res) -> None:
                 if isinstance(question, dict) and "correct_answers" not in question:
                     question["correct_answers"] = []
 
+            if not questionnaire_name.endswith(".khn"):
+                questionnaire_name += ".khn"
+
             questionnary = {
                 "subject": dict_content["questionary"]["subject"],
                 "language": dict_content["questionary"]["language"],
-                "title": dict_content["questionary"]["title"],
+                "title": questionnaire_name[:-4],
                 "questions": questions
             }
 
@@ -908,6 +922,9 @@ async def handle_move_question(websocket, res) -> None:
         to_index = res["to"]
         questionnaire_name = res["questionnaire_name"]
         
+        if not questionnaire_name.endswith(".khn"):
+            questionnaire_name += ".khn"
+
         with relative_open(f"questionnaire/{questionnaire_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
@@ -945,10 +962,13 @@ async def handle_move_question(websocket, res) -> None:
         with relative_open(f"questionnaire/{questionnaire_name}", "wb") as f:
             f.write(xmltodict.unparse(dict_content).encode())
 
+        if not questionnaire_name.endswith(".khn"):
+            questionnaire_name += ".khn"
+
         questionnary = {
             "subject": dict_content["questionary"]["subject"],
             "language": dict_content["questionary"]["language"],
-            "title": dict_content["questionary"]["title"],
+            "title": questionnaire_name[:-4],
             "questions": questions
         }
 
@@ -970,6 +990,9 @@ async def handle_copy_question(websocket, res) -> None:
         target_index = res["to"]
         questionnaire_name = res["questionnaire_name"]
         
+        if not questionnaire_name.endswith(".khn"):
+            questionnaire_name += ".khn"
+
         with relative_open(f"questionnaire/{questionnaire_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
@@ -994,10 +1017,13 @@ async def handle_copy_question(websocket, res) -> None:
         with relative_open(f"questionnaire/{questionnaire_name}", "wb") as f:
             f.write(xmltodict.unparse(dict_content).encode())
 
+        if not questionnaire_name.endswith(".khn"):
+            questionnaire_name += ".khn"
+
         questionnary = {
             "subject": dict_content["questionary"]["subject"],
             "language": dict_content["questionary"]["language"],
-            "title": dict_content["questionary"]["title"],
+            "title": questionnaire_name[:-4],
             "questions": questions
         }
 
@@ -1015,6 +1041,8 @@ async def handle_delete_question(websocket, res) -> None:
         index = res["index"]
         questionnaire_name = res["questionnaire_name"]
         
+        if not questionnaire_name.endswith(".khn"):
+            questionnaire_name += ".khn"
         with relative_open(f"questionnaire/{questionnaire_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
@@ -1033,10 +1061,13 @@ async def handle_delete_question(websocket, res) -> None:
         with relative_open(f"questionnaire/{questionnaire_name}", "wb") as f:
             f.write(xmltodict.unparse(dict_content).encode())
 
+        if not questionnaire_name.endswith(".khn"):
+            questionnaire_name += ".khn"
+        
         questionnary = {
             "subject": dict_content["questionary"]["subject"],
             "language": dict_content["questionary"]["language"],
-            "title": dict_content["questionary"]["title"],
+            "title": questionnaire_name[:-4],
             "questions": questions
         }
 
