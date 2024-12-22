@@ -713,17 +713,6 @@ async def handle_create_questionary(websocket, res) -> None:
     title_element.text = title
     questions = ET.SubElement(questionary, "questions")
     
-    # Add a default question
-    question = ET.SubElement(questions, "question", duration="30", type="uniqueanswer")
-    question_title = ET.SubElement(question, "title")
-    question_title.text = "Default Question"
-    shown_answers = ET.SubElement(question, "shown_answers")
-    answer = ET.SubElement(shown_answers, "answer")
-    answer.text = "Default Answer"
-    correct_answers = ET.SubElement(question, "correct_answers")
-    correct_answer = ET.SubElement(correct_answers, "answer")
-    correct_answer.text = "Default Answer"
-    
     tree = ET.ElementTree(questionary)
     tree.write(f"questionnaire/{filename}", encoding="utf-8", xml_declaration=True)
     
