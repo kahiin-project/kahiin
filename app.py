@@ -43,10 +43,11 @@ class Questionary:
     def __init__(self, root=None, tree=None) -> None:
         self.root = root
         self.tree = tree
-        
-        self.questionary = {"title" : "", "questions": []}
-    
-    
+        self.filename = None
+        self.questionary = {"title": "", "questions": []}
+
+    def get_filename(self) -> str:
+        return self.filename
 
 questionary = Questionary()
 class SleepManager:
@@ -237,7 +238,7 @@ class Game:
     def reset(self):
         self.previous_leaderboard = []  
         self.current_leaderboard = []   
-        questionary.questionary = {"title": questionary.root.find('title').text,"questions": []}
+        questionary.questionary = {"title": questionary.get_filename(),"questions": []}
         questions = questionary.root.find('questions')
         for question in questions.findall('question'):
             title = question.find('title').text
@@ -617,8 +618,11 @@ async def handle_list_questionary(websocket, res) -> None:
 @ws_manager.on('selectQuestionary')
 @verification_wrapper
 async def handle_select_questionary(websocket, res) -> None:
+    if not res["questionnaire_name"].endswith(".khn"):
+        res["questionnaire_name"] += ".khn"
     questionary.tree = ET.parse(os.path.join(os.path.dirname(__file__), "questionnaire", res["questionnaire_name"]))
     questionary.root = questionary.tree.getroot()
+    questionary.filename = res["questionnaire_name"]
 
 @ws_manager.on('kickPlayer')
 @verification_wrapper
