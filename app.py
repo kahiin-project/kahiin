@@ -786,7 +786,7 @@ async def handle_edit_questionary(websocket, res) -> None:
 
 @ws_manager.on("deleteQuestionInDrawer")
 @verification_wrapper
-async def handle_delete_question(websocket, res) -> None:
+async def handle_delete_question_in_drawer(websocket, res) -> None:
     question_id = res["id"]
 
     with relative_open("drawer.json", "r") as f:
@@ -801,6 +801,29 @@ async def handle_delete_question(websocket, res) -> None:
     with relative_open("drawer.json", "r") as f:
         drawer = json.load(f)
         await ws_manager.emit("drawer", drawer, to=websocket)
+
+@ws_manager.on("newQuestion")
+@verification_wrapper
+async def handle_new_question(websocket, res) -> None:
+    if get_passcode() == res["passcode"]:
+        with relative_open("drawer.json", "r") as f:
+            drawer = json.load(f)
+
+        # Add the new question to the drawer
+        drawer.append({
+            "title": get_glossary()["NewQuestion"],
+            "type": "uniqueanswer",
+            "duration": 20,
+            "shown_answers": ["A", "B"],
+            "correct_answers": []
+        })
+
+        with relative_open("drawer.json", "w") as f:
+            json.dump(drawer, f, indent=4)
+
+        with relative_open("drawer.json", "r") as f:
+            drawer = json.load(f)
+            await ws_manager.emit("questionAdded", drawer, to=websocket)
 
 @ws_manager.on("getSettings")
 async def handle_get_settings(websocket, code: str) -> None:
@@ -849,11 +872,38 @@ async def handle_get_whole_questionnaire(websocket, res) -> None:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
 
+            if "questions" not in dict_content["questionary"]:
+                dict_content["questionary"]["questions"] = []
+
+            if isinstance(dict_content["questionary"]["questions"], dict):
+                questions = [dict_content["questionary"]["questions"]]
+                dict_content["questionary"]["questions"] = questions
+            elif dict_content["questionary"]["questions"] is None:
+                questions = []
+            elif isinstance(dict_content["questionary"]["questions"][0]["question"], dict):
+                questions = [dict_content["questionary"]["questions"][0]["question"]]
+                dict_content["questionary"]["questions"][0]["question"] = questions
+
+            if not isinstance(questions, list):
+                questions = [e["question"] for e in questions]
+            elif(len(questions) == 0):
+                questions = []
+            else:
+                questions = questions[0]["question"]
+            
+            if not isinstance(questions, list):
+                questions = [questions]
+
+            # Ensure correct_answers is always present
+            for question in questions:
+                if isinstance(question, dict) and "correct_answers" not in question:
+                    question["correct_answers"] = []
+
             questionnary = {
                 "subject": dict_content["questionary"]["subject"],
                 "language": dict_content["questionary"]["language"],
                 "title": dict_content["questionary"]["title"],
-                "questions": dict_content["questionary"]["questions"][0]["question"]
+                "questions": questions
             }
 
             json_content = json.dumps(questionnary)
@@ -874,7 +924,33 @@ async def handle_move_question(websocket, res) -> None:
         with relative_open(f"questionnaire/{questionnaire_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
-            questions = dict_content["questionary"]["questions"][0]["question"]
+            if "questions" not in dict_content["questionary"]:
+                dict_content["questionary"]["questions"] = []
+
+            if isinstance(dict_content["questionary"]["questions"], dict):
+                questions = [dict_content["questionary"]["questions"]]
+                dict_content["questionary"]["questions"] = questions
+            elif dict_content["questionary"]["questions"] is None:
+                questions = []
+            elif isinstance(dict_content["questionary"]["questions"][0]["question"], dict):
+                questions = [dict_content["questionary"]["questions"][0]["question"]]
+                dict_content["questionary"]["questions"][0]["question"] = questions
+
+            if not isinstance(questions, list):
+                questions = [e["question"] for e in questions]
+            elif len(questions) == 0:
+                questions = []
+            else:
+                questions = questions[0]["question"]
+
+        # Ensure questions is a list
+        if not isinstance(questions, list):
+            questions = [questions]
+
+        # Ensure correct_answers is always present
+        for question in questions:
+            if "correct_answers" not in question:
+                question["correct_answers"] = []
 
         # Move the question from from_index to to_index
         questions.insert(to_index, questions.pop(from_index))
@@ -910,21 +986,23 @@ async def handle_copy_question(websocket, res) -> None:
         with relative_open(f"questionnaire/{questionnaire_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
-            questions = dict_content["questionary"]["questions"][0]["question"]
+            if "questions" not in dict_content["questionary"] or dict_content["questionary"]["questions"] is None:
+                dict_content["questionary"]["questions"] = {"question": []}
+            questions = dict_content["questionary"]["questions"].get("question", [])
+
+        # Ensure questions is a list
+        if not isinstance(questions, list):
+            questions = [questions]
+
+        # Ensure correct_answers is always present
+        for question in questions:
+            if "correct_answers" not in question:
+                question["correct_answers"] = []
 
         # Copy the question to the target index
         questions.insert(target_index, question_to_copy)
 
-        # Reformat answers
-        for question in questions:
-            if "shown_answers" in question:
-                shown_answers = question["shown_answers"]
-                if isinstance(shown_answers, list):
-                    question["shown_answers"] = {"answer": shown_answers}
-            if "correct_answers" in question:
-                correct_answers = question["correct_answers"]
-                if isinstance(correct_answers, list):
-                    question["correct_answers"] = {"answer": correct_answers}
+        dict_content["questionary"]["questions"]["question"] = questions
 
         with relative_open(f"questionnaire/{questionnaire_name}", "wb") as f:
             f.write(xmltodict.unparse(dict_content).encode())
@@ -953,10 +1031,17 @@ async def handle_delete_question(websocket, res) -> None:
         with relative_open(f"questionnaire/{questionnaire_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
-            questions = dict_content["questionary"]["questions"][0]["question"]
+            questions = dict_content["questionary"]["questions"].get("question", [])
+
+        # Ensure questions is a list
+        if not isinstance(questions, list):
+            questions = [questions]
 
         # Delete the question at the specified index
-        del questions[index]
+        if 0 <= index < len(questions):
+            del questions[index]
+
+        dict_content["questionary"]["questions"]["question"] = questions
 
         with relative_open(f"questionnaire/{questionnaire_name}", "wb") as f:
             f.write(xmltodict.unparse(dict_content).encode())

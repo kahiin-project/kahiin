@@ -1,28 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<questionary><subject>test</subject><language>fr</language><title>Test Quiz</title><questions><question type="uniqueanswer" duration="20"><title>Qu'affiche le code suivant ?
-
-```
-ma_liste = [4, 3, 2, 1, 0]
-acc = 0
-for e in ma_liste:
-  acc += e
-print(acc)
-```</title><shown_answers><answer>a</answer><answer>b</answer><answer>c</answer><answer>d</answer></shown_answers><correct_answers><answer>a</answer><answer>b</answer></correct_answers></question><question type="mcq" duration="20"><title># Test Question Answer A
-            $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$
-            ```python
-            delta = b**2 - 4*a*c
-            x1 = (-b + delta**0.5) / (2*a)
-            x2 = (-b - delta**0.5) / (2*a)
-            ```</title><shown_answers><answer>a</answer><answer>b</answer><answer>c</answer><answer>d</answer></shown_answers><correct_answers><answer>a</answer><answer>b</answer></correct_answers></question><question type="uniqueanswer" duration="20"><title>Test Question Answer B</title><shown_answers><answer>Seulement</answer><answer>Trois</answer><answer>Réponses</answer></shown_answers><correct_answers><answer>Seulement</answer><answer>Réponses</answer></correct_answers></question><question type="mcq" duration="20"><title>Test Question Answer C</title><shown_answers><answer>Vrai</answer><answer>Faux</answer></shown_answers><correct_answers><answer>Vrai</answer><answer>Faux</answer></correct_answers></question><question type="mcq" duration="20"><title>Test Question Answer D</title><shown_answers><answer>a</answer><answer>b</answer><answer>c</answer><answer>d</answer></shown_answers><correct_answers><answer>a</answer><answer>b</answer></correct_answers></question></questions><questions><question type="uniqueanswer" duration="20"><title>### Fonction python :
-```python
-
-def moyenne(tableau) :
-     total = ...
-     for valeur in tableau :
-          total = total + valeur
-     return total / .....
-```</title><shown_answers><answer>```python 
-                print("hello world")</answer><answer>0</answer><answer>\begin{align}
-    E_0 &amp;= mc^2 \\
-    E &amp;= \frac{mc^2}{\sqrt{1-\frac{v^2}{c^2}}}
-  \end{align}</answer><answer>1</answer></shown_answers><correct_answers><answer>len(tableau)</answer></correct_answers></question></questions></questionary>
+<questionary><subject>test</subject><language>fr</language><title>Test Quiz</title><questions></questions></questionary>

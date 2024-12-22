@@ -309,12 +309,12 @@ nav button img{
 }
 .questions_div #questions_drawer{
     background: light-dark(#e7e7e7,#383838);
-    height: calc(100vh - 400px);
+    height: calc(100vh - 535px);
     overflow-y: scroll;
     position: relative;
+    padding: 20px;
 }
-.questions_div #questions_drawer .new-question-button{
-    position: absolute;
+.questions_div #new_question_button{
     left: 0;
     bottom: 0;
     height: 45px;
@@ -325,8 +325,9 @@ nav button img{
     border-radius: 0;
     font-size: 17px;
     font-weight: bold;
+    z-index: 1;
 }
-.questions_div #questions_drawer .new-question-button:hover{
+.questions_div #new_question_button:hover{
     background: light-dark(#3e7ac8, #4784d7);
 }
 
@@ -374,8 +375,9 @@ nav button img{
     padding-right: 5px;
     padding-top: 13px;
     padding-bottom: 10px;
-    margin: 25px;
+    margin: 5px;
     cursor: move;
+    height: 23px;
 }
 .drawer-question:hover {
     background-color: light-dark(#fdfdfd, #5d5d5d);
@@ -386,7 +388,8 @@ nav button img{
 .drawer-question button{
     position: absolute;
     right: 6px;
-    top: 6px;
+    top: 50%;
+    transform: translateY(-50%);
     width: 35px;
     height: 35px;
     padding: 8px;
@@ -416,6 +419,16 @@ nav button img{
     height: 25px;
     margin-left: 25px;
     margin-right: 25px;
+    position: relative;
+}
+.droppable-space p{
+    position: absolute;
+    top: calc(50% - 30px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    font-size: 20px;
+    color: gray;
+    cursor: default
 }
 .dragover{
     background: light-dark(#ececec,#595959);

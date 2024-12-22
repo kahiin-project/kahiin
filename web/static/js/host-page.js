@@ -237,8 +237,8 @@ function showQuestionInfos(id) {
 
     document.getElementById("duration_p").innerHTML = formatDuration(questionnaire.questions[id]["@duration"]);
 
-    shown_answers = questionnaire.questions[id]["shown_answers"].answer;
-    correct_answers = questionnaire.questions[id]["correct_answers"].answer;
+    shown_answers = questionnaire.questions[id].shown_answers;
+    correct_answers = questionnaire.questions[id].correct_answers;
     for(let i = 0; i < 4; i++) {
         document.getElementById(`answer${i + 1}_p`).innerHTML = "";
     }
@@ -254,7 +254,7 @@ function showQuestionInfos(id) {
     });
 
     document.getElementById("edit_popup_container").style.display = "block";
-    console.log(questionnaire.questions[id]);
+
 }
 
 document.getElementById("edit_popup_container").addEventListener("click", function() {
@@ -740,60 +740,75 @@ function setupSocketListeners() {
         document.getElementById('dropbox').innerHTML = '';
         questionnaire = JSON.parse(res);
         questions = questionnaire.questions;
-        questions.forEach((question, index) => {
-            createDroppableSpace(index);
-            const question_div = document.createElement('div');
-
-            question_div.classList.add('question');
-            question_div.draggable = true;
-            question_div.setAttribute('line-pos', index);
-            question_div.addEventListener('dragstart', (e) => {
-                draggedIndex = parseInt(index);
-                e.dataTransfer.setData('text/plain', '');
+        
+        if(questions == null || questions.length == 0){
+            createDroppableSpace(0);
+            document.getElementById("dropbox").children[0].style.height = "100%";
+            document.getElementById("dropbox").children[0].style.margin = "0";
+            document.getElementById("dropbox").children[0].innerHTML = `<p>${glossary["DropQuestionsHere"]}</p>`;
+            updateDyslexicFonts(dyslexicMode);
+        } else {
+            questions.forEach((question, index) => {
+                createDroppableSpace(index);
+                const question_div = document.createElement('div');
+    
+                question_div.classList.add('question');
+                question_div.draggable = true;
+                question_div.setAttribute('line-pos', index);
+                question_div.addEventListener('dragstart', (e) => {
+                    draggedIndex = parseInt(index);
+                    e.dataTransfer.setData('text/plain', '');
+                });
+    
+                document.getElementById('dropbox').appendChild(question_div);
+    
+                question_title = question.title
+                .split('\n')
+                .map(line => line.trim().replace(/\s+/g, ' '))
+                .join('\n');
+                question_div.innerHTML = marked(question_title)
+                renderMathInElement(question_div, {
+                    delimiters: [
+                        {left: "\$", right: "\$", display: false},
+                        {left: "\$$", right: "\$$", display: true}
+                    ]
+                });
+                hljs.highlightAll();
+    
+                const trashButton = document.createElement('img');
+                trashButton.classList.add('trash-button');
+                trashButton.src = '/static/icon/trash.svg';
+                trashButton.title = glossary["DeleteQuestion"];
+                trashButton.addEventListener('click', () => {
+                    socket.emit('deleteQuestion', { passcode, index, questionnaire_name: editing_questionnaire });
+                });
+                question_div.appendChild(trashButton);
+    
+                const barcodeButton = document.createElement('img');
+                barcodeButton.classList.add('barcode-button');
+                barcodeButton.src = '/static/icon/barcode.svg';
+                barcodeButton.title = glossary["OtherData"];
+                barcodeButton.addEventListener('click', () => {
+                    showQuestionInfos(index);
+                });
+                question_div.appendChild(barcodeButton);
+    
             });
-
-            document.getElementById('dropbox').appendChild(question_div);
-
-            question_title = question.title
-            .split('\n')
-            .map(line => line.trim().replace(/\s+/g, ' '))
-            .join('\n');
-            question_div.innerHTML = marked(question_title)
-            renderMathInElement(question_div, {
-                delimiters: [
-                    {left: "\$", right: "\$", display: false},
-                    {left: "\$$", right: "\$$", display: true}
-                ]
-            });
-            hljs.highlightAll();
-
-            const trashButton = document.createElement('img');
-            trashButton.classList.add('trash-button');
-            trashButton.src = '/static/icon/trash.svg';
-            trashButton.title = glossary["DeleteQuestion"];
-            trashButton.addEventListener('click', () => {
-                socket.emit('deleteQuestion', { passcode, index, questionnaire_name: editing_questionnaire });
-            });
-            question_div.appendChild(trashButton);
-
-            const barcodeButton = document.createElement('img');
-            barcodeButton.classList.add('barcode-button');
-            barcodeButton.src = '/static/icon/barcode.svg';
-            barcodeButton.title = glossary["OtherData"];
-            barcodeButton.addEventListener('click', () => {
-                showQuestionInfos(index);
-            });
-            question_div.appendChild(barcodeButton);
-
-        });
-        createDroppableSpace(questions.length);
-        updateDyslexicFonts(dyslexicMode);
+            createDroppableSpace(questions.length);
+            allDroppableSpaces = document.querySelectorAll('.droppable-space');
+            allDroppableSpaces[allDroppableSpaces.length - 1].style.height = `calc(100% - ${118 * questions.length + 25}px)`;
+            allDroppableSpaces[allDroppableSpaces.length - 1].style.minHeight = "25px";
+            updateDyslexicFonts(dyslexicMode);
+        }
     });
 
-    socket.on("drawer", (res) => {
+    function updateDrawer(res){
         drawer = res;
         const drawer_div = document.getElementById('questions_drawer');
-        drawer_div.innerHTML = `<button class="new-question-button" onclick="editQuestion(0)">${glossary["NewQuestion"]}</button>`;
+        drawer_div.innerHTML = '';
+        document.getElementById("new_question_button").onclick = function() {
+            socket.emit('newQuestion', { passcode });
+        }
         res.forEach((question, index) => {
             const drawer_question = createDrawerQuestionElement(index, question.title.substring(0, 20) + "...");
             drawer_div.appendChild(drawer_question);
@@ -802,6 +817,14 @@ function setupSocketListeners() {
             });
         });
         updateDyslexicFonts(dyslexicMode);
+    }
+    socket.on("drawer", (res) => {
+        updateDrawer(res);
+    });
+
+    socket.on("questionAdded", (res) => {
+        updateDrawer(res);
+        editQuestion(drawer.length - 1);
     });
 
 }

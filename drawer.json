@@ -1,14 +1,1 @@
-[
-    {
-        "title": "# h1\n\n## h2\n\n### h3\n\n**B**\n\n*I*\n\n<u>U</u>\n\n~~S~~\n\n> Qu\n\n1.  OL\n\n*   UL",
-        "type": "uniqueanswer",
-        "duration": 20,
-        "shown_answers": [
-            "True",
-            "False"
-        ],
-        "correct_answers": [
-            "True"
-        ]
-    }
-]
+[]

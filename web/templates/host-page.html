@@ -124,7 +124,10 @@
             <div id="dropbox"></div>
           </th>
           <th>
-            <div id="questions_drawer"></div>
+            <div id="questions_drawer_container">
+              <div id="questions_drawer"></div>
+              <button id="new_question_button">{{glossary["NewQuestion"]}}</button>
+            </div>
           </th>
         </tr>
       </table> 
@@ -149,7 +152,7 @@
       <h1>{{glossary["EditQuestion"]}}</h1>
 
       <h2>{{glossary["Type"]}}</h2>
-      <select id="edit_question_type" onchange="editQuestionType()">
+      <select id="edit_question_type">
         <option value="uniqueanswer">{{glossary["UniqueAnswer"]}}</option>
         <option value="mcq">{{glossary["MCQ"]}}</option>
       </select>
@@ -196,7 +199,7 @@
       <h2>{{glossary["CorrectAnswers"]}}</h2>
       <div id="correct_answers_inputs_div"></div>
 
-      <h1 style="margin-top: 80px;">{{glossary["SaveAndDelete"]}}</h1>
+      <h2 style="margin-top: 80px;">{{glossary["SaveAndDelete"]}}</h2>
       <button id="save_question_button" class="apply-button" style="margin-bottom: 20px; margin-left: 50px; width: calc(100% - 100px);">{{glossary["Save"]}}</button> 
       <button id="delete_question_button" class="delete-button" style="margin-bottom: 100px; margin-left: 50px; width: calc(100% - 100px);">{{glossary["Delete"]}}</button>
 

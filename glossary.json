@@ -85,7 +85,8 @@
         "False": "Faux",
         "SaveAndDelete": "Sauvegarder & Supprimer",
         "Save": "Sauvegarder",
-        "Delete": "Supprimer"
+        "Delete": "Supprimer",
+        "DropQuestionsHere": "Déposez vos questions ici"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -173,7 +174,8 @@
         "False": "False",
         "SaveAndDelete": "Save & Delete",
         "Save": "Save",
-        "Delete": "Delete"
+        "Delete": "Delete",
+        "DropQuestionsHere": "Drop your questions here"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -261,7 +263,8 @@
         "False": "Falso",
         "SaveAndDelete": "Guardar & Eliminar",
         "Save": "Guardar",
-        "Delete": "Eliminar"
+        "Delete": "Eliminar",
+        "DropQuestionsHere": "Suelta tus preguntas aquí"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -349,7 +352,8 @@
         "False": "Falso",
         "SaveAndDelete": "Salva & Cancella",
         "Save": "Salva",
-        "Delete": "Cancellare"
+        "Delete": "Cancellare",
+        "DropQuestionsHere": "Rilascia le tue domande qui"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -437,6 +441,7 @@
         "False": "Falsch",
         "SaveAndDelete": "Speichern & Löschen",
         "Save": "Speichern",
-        "Delete": "Löschen"
+        "Delete": "Löschen",
+        "DropQuestionsHere": "Legen Sie Ihre Fragen hier ab"
     }
 }
