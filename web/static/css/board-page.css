@@ -483,8 +483,29 @@
   box-shadow: 0 4px 15px rgba(129, 200, 190, 0.5);
 }
 
-#question h1, #question h2, #question h3, #question h4, #question p, #question span{
+#question h1, #question h2, #question h3, #question h4, #question p, 
+#question span, #question blockquote, #question ol, #question ul{
   margin: 0;
+}
+#question blockquote{
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+#question blockquote p{
+  border-left: 4px solid #ccc;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  width: fit-content;
+  padding-left: 20px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+#question ol li, #question ul li{
+  width: fit-content;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .hljs{

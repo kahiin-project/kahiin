@@ -315,8 +315,9 @@ function editQuestion(id) {
     htmlContent = htmlContent.replace(/<del>/g, '<s>').replace(/<\/del>/g, '</s>');
     htmlContent = htmlContent.replace(/<blockquote>\s*<p>(.*?)<\/p>\s*<\/blockquote>/g, '<blockquote>$1</blockquote>');
     
+    quill.setText("");
     quill.clipboard.dangerouslyPasteHTML(htmlContent);
-    for(let i = 0; i < quill.root.childNodes.length; i++) {
+    for(let i = 0; i < quill.root.childNodes.length; i++) { 
         if(quill.root.childNodes[i].nodeName == "BLOCKQUOTE") {
             quill.root.childNodes[i - 1].remove();
         }
@@ -477,13 +478,12 @@ function editQuestion(id) {
 
 function getMarkdownQuillContent() {
     let html = quill.root.innerHTML;
-    html = html.replace(/<\/([a-z]+)>(\s*)([^\s<])/g, '</$1>$2\\n$3');
     const turndownService = new TurndownService({
         headingStyle: 'atx',
         codeBlockStyle: 'fenced',
-        emDelimiter: '*'
+        emDelimiter: '*',
     });
-    
+
     // Rule for underline
     turndownService.addRule('underline', {
         filter: ['u'],
@@ -509,7 +509,23 @@ ${content}\`\`\``;
         }
     });
 
-    return turndownService.turndown(html);
+    return turndownService.turndown(html)
+    .replaceAll("\\\\", "¶")
+    .replaceAll("\\*", "*")
+    .replaceAll("\\_", "_")
+    .replaceAll("\\{", "{")
+    .replaceAll("\\}", "}")
+    .replaceAll("\\[", "[")
+    .replaceAll("\\]", "]")
+    .replaceAll("\\(", "(")
+    .replaceAll("\\)", ")")
+    .replaceAll("\\#", "#")
+    .replaceAll("\\+", "+")
+    .replaceAll("\\-", "-")
+    .replaceAll("\\.", ".")
+    .replaceAll("\\!", "!")
+    .replaceAll("¶", "\\");
+
 }
 
 // ---------------------- Functions Navigation -------------------------

@@ -326,6 +326,8 @@ nav button img{
 .questions_div #dropbox .question{
     background: light-dark(white,#383838);
     color: light-dark(black,white);
+    max-height: calc(100vh - 600px);
+    overflow-y: scroll;
     margin: 25px;
     margin-top: 0;
     margin-bottom: 0;
@@ -334,21 +336,27 @@ nav button img{
     cursor: move;
     position: relative;
 }
-.questions_div #dropbox .question h1, .questions_div #dropbox .question h2, .questions_div #dropbox .question h3, .questions_div #dropbox .question p{
+.questions_div #dropbox .question h1, .questions_div #dropbox .question h2, .questions_div #dropbox .question h3, .questions_div #dropbox .question p, .questions_div #dropbox .question blockquote p, .questions_div #dropbox .question ol, .questions_div #dropbox .question ul {
     padding: 0;
-    margin: 20px;
+    margin: 5px;
 }
 .questions_div #dropbox .question blockquote p, .questions_div #dropbox .question ol li, .questions_div #dropbox .question ul li {
     width: fit-content;
-    padding-left: 20px;
     padding-right: 15px;
     position: relative;
     left: 50%;
     transform: translateX(-50%);
 }
+.questions_div #dropbox .question ol, .questions_div #dropbox .question ul {
+    padding-left: 45px;
+}
+.questions_div #dropbox .question blockquote{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
 .questions_div #dropbox .question blockquote p {
     border-left: solid 3px #a7a7a7;
-    padding-right: 50px;
+    padding-left: 20px;
 }
 
 .drawer-question {
