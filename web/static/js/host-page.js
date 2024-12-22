@@ -237,8 +237,13 @@ function showQuestionInfos(id) {
 
     document.getElementById("duration_p").innerHTML = formatDuration(questionnaire.questions[id]["@duration"]);
 
-    shown_answers = questionnaire.questions[id].shown_answers;
+    shown_answers = questionnaire.questions[id].shown_answers.answer;
     correct_answers = questionnaire.questions[id].correct_answers;
+    if(correct_answers == null){
+        correct_answers = [];
+    }else{
+        correct_answers = correct_answers.answer;
+    }
     for(let i = 0; i < 4; i++) {
         document.getElementById(`answer${i + 1}_p`).innerHTML = "";
     }
@@ -416,7 +421,7 @@ function editQuestion(id) {
 
     correct_answers_inputs_div = document.getElementById("correct_answers_inputs_div");
     correct_answers_inputs_div.innerHTML = "";
-    drawer[id].shown_answers.forEach((correct_answer, index) => {
+    drawer[id].shown_answers.answer.forEach((correct_answer, index) => {
 
         const div = document.createElement("div");
         div.style.width = "fit-content";
@@ -438,7 +443,7 @@ function editQuestion(id) {
         label.style.left = "10px";
         div.appendChild(label);
 
-        input.checked = drawer[id].correct_answers.includes(correct_answer);
+        input.checked = drawer[id].correct_answers.answer.includes(correct_answer);
         label.innerHTML = correct_answer;
 
         correct_answers_inputs_div.appendChild(div);

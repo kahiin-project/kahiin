@@ -243,16 +243,14 @@ class Game:
             title = question.find('title').text
             duration = question.get('duration')
             question_type = question.get('type')
-            shown_answers = [answer.text for answer in question.find(
-            'shown_answers').findall('answer')]
-            correct_answers = [answer.text for answer in question.find(
-            'correct_answers').findall('answer')]
+            shown_answers = [answer.text for answer in question.find('shown_answers').findall('answer')]
+            correct_answers = [answer.text for answer in question.find('correct_answers').findall('answer')]
             questionary.questionary["questions"].append({
-            "title": title,
-            "shown_answers": shown_answers,
-            "correct_answers": correct_answers,
-            "duration": int(duration),
-            "type": question_type
+                "title": title,
+                "shown_answers": shown_answers,
+                "correct_answers": correct_answers,
+                "duration": int(duration),
+                "type": question_type
             })
 
 
@@ -773,8 +771,8 @@ async def handle_edit_questionary(websocket, res) -> None:
         "title": res["title"],
         "type": res["type"],
         "duration": int(res["duration"]),
-        "shown_answers": res["shown_answers"],
-        "correct_answers": res["correct_answers"]
+        "shown_answers": {"answer": [ans for ans in res["shown_answers"]]},
+        "correct_answers": {"answer": [ans for ans in res["correct_answers"]]}
     }
 
     with relative_open("drawer.json", "w") as f:
