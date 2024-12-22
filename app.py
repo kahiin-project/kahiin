@@ -612,7 +612,7 @@ async def handle_new_questionary(websocket, res) -> None:
 async def handle_list_questionary(websocket, res) -> None:
     questionaries = os.listdir(os.path.join(os.path.dirname(__file__), "questionnaire"))
     questionaries.sort()
-    questionaries = [q[:-4] for q in questionaries]
+    questionaries = [q[:-4] for q in questionaries if q != ".gitkeep"]
     await ws_manager.emit("ListOfQuestionary", {"questionaries": questionaries}, to=websocket)
 
 @ws_manager.on('selectQuestionary')
@@ -1097,5 +1097,15 @@ def start_flask():
     asyncio.run(ws_manager.start())
 
 if __name__ == '__main__':
+
+    # Create personnal files if they don't exist
+    if not os.path.exists("drawer.json"):
+        with relative_open("drawer.json", "w") as f:
+            json.dump([], f)
+    if not os.path.exists("settings.json"):
+        with relative_open("settings.json", "w") as f:
+            json.dump({"language": "en", "dyslexicMode": False, "adminPassword": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4", "randomOrder": False, "endOnAllAnswered": True}, f)
+    
+    # Start Flask
     start_flask()
 
