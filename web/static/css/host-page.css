@@ -193,6 +193,9 @@ nav button img{
     border-radius: 5px;
     cursor: pointer;
 }
+.nav_content select{
+    border: none;
+}
 .nav_content button{
     border: none;
     color: white
@@ -629,4 +632,11 @@ nav button img{
 
 #correct_answers_inputs_div{
     transition: 0.4s;
+}
+
+.nav_content button{
+    height: 37px;
+}
+.nav_content button.dyslexic{
+    padding-top: 0;
 }
