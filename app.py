@@ -734,7 +734,7 @@ async def handle_delete_questionary(websocket, res) -> None:
 @verification_wrapper
 async def handle_edit_questionnaire_name(websocket, res) -> None:
     list_questionaries = os.listdir(os.path.join(os.path.dirname(__file__), "questionnaire"))
-    forbiden_characters = '/\|,.;:!?*"><'
+    forbiden_characters = '/\\|,.;:!?*"><'
     invalid_characters = False
     old_name = res["old_name"]
     new_name = res["new_name"]
@@ -769,6 +769,16 @@ async def handle_edit_questionary(websocket, res) -> None:
         drawer = json.load(f)
 
     # Update the drawer with the new question data
+    if not res["type"] in ["uniqueanswer", "mcq"]:
+        return
+    if not res["duration"].isdigit() and int(res["duration"]) < 0:
+        return
+    if not res["shown_answers"] or not res["correct_answers"]:
+        return
+    for ans in res["correct_answers"]:
+        if ans not in res["shown_answers"]:
+            return
+        
     drawer[question_id] = {
         "title": res["title"],
         "type": res["type"],
