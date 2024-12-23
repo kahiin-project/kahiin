@@ -13,6 +13,7 @@ let questionnaire = null;
 // ---------------------- Initialisation -------------------------
 
 function init() {
+    document.getElementById('new_password').placeholder = glossary["NewPassword"];
     const wsUrl = `ws://${window.location.hostname}:8000?t=${Date.now()}`;
     socket = new WebSocketHandler(wsUrl);
     setupSocketListeners();

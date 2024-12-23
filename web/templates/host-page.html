@@ -255,16 +255,16 @@
 
     <!-- Account -->
     <div id="account_div" class="nav_content" style="display: none;">
-      <h1>Account</h1>
-      <h2>Personnal Informations</h2>
-      <h2>Reset Password</h2>
+      <h1>{{glossary["Account"]}}</h1>
+      <h2>{{glossary["PersonalInformations"]}}</h2>
+      <h2>{{glossary["ResetPassword"]}}</h2>
       <input type="password" id="new_password" placeholder="New Password">
       <input type="password" id="confirm_new_password" placeholder="Confirm Password">
-      <button id="reset_password" onclick="resetPasswordPage()">Reset Password</button>
-      <h2>Delet Account</h2>
-      <p style="margin-left: 50px; color: gray;">Type your password to delete your account</p>
+      <button id="reset_password" onclick="resetPasswordPage()">{{glossary["ResetPassword"]}}</button>
+      <h2>{{glossary["DeleteAccount"]}}</h2>
+      <p style="margin-left: 50px; color: gray;">{{glossary["TypePasswordToDelete"]}}</p>
       <input type="password" id="password_delete_account" placeholder="Password">
-      <button id="delete_account" onclick="deleteAccountPage()">Delete Account</button>
+      <button id="delete_account" onclick="deleteAccountPage()">{{glossary["DeleteAccount"]}}</button>
     </div>
 
     <script src="static/js/host-page.js"></script>

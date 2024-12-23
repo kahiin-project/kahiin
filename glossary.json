@@ -86,7 +86,11 @@
         "SaveAndDelete": "Sauvegarder & Supprimer",
         "Save": "Sauvegarder",
         "Delete": "Supprimer",
-        "DropQuestionsHere": "Déposez vos questions ici"
+        "DropQuestionsHere": "Déposez vos questions ici",
+        "DeleteAccount": "Supprimer le compte",
+        "ResetPassword": "Réinitialiser le mot de passe",
+        "PersonalInformations": "Informations personnelles",
+        "TypePasswordToDelete": "Entrez votre mot de passe pour supprimer votre compte"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -175,7 +179,11 @@
         "SaveAndDelete": "Save & Delete",
         "Save": "Save",
         "Delete": "Delete",
-        "DropQuestionsHere": "Drop your questions here"
+        "DropQuestionsHere": "Drop your questions here",
+        "DeleteAccount": "Delete account",
+        "ResetPassword": "Reset password",
+        "PersonalInformations": "Personal informations",
+        "TypePasswordToDelete": "Enter your password to delete your account"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -264,7 +272,11 @@
         "SaveAndDelete": "Guardar & Eliminar",
         "Save": "Guardar",
         "Delete": "Eliminar",
-        "DropQuestionsHere": "Suelta tus preguntas aquí"
+        "DropQuestionsHere": "Suelta tus preguntas aquí",
+        "DeleteAccount": "Eliminar cuenta",
+        "ResetPassword": "Restablecer la contraseña",
+        "PersonalInformations": "Informaciones personales",
+        "TypePasswordToDelete": "Ingrese su contraseña para eliminar su cuenta"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -353,7 +365,11 @@
         "SaveAndDelete": "Salva & Cancella",
         "Save": "Salva",
         "Delete": "Cancellare",
-        "DropQuestionsHere": "Rilascia le tue domande qui"
+        "DropQuestionsHere": "Rilascia le tue domande qui",
+        "DeleteAccount": "Elimina account",
+        "ResetPassword": "Reimposta la password",
+        "PersonalInformations": "Informazioni personali",
+        "TypePasswordToDelete": "Inserisci la tua password per eliminare il tuo account"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -442,6 +458,10 @@
         "SaveAndDelete": "Speichern & Löschen",
         "Save": "Speichern",
         "Delete": "Löschen",
-        "DropQuestionsHere": "Legen Sie Ihre Fragen hier ab"
+        "DropQuestionsHere": "Legen Sie Ihre Fragen hier ab",
+        "DeleteAccount": "Konto löschen",
+        "ResetPassword": "Passwort zurücksetzen",
+        "PersonalInformations": "Persönliche Informationen",
+        "TypePasswordToDelete": "Geben Sie Ihr Passwort ein, um Ihr Konto zu löschen"
     }
 }
