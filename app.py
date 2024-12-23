@@ -734,7 +734,7 @@ async def handle_delete_questionary(websocket, res) -> None:
 @verification_wrapper
 async def handle_edit_questionnaire_name(websocket, res) -> None:
     list_questionaries = os.listdir(os.path.join(os.path.dirname(__file__), "questionnaire"))
-    forbiden_characters = '/\|,.;:!?*"><'
+    forbiden_characters = '/\\|,.;:!?*"><'
     invalid_characters = False
     old_name = res["old_name"]
     new_name = res["new_name"]
