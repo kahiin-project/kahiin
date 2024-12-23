@@ -253,6 +253,11 @@ nav button img{
     padding: 0;
     padding-left: 10px;
 }
+.nav_content #info{
+    padding-left: 50px;
+    font-weight: normal;
+    font-size: 20px;
+}
 
 #in_game_div{
     display: none;
@@ -267,10 +272,10 @@ nav button img{
     padding-left: 10px;
 }
 
-#kick_player_button, #delete_account{
+#kick_player_button, #delete_account, #logout{
     background: light-dark(#cf3838,#de4141);
 }
-#kick_player_button:hover, #delete_account:hover{
+#kick_player_button:hover, #delete_account:hover, #logout:hover{
     background: light-dark(#c03737,#cf4040);
 }
 #start_game{

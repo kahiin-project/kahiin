@@ -90,7 +90,11 @@
         "DeleteAccount": "Supprimer le compte",
         "ResetPassword": "Réinitialiser le mot de passe",
         "PersonalInformations": "Informations personnelles",
-        "TypePasswordToDelete": "Entrez votre mot de passe pour supprimer votre compte"
+        "TypePasswordToDelete": "Entrez votre mot de passe pour supprimer votre compte",
+        "Logout": "Déconnexion",
+        "Nickname": "Surnom",
+        "FirstName": "Prénom",
+        "LastName": "Nom"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -183,7 +187,11 @@
         "DeleteAccount": "Delete account",
         "ResetPassword": "Reset password",
         "PersonalInformations": "Personal informations",
-        "TypePasswordToDelete": "Enter your password to delete your account"
+        "TypePasswordToDelete": "Enter your password to delete your account",
+        "Logout": "Logout",
+        "Nickname": "Nickname",
+        "FirstName": "First Name",
+        "LastName": "Last Name"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -276,7 +284,11 @@
         "DeleteAccount": "Eliminar cuenta",
         "ResetPassword": "Restablecer la contraseña",
         "PersonalInformations": "Informaciones personales",
-        "TypePasswordToDelete": "Ingrese su contraseña para eliminar su cuenta"
+        "TypePasswordToDelete": "Ingrese su contraseña para eliminar su cuenta",
+        "Logout": "Cerrar sesión",
+        "Nickname": "Apodo",
+        "FirstName": "Nombre",
+        "LastName": "Apellido"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -369,7 +381,11 @@
         "DeleteAccount": "Elimina account",
         "ResetPassword": "Reimposta la password",
         "PersonalInformations": "Informazioni personali",
-        "TypePasswordToDelete": "Inserisci la tua password per eliminare il tuo account"
+        "TypePasswordToDelete": "Inserisci la tua password per eliminare il tuo account",
+        "Logout": "Disconnettersi",
+        "Nickname": "Soprannome",
+        "FirstName": "Nome",
+        "LastName": "Cognome"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -462,6 +478,10 @@
         "DeleteAccount": "Konto löschen",
         "ResetPassword": "Passwort zurücksetzen",
         "PersonalInformations": "Persönliche Informationen",
-        "TypePasswordToDelete": "Geben Sie Ihr Passwort ein, um Ihr Konto zu löschen"
+        "TypePasswordToDelete": "Geben Sie Ihr Passwort ein, um Ihr Konto zu löschen",
+        "Logout": "Abmelden",
+        "Nickname": "Spitzname",
+        "FirstName": "Vorname",
+        "LastName": "Nachname"
     }
 }

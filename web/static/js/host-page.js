@@ -625,6 +625,15 @@ function deleteAccountPage() {
     deleteAccount(document.getElementById("password_delete_account").value)
 }
 
+function getInfo() {
+
+}
+
+function logout(){
+    localStorage.clear();
+    location.reload();
+}
+
 // ---------------------- socket.io Main -------------------------
 
 function setupSocketListeners() {
