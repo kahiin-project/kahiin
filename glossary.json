@@ -94,7 +94,10 @@
         "Logout": "Déconnexion",
         "Nickname": "Surnom",
         "FirstName": "Prénom",
-        "LastName": "Nom"
+        "LastName": "Nom",
+        "Quizzes": "Questionnaires",
+        "MyPosts": "Mes publications",
+        "Contribute": "Contribuer"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -191,7 +194,10 @@
         "Logout": "Logout",
         "Nickname": "Nickname",
         "FirstName": "First Name",
-        "LastName": "Last Name"
+        "LastName": "Last Name",
+        "Quizzes": "Quizzes",
+        "MyPosts": "My posts",
+        "Contribute": "Contribute"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -288,7 +294,10 @@
         "Logout": "Cerrar sesión",
         "Nickname": "Apodo",
         "FirstName": "Nombre",
-        "LastName": "Apellido"
+        "LastName": "Apellido",
+        "Quizzes": "Cuestionarios",
+        "MyPosts": "Mis publicaciones",
+        "Contribute": "Contribuir"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -385,7 +394,10 @@
         "Logout": "Disconnettersi",
         "Nickname": "Soprannome",
         "FirstName": "Nome",
-        "LastName": "Cognome"
+        "LastName": "Cognome",
+        "Quizzes": "Questionari",
+        "MyPosts": "I miei post",
+        "Contribute": "Contribuire"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -482,6 +494,9 @@
         "Logout": "Abmelden",
         "Nickname": "Spitzname",
         "FirstName": "Vorname",
-        "LastName": "Nachname"
+        "LastName": "Nachname",
+        "Quizzes": "Fragebögen",
+        "MyPosts": "Meine Beiträge",
+        "Contribute": "Beitragen"
     }
 }

@@ -555,7 +555,7 @@ ${content}\`\`\``;
 // ---------------------- Functions Navigation -------------------------
 function navigate(index) {
     document.getElementById("edit_popup_container").style.display = "none";
-    const elementsToHide = ["play_div", "settings_div", "create_div", "edit_div", "edit_question_div", "edit_popup_container", "login_div","signup_div", "account_div"];
+    const elementsToHide = ["play_div", "settings_div", "create_div", "kahiin_db_div", "edit_div", "edit_question_div", "edit_popup_container", "login_div","signup_div", "account_div"];
     elementsToHide.forEach(element => {
         document.getElementById(element).style.display = "none";
     });
@@ -572,9 +572,7 @@ function navigate(index) {
                 document.getElementById("create_div").style.display = "block";
                 break;
             case 2:
-                // document.getElementById("settings_div").innerHTML = `
-                //   <h1>Kahiin DB</h1>
-                // `;
+                document.getElementById("kahiin_db_div").style.display = "block";
                 break;
             case 3:
                 document.getElementById("settings_div").style.display = "block";

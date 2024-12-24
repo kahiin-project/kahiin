@@ -314,6 +314,8 @@ nav button img{
     background: light-dark(#f4f4f4,#252525);
     height: calc(100vh - 400px);
     overflow-y: scroll;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 .questions_div #questions_drawer{
     background: light-dark(#e7e7e7,#383838);
@@ -321,19 +323,32 @@ nav button img{
     overflow-y: scroll;
     position: relative;
     padding: 20px;
+    border-top-right-radius: 5px;
 }
-.questions_div #new_question_button{
+.questions_div #new_question_button {
+    position: relative;
     left: 0;
     bottom: 0;
     height: 45px;
     margin: 25px;
-    box-shadow: 0 0 0 25px light-dark(#e7e7e7,#383838);
-    background: light-dark(#3473bb,#3d7fca);
+    background: light-dark(#3473bb, #3d7fca);
     width: calc(100% - 50px);
-    border-radius: 0;
+    border-radius: 5px;
     font-size: 17px;
     font-weight: bold;
     z-index: 1;
+    overflow: visible;
+  }
+.questions_div #new_question_button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    box-shadow: 0 0 0 25px light-dark(#e7e7e7, #383838);
+    z-index: -1;
 }
 .questions_div #new_question_button:hover{
     background: light-dark(#3e7ac8, #4784d7);
@@ -351,6 +366,7 @@ nav button img{
     padding: 30px;
     cursor: move;
     position: relative;
+    border-radius: 5px;
 }
 .questions_div #dropbox .question h1, .questions_div #dropbox .question h2, .questions_div #dropbox .question h3, .questions_div #dropbox .question p, .questions_div #dropbox .question blockquote p, .questions_div #dropbox .question ol, .questions_div #dropbox .question ul {
     padding: 0;
@@ -386,6 +402,7 @@ nav button img{
     margin: 5px;
     cursor: move;
     height: 23px;
+    border-radius: 5px;
 }
 .drawer-question:hover {
     background-color: light-dark(#fdfdfd, #5d5d5d);
@@ -490,6 +507,7 @@ nav button img{
     bottom: 100px;
     background: light-dark(#f0f0f0,#0f0f0f);
     border: solid 1px #a7a7a7;
+    border-radius: 5px;
 }
 @media (prefers-color-scheme: dark){
     #edit_popup{
@@ -644,4 +662,60 @@ nav button img{
 }
 .nav_content button.dyslexic{
     padding-top: 0;
+}
+
+
+.toggleSwitch {
+    display: inline-block;
+    position: relative;
+    left: 50px;
+    width: calc(100% - 100px);
+    height: 39px;
+    background: transparent;
+    box-shadow:inset 0px 0px 0px 2px #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+}
+  
+.toggleSwitch input {
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
+}
+  
+.toggleSwitch a {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background: #ddd;
+    border-radius: 5px;
+    transition: 0.3s ease;
+}
+  
+.toggleSwitch p {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50%;
+    height: fit-content;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    text-align: center;
+    color: black;
+}
+  
+.toggleSwitch .left-p {
+    left: 0;
+}
+  
+.toggleSwitch .right-p {
+    left: 50%;
+}
+  
+.toggleSwitch input:checked + a {
+    left: 50%;
 }
