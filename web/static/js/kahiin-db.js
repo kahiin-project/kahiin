@@ -198,6 +198,31 @@ function getQuestionContent(id_question) {
     });
 }
 
+// Get My Posts
+function getMyPosts() {
+    const token = localStorage.getItem('token');
+    const url = new URL('http://localhost:5000/myposts');
+    url.searchParams.append('token', token);
+
+    return fetch(url, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        return data; // Traitez les données ici
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+
 // Upload a New Question
 function uploadQuestion(subject, language, title, shown_answers, correct_answers, duration, type) {
     return fetch('http://localhost:5000/question', {

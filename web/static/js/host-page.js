@@ -56,6 +56,7 @@ function hashSHA256(message) {
 function submitPasscode() {
     passcode = hashSHA256(document.getElementById("passcode").value);
     socket.emit("hostConnect", passcode);
+    getDrawer();
 }
 
 function printError(error) {
@@ -216,16 +217,9 @@ function deleteQuestionary() {
     socket.emit("deleteQuestionary", { passcode, questionnaire_name });
 }
 
-function showQuestionInfos(id) {
-    if (questionnaire == null) {
-        return;
-    }
-    if (id >= questionnaire.questions.length) {
-        return;
-    }
-
-    formattedType = "";
-    switch(questionnaire.questions[id]["@type"]) {
+function showQuestionInfos(question) {
+    let formattedType = "";
+    switch(question["@type"]) {
         case "mcq":
             formattedType = glossary["MCQ"];
             break;
@@ -235,26 +229,30 @@ function showQuestionInfos(id) {
     }
     document.getElementById("type_p").innerHTML = formattedType;
 
-    document.getElementById("duration_p").innerHTML = formatDuration(questionnaire.questions[id]["@duration"]);
+    document.getElementById("duration_p").innerHTML = formatDuration(question["@duration"]);
 
-    if(Array.isArray(questionnaire.questions[id].shown_answers)){
-        questionnaire.questions[id].shown_answers = { answer: questionnaire.questions[id].shown_answers };
+    if(Array.isArray(question.shown_answers)){
+        question.shown_answers = { answer: question.shown_answers };
     }
-    if(Array.isArray(questionnaire.questions[id].correct_answers)){
-        questionnaire.questions[id].correct_answers = { answer: questionnaire.questions[id].correct_answers };
+    if(Array.isArray(question.correct_answers)){
+        question.correct_answers = { answer: question.correct_answers };
     }
-    shown_answers = questionnaire.questions[id].shown_answers.answer;
-    correct_answers = questionnaire.questions[id].correct_answers;
+    let shown_answers = question.shown_answers.answer;
+    let correct_answers = question.correct_answers;
     if(correct_answers == null){
         correct_answers = [];
     }else{
         correct_answers = correct_answers.answer;
     }
     for(let i = 0; i < 4; i++) {
+        console.log(`answer${i + 1}_p`);
+        document.getElementById(`answer${i + 1}_p`).style.display = "none";
         document.getElementById(`answer${i + 1}_p`).innerHTML = "";
     }
 
     shown_answers.forEach((answer, index) => {
+        let text;
+        document.getElementById(`answer${index + 1}_p`).style.display = "inline-block";
         if (correct_answers.includes(answer)) {
             text = `✓ ${answer}`;
             document.getElementById(`answer${index + 1}_p`).style.color = "green";
@@ -266,7 +264,16 @@ function showQuestionInfos(id) {
     });
 
     document.getElementById("edit_popup_container").style.display = "block";
+}
 
+function showQuestionInfosFromDrawer(id) {
+    if (questionnaire == null) {
+        return;
+    }
+    if (id >= questionnaire.questions.length) {
+        return;
+    }
+    showQuestionInfos(questionnaire.questions[id]);
 }
 
 document.getElementById("edit_popup_container").addEventListener("click", function() {
@@ -552,6 +559,89 @@ ${content}\`\`\``;
 
 }
 
+// ---------------------- Functions Kahiin DB -------------------------
+
+function loadMyPosts() {
+    document.getElementById("db_quizzes_drawer").innerHTML = "";
+    document.getElementById("db_questions_drawer").innerHTML = "";
+    document.getElementById("db_posted_quizzes_div").innerHTML = "";
+    document.getElementById("db_posted_questions_div").innerHTML = "";
+    drawer.forEach((question, index) => {
+        const drawerElement = document.createElement('div');
+        drawerElement.classList.add('drawer-question');
+        drawerElement.innerHTML = question.title.substring(0, 20) + "...";
+        drawerElement.style.cursor = "default";
+        drawerElement.style.backgroundColor = "light-dark(white, #595959)";
+
+        uploadButton = document.createElement('button');
+        uploadImg = document.createElement('img');
+        uploadImg.src = '/static/icon/upload.svg';
+        uploadButton.appendChild(uploadImg);
+        uploadButton.addEventListener('click', () => {
+            // socket.emit('uploadQuestion', { passcode, question });
+        });
+        drawerElement.appendChild(uploadButton);
+
+        document.getElementById("db_questions_drawer").appendChild(drawerElement);
+    });
+
+    getMyPosts().then(res => {
+        res.quizzes.forEach(quiz => {
+            const quizElement = document.createElement('div');
+            quizElement.classList.add('db-quiz');
+            quizElement.innerHTML = quiz.title;
+            document.getElementById("db_posted_quizzes_div").appendChild(quizElement);
+        });
+        res.questions.forEach(question => {
+            const questionElement = document.createElement('div');
+            questionElement.classList.add('question');
+            questionElement.style.marginTop = "25px";
+            questionElement.style.cursor = "default";
+
+            const questionTitle = question.title
+                .split('\n')
+                .map(line => line.trim().replace(/\s+/g, ' '))
+                .join('\n');
+            questionElement.innerHTML = marked(questionTitle);
+            renderMathInElement(questionElement, {
+                delimiters: [
+                    {left: "\$", right: "\$", display: false},
+                    {left: "\$$", right: "\$$", display: true}
+                ]
+            });
+            hljs.highlightAll();
+
+            const trashButton = document.createElement('img');
+            trashButton.classList.add('trash-button');
+            trashButton.src = '/static/icon/trash.svg';
+            trashButton.title = glossary["DeleteQuestion"];
+            trashButton.addEventListener('click', () => {
+                deleteQuestion(question.id_question).then(res => {
+                    loadMyPosts();
+                });
+            });
+            questionElement.appendChild(trashButton);
+
+            const barcodeButton = document.createElement('img');
+            barcodeButton.classList.add('barcode-button');
+            barcodeButton.src = '/static/icon/barcode.svg';
+            barcodeButton.title = glossary["OtherData"];
+            barcodeButton.addEventListener('click', () => {
+                showQuestionInfos({
+                    "@type": question.type,
+                    "@duration": question.duration,
+                    "shown_answers": question.shown_answers,
+                    "correct_answers": question.correct_answers,
+                    "title": question.title
+                });
+            });
+            questionElement.appendChild(barcodeButton);
+
+            document.getElementById("db_posted_questions_div").appendChild(questionElement);
+        });
+    });
+}
+
 // ---------------------- Functions Navigation -------------------------
 function navigate(index) {
     document.getElementById("edit_popup_container").style.display = "none";
@@ -573,6 +663,7 @@ function navigate(index) {
                 break;
             case 2:
                 document.getElementById("kahiin_db_div").style.display = "block";
+                loadMyPosts();
                 break;
             case 3:
                 document.getElementById("settings_div").style.display = "block";
@@ -637,7 +728,7 @@ function logout(){
 function setupSocketListeners() {
     socket.on("error", (res) => {
         if (res == "InvalidPasscode") {
-            const elementsToHide = ["nav", "playdiv", "settingsdiv", "creatediv", "editdiv"];
+            const elementsToHide = ["nav", "play_div", "settings_div", "create_div", "edit_div"];
             elementsToHide.forEach(element => {
                 document.getElementById(element).style.display = "none";
             });
@@ -820,7 +911,7 @@ function setupSocketListeners() {
                 barcodeButton.src = '/static/icon/barcode.svg';
                 barcodeButton.title = glossary["OtherData"];
                 barcodeButton.addEventListener('click', () => {
-                    showQuestionInfos(index);
+                    showQuestionInfosFromDrawer(index);
                 });
                 question_div.appendChild(barcodeButton);
     
@@ -861,5 +952,7 @@ function setupSocketListeners() {
     socket.on("editingQuestionnary", (res) => {
         editing_questionnaire = res;
     });
+
+   
 
 }

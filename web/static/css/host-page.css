@@ -354,7 +354,7 @@ nav button img{
     background: light-dark(#3e7ac8, #4784d7);
 }
 
-.questions_div #dropbox .question{
+.question{
     background: light-dark(white,#383838);
     color: light-dark(black,white);
     max-height: calc(100vh - 600px);
@@ -368,25 +368,25 @@ nav button img{
     position: relative;
     border-radius: 5px;
 }
-.questions_div #dropbox .question h1, .questions_div #dropbox .question h2, .questions_div #dropbox .question h3, .questions_div #dropbox .question p, .questions_div #dropbox .question blockquote p, .questions_div #dropbox .question ol, .questions_div #dropbox .question ul {
+.question h1, .question h2, .question h3, .question p, .question blockquote p, .question ol, .question ul {
     padding: 0;
     margin: 5px;
 }
-.questions_div #dropbox .question blockquote p, .questions_div #dropbox .question ol li, .questions_div #dropbox .question ul li {
+.question blockquote p, .question ol li, .question ul li {
     width: fit-content;
     padding-right: 15px;
     position: relative;
     left: 50%;
     transform: translateX(-50%);
 }
-.questions_div #dropbox .question ol, .questions_div #dropbox .question ul {
+.question ol, .question ul {
     padding-left: 45px;
 }
-.questions_div #dropbox .question blockquote{
+.question blockquote{
     margin-top: 5px;
     margin-bottom: 5px;
 }
-.questions_div #dropbox .question blockquote p {
+.question blockquote p {
     border-left: solid 3px #a7a7a7;
     padding-left: 20px;
 }
@@ -526,6 +526,17 @@ nav button img{
 }
 #edit_popup p{
     text-align: center;
+}
+
+#edit_popup div#answers_div{
+    position: relative;
+    width: fit-content;
+}
+#edit_popup div#answers_div p{
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 30px;
 }
 
 #edit_question_div p{
@@ -672,7 +683,7 @@ nav button img{
     width: calc(100% - 100px);
     height: 39px;
     background: transparent;
-    box-shadow:inset 0px 0px 0px 2px #ddd;
+    box-shadow:inset 0px 0px 0px 2px light-dark(#ddd,#333);
     border-radius: 5px;
     cursor: pointer;
 }
@@ -690,7 +701,7 @@ nav button img{
     left: 0;
     width: 50%;
     height: 100%;
-    background: #ddd;
+    background: light-dark(#ddd,#333);
     border-radius: 5px;
     transition: 0.3s ease;
 }
@@ -705,7 +716,7 @@ nav button img{
     margin: 0;
     text-align: center;
     text-align: center;
-    color: black;
+    color: light-dark(black,white);
 }
   
 .toggleSwitch .left-p {
@@ -718,4 +729,37 @@ nav button img{
   
 .toggleSwitch input:checked + a {
     left: 50%;
+}
+
+#db_posted_quizzes_div, #db_posted_questions_div{
+    background: light-dark(#f4f4f4,#252525);
+    border-radius: 5px;
+    width: 100%;
+    height: 500px;
+    overflow-y: scroll;
+}
+
+.db_posted_div {
+    margin-left: 50px;
+    width: calc(100% - 100px);
+}
+
+.db_posted_div th {
+    padding: 1px;
+}
+
+#db_quizzes_drawer_container, #db_questions_drawer_container {
+    background: light-dark(#e7e7e7,#383838);
+    height: 500px;
+    overflow-y: scroll;
+    position: relative;
+    border-radius: 5px;
+}
+
+#db_quizzes_drawer, #db_questions_drawer {
+    background: light-dark(#e7e7e7,#383838);
+    overflow-y: scroll;
+    position: relative;
+    padding: 20px;
+    border-radius: 5px;
 }

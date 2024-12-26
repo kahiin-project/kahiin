@@ -141,10 +141,12 @@
           <h1>{{glossary["Duration"]}}</h1>
           <p id="duration_p"></p>
           <h1>{{glossary["Answers"]}}</h1>
-          <p id="answer1_p"></p>
-          <p id="answer2_p"></p>
-          <p id="answer3_p"></p>
-          <p id="answer4_p"></p>
+          <div id="answers_div">
+            <p id="answer1_p"></p>
+            <p id="answer2_p"></p>
+            <p id="answer3_p"></p>
+            <p id="answer4_p"></p>
+          </div>
         </div>
       </div>
     </div>
@@ -220,6 +222,42 @@
       </label>
 
       <h2>{{glossary["Contribute"]}}</h2>
+      <h3 style="text-align: left; margin-left: 50px; margin-top: 30px;">{{glossary["MyQuizzes"]}}</h3>
+      <table class="db_posted_div">
+        <colgroup>
+          <col style="width: 30%;">
+          <col style="width: 70%;">
+        </colgroup>
+        <tr>
+          <th>
+            <div id="db_quizzes_drawer_container">
+              <div id="db_quizzes_drawer"></div>
+            </div>
+          </th>
+          <th>
+            <div id="db_posted_quizzes_div"></div>
+          </th>
+        </tr>
+      </table>
+      <h3 style="text-align: left; margin-left: 50px; margin-top: 30px;">{{glossary["MyQuestions"]}}</h3>
+      <table class="db_posted_div">
+        <colgroup>
+          <col style="width: 70%;">
+          <col style="width: 30%;">
+        </colgroup>
+        <tr>
+          <th>
+            <div id="db_posted_questions_div"></div>
+          </th>
+          <th>
+            <div id="db_questions_drawer_container">
+              <div id="db_questions_drawer"></div>
+            </div>
+          </th>
+        </tr>
+      </table>
+      <div style="height: 50px"></div>
+
     </div>
 
     <!-- Settings -->

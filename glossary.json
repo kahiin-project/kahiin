@@ -97,7 +97,9 @@
         "LastName": "Nom",
         "Quizzes": "Questionnaires",
         "MyPosts": "Mes publications",
-        "Contribute": "Contribuer"
+        "Contribute": "Contribuer",
+        "MyQuizzes": "Mes questionnaires",
+        "MyQuestions": "Mes questions"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -197,7 +199,9 @@
         "LastName": "Last Name",
         "Quizzes": "Quizzes",
         "MyPosts": "My posts",
-        "Contribute": "Contribute"
+        "Contribute": "Contribute",
+        "MyQuizzes": "My quizzes",
+        "MyQuestions": "My questions"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -297,7 +301,9 @@
         "LastName": "Apellido",
         "Quizzes": "Cuestionarios",
         "MyPosts": "Mis publicaciones",
-        "Contribute": "Contribuir"
+        "Contribute": "Contribuir",
+        "MyQuizzes": "Mis cuestionarios",
+        "MyQuestions": "Mis preguntas"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -397,7 +403,9 @@
         "LastName": "Cognome",
         "Quizzes": "Questionari",
         "MyPosts": "I miei post",
-        "Contribute": "Contribuire"
+        "Contribute": "Contribuire",
+        "MyQuizzes": "I miei questionari",
+        "MyQuestions": "Le mie domande"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -497,6 +505,8 @@
         "LastName": "Nachname",
         "Quizzes": "Fragebögen",
         "MyPosts": "Meine Beiträge",
-        "Contribute": "Beitragen"
+        "Contribute": "Beitragen",
+        "MyQuizzes": "Meine Fragebögen",
+        "MyQuestions": "Meine Fragen"
     }
 }
