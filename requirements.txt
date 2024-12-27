@@ -6,3 +6,4 @@ simple-websocket
 qrcode[pil]
 websockets
 xmltodict
+requests

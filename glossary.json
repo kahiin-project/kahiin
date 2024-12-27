@@ -102,7 +102,10 @@
         "MyQuestions": "Mes questions",
         "Subject": "Matière",
         "None": "Aucun",
-        "Other": "Autre"
+        "Other": "Autre",
+        "DownloadQuestion": "Télécharger la question",
+        "DownloadQuiz": "Télécharger le questionnaire",
+        "DeleteQuiz": "Supprimer le quiz"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -207,7 +210,10 @@
         "MyQuestions": "My questions",
         "Subject": "Subject",
         "None": "None",
-        "Other": "Other"
+        "Other": "Other",
+        "DownloadQuestion": "Download question",
+        "DownloadQuiz": "Download quiz",
+        "DeleteQuiz": "Delete quiz"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -312,7 +318,10 @@
         "MyQuestions": "Mis preguntas",
         "Subject": "Tema",
         "None": "Ninguno",
-        "Other": "Otro"
+        "Other": "Otro",
+        "DownloadQuestion": "Descargar la pregunta",
+        "DownloadQuiz": "Descargar el cuestionario",
+        "DeleteQuiz": "Eliminar cuestionario"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -417,7 +426,10 @@
         "MyQuestions": "Le mie domande",
         "Subject": "Materia",
         "None": "Nessuno",
-        "Other": "Altro"
+        "Other": "Altro",
+        "DownloadQuestion": "Scarica la domanda",
+        "DownloadQuiz": "Scarica il questionario",
+        "DeleteQuiz": "Elimina il quiz"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -522,6 +534,9 @@
         "MyQuestions": "Meine Fragen",
         "Subject": "Fach",
         "None": "Keiner",
-        "Other": "Andere"
+        "Other": "Andere",
+        "DownloadQuestion": "Frage herunterladen",
+        "DownloadQuiz": "Fragebogen herunterladen",
+        "DeleteQuiz": "Fragebogen löschen"
     }
 }

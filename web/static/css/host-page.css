@@ -459,7 +459,7 @@ nav button img{
     background: light-dark(#ececec,#595959);
 }
 
-.trash-button, .barcode-button {
+.trash-button, .barcode-button, .download-button {
     width: 40px;
     position: absolute;
     top: 15px;
@@ -473,9 +473,16 @@ nav button img{
 .barcode-button {
     right: 62px;
 }
+.download-button {
+    right: 112px;
+}
 .trash-button:hover, .barcode-button:hover {
     opacity: 1;
     filter: grayscale(0);
+}
+.download-button:hover {
+    opacity: 1;
+    filter: hue-rotate(100deg) brightness(1.5);
 }
 .barcode-button:hover {
     filter: hue-rotate(200deg);
@@ -487,6 +494,12 @@ nav button img{
     .trash-button, .barcode-button {
         filter: grayscale(100%) brightness(2);
         opacity: 1;
+    }
+    .download-button{
+        filter: grayscale(100%) brightness(3);
+    }
+    .download-button:hover {
+        filter: hue-rotate(100deg) brightness(2);
     }
 }
 

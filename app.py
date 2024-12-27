@@ -10,6 +10,9 @@ import random
 import os
 import asyncio
 import socket
+import requests
+
+kahiin_db_address = "http://localhost:5000"
 
 try:
     from kahiin_websocket import ws_manager, flask_app as app
@@ -1103,6 +1106,93 @@ async def handle_get_drawer(websocket, res) -> None:
         with relative_open("drawer.json", "r") as f:
             drawer = json.load(f)
             await ws_manager.emit("drawer", drawer, to=websocket)
+    else:
+        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+
+@ws_manager.on("uploadQuiz")
+@verification_wrapper
+async def handle_upload_quiz_at_id(websocket, res) -> None:
+    code = res["passcode"]
+    quiz = res["quiz"]
+    token = res["token"]
+    
+    if get_passcode() == code:
+        # Send the quiz_id and token to kahiindb
+        if quiz.endswith(".khn"):
+            quiz = quiz[:-4]
+        files = {
+            'token': (None, token),
+            'filename': (None, quiz),
+            'file': (quiz, open(f"questionnaire/{quiz}.khn", 'rb'))
+        }
+        response = requests.post(kahiin_db_address + "/quiz", files=files)
+        if json.loads(response.text) == {"message": "Quiz uploaded successfully"}:
+            await ws_manager.emit("quizUploaded", to=websocket)
+        else:
+            raise Exception("Error while uploading the quiz")
+    else:
+        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+
+def already_in_drawer(question):
+    with relative_open("drawer.json", "r") as f:
+        drawer = json.load(f)
+        for q in drawer:
+            if q["title"] == question["title"] and q["type"] == question["type"] and q["duration"] == question["duration"]:
+                return True
+    return False
+
+@ws_manager.on("downloadQuestion")
+@verification_wrapper
+async def handle_download_question(websocket, res) -> None:
+    code = res["passcode"]
+    question = res["question"]
+    if get_passcode() == code:
+        with relative_open("drawer.json", "r") as f:
+            drawer = json.load(f)
+            if not already_in_drawer(question):
+                drawer.append(question)
+                with relative_open("drawer.json", "w") as f:
+                    json.dump(drawer, f, indent=4)
+                await ws_manager.emit("questionDownloaded", drawer, to=websocket)
+    else:
+        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+
+def download_file(token, file_id, output_filename):
+    full_url = f"{kahiin_db_address}/download?token={token}&id_file={file_id}"
+    response = requests.get(full_url)
+    if response.status_code == 200:
+        with open(output_filename, 'wb') as file:
+            file.write(response.content)
+            return True
+    else:
+        return False
+
+def get_quiz_name_from_id(quiz_id):
+    params = {
+        "token": "ee7ca787b516fe74371bc833b61612628236a781d146f5975732421068c17e58",
+        "id_file": quiz_id
+    }
+    response = requests.get(f"{kahiin_db_address}/quiz", params=params)
+    return response.json()[0]["name"]
+
+@ws_manager.on("downloadQuiz")
+@verification_wrapper
+async def handle_download_quiz(websocket, res) -> None:
+    code = res["passcode"]
+    quiz_id = res["quiz_id"]
+    token = res["token"]
+    if get_passcode() == code:
+        quiz_name = get_quiz_name_from_id(quiz_id)
+        if download_file(token, quiz_id, f"questionnaire/{quiz_name}.khn"):
+            quiz_list = os.listdir(os.path.join(os.path.dirname(__file__), "questionnaire"))
+            quiz_list.sort()
+            quiz_list = [q[:-4] for q in quiz_list if q != ".gitkeep"]
+            for quiz in quiz_list:
+                if quiz.endswith(".khn"):
+                    quiz_list[quiz_list.index(quiz)] = quiz[:-4]
+            await ws_manager.emit("quizDownloaded", quiz_list, to=websocket)
+        else:
+            await ws_manager.emit("error", "QuizNotFound", to=websocket)
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 

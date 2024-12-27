@@ -9,6 +9,7 @@ let drawer = [];
 let draggedIndex = null;
 let draggedQuestion = null;
 let questionnaire = null;
+let quizzes = [];
 
 // ---------------------- Initialisation -------------------------
 
@@ -57,6 +58,7 @@ function submitPasscode() {
     passcode = hashSHA256(document.getElementById("passcode").value);
     socket.emit("hostConnect", passcode);
     getDrawer();
+    socket.emit("listQuestionary", { passcode });
 }
 
 function printError(error) {
@@ -248,7 +250,6 @@ function showQuestionInfos(question) {
         correct_answers = correct_answers.answer;
     }
     for(let i = 0; i < 4; i++) {
-        console.log(`answer${i + 1}_p`);
         document.getElementById(`answer${i + 1}_p`).style.display = "none";
         document.getElementById(`answer${i + 1}_p`).innerHTML = "";
     }
@@ -572,6 +573,24 @@ function loadMyPosts() {
     document.getElementById("db_questions_drawer").innerHTML = "";
     document.getElementById("db_posted_quizzes_div").innerHTML = "";
     document.getElementById("db_posted_questions_div").innerHTML = "";
+    quizzes.forEach(quiz => {
+        const quizElement = document.createElement('div');
+        quizElement.classList.add('drawer-question');
+        quizElement.innerHTML = quiz.substring(0, 20) + "...";
+        quizElement.style.cursor = "default";
+        quizElement.style.backgroundColor = "light-dark(white, #595959)";
+
+        uploadButton = document.createElement('button');
+        uploadImg = document.createElement('img');
+        uploadImg.src = '/static/icon/upload.svg';
+        uploadButton.appendChild(uploadImg);
+        uploadButton.addEventListener('click', () => {
+            socket.emit("uploadQuiz", { passcode, quiz, token: localStorage.getItem('token') });
+        });
+        quizElement.appendChild(uploadButton);
+
+        document.getElementById("db_quizzes_drawer").appendChild(quizElement);
+    });
     drawer.forEach((question, index) => {
         const drawerElement = document.createElement('div');
         drawerElement.classList.add('drawer-question');
@@ -584,7 +603,9 @@ function loadMyPosts() {
         uploadImg.src = '/static/icon/upload.svg';
         uploadButton.appendChild(uploadImg);
         uploadButton.addEventListener('click', () => {
-            // socket.emit('uploadQuestion', { passcode, question });
+            uploadQuestion(question.subject, question.language, question.title, question.shown_answers, question.correct_answers, question.duration, question.type).then(res => {
+                loadMyPosts();
+            });
         });
         drawerElement.appendChild(uploadButton);
 
@@ -592,12 +613,68 @@ function loadMyPosts() {
     });
 
     getMyPosts().then(res => {
+        let space = document.createElement('div');
+        space.style.height = "25px";
+        document.getElementById("db_posted_quizzes_div").appendChild(space);
         res.quizzes.forEach(quiz => {
             const quizElement = document.createElement('div');
-            quizElement.classList.add('db-quiz');
-            quizElement.innerHTML = quiz.title;
+            quizElement.classList.add('question');
+            quizElement.style.marginBottom = "5px";
+            quizElement.style.padding = "10px";
+            quizElement.style.fontSize = "25px";
+            quizElement.style.height = "25px";
+            quizElement.style.maxHeight = "none";
+            quizElement.style.cursor = "default";
+
+            const quizTitle = quiz.name
+                .split('\n')
+                .map(line => line.trim().replace(/\s+/g, ' '))
+                .join('\n');
+            
+            quizElement.innerHTML = quizTitle;
+
+            const trashButton = document.createElement('img');
+            trashButton.classList.add('trash-button');
+            trashButton.src = '/static/icon/trash.svg';
+            trashButton.title = glossary["DeleteQuiz"];
+            trashButton.style.top = "8px";
+            trashButton.style.right = "8px";
+            trashButton.style.width = "30px";
+            trashButton.addEventListener('click', () => {
+                deleteQuiz(quiz.id_file).then(res => {
+                    loadMyPosts();
+                });
+            });
+            quizElement.appendChild(trashButton);
+
+            const downloadButton = document.createElement('img');
+            downloadButton.classList.add('download-button');
+            downloadButton.src = '/static/icon/download.svg';
+            downloadButton.title = glossary["DownloadQuiz"];
+            downloadButton.style.top = "8px";
+            downloadButton.style.right = "42px";
+            downloadButton.style.width = "30px";
+            downloadButton.addEventListener('click', () => {
+                socket.emit("downloadQuiz", { passcode, quiz_id: quiz.id_file, token: localStorage.getItem('token') });
+            });
+            quizElement.appendChild(downloadButton);
+
+            const more_p = document.createElement('p');
+            flags = {en: "🇬🇧", fr: "🇫🇷", es: "🇪🇸", it: "🇮🇹", de: "🇩🇪"};
+            more_p.innerHTML = flags[quiz.language] + " " + quiz.subject;
+            more_p.style.position = "absolute";
+            more_p.style.left = "10px";
+            more_p.style.top = "10px";
+            more_p.style.color = "light-dark(#666, #aaa)";
+            more_p.style.fontSize = "20px";
+            quizElement.appendChild(more_p);
+            
             document.getElementById("db_posted_quizzes_div").appendChild(quizElement);
         });
+        space = document.createElement('div');
+        space.style.height = "25px";
+        document.getElementById("db_posted_quizzes_div").appendChild(space);
+
         res.questions.forEach(question => {
             const questionElement = document.createElement('div');
             questionElement.classList.add('question');
@@ -638,10 +715,23 @@ function loadMyPosts() {
                     "@duration": question.duration,
                     "shown_answers": question.shown_answers,
                     "correct_answers": question.correct_answers,
-                    "title": question.title
+                    "title": question.title,
+                    "language": question.language,
+                    "subject": question.subject
                 });
             });
             questionElement.appendChild(barcodeButton);
+
+            const downloadButton = document.createElement('img');
+            downloadButton.classList.add('download-button');
+            downloadButton.src = '/static/icon/download.svg';
+            downloadButton.title = glossary["DownloadQuestion"];
+            downloadButton.addEventListener('click', () => {
+                delete question["id_acc"];
+                delete question["id_question"];
+                socket.emit("downloadQuestion", { passcode, question });
+            });
+            questionElement.appendChild(downloadButton);
 
             document.getElementById("db_posted_questions_div").appendChild(questionElement);
         });
@@ -665,6 +755,14 @@ function navigate(index) {
                 document.getElementById("play_div").style.display = "block";
                 break;
             case 1:
+                const questionary_select_list = document.getElementById("questionary_select_list");
+                const questionary_edit_list = document.getElementById("questionary_edit_list");
+                questionary_select_list.innerHTML = "";
+                questionary_edit_list.innerHTML = "";
+                quizzes.forEach(questionary => {
+                    questionary_select_list.innerHTML += `<button onclick="selectQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
+                    questionary_edit_list.innerHTML += `<button onclick="editQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
+                });
                 document.getElementById("create_div").style.display = "block";
                 break;
             case 2:
@@ -853,6 +951,7 @@ function setupSocketListeners() {
         const questionary_edit_list = document.getElementById("questionary_edit_list");
         questionary_select_list.innerHTML = "";
         questionary_edit_list.innerHTML = "";
+        quizzes = res.questionaries;
         res.questionaries.forEach(questionary => {
             questionary_select_list.innerHTML += `<button onclick="selectQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
             questionary_edit_list.innerHTML += `<button onclick="editQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
@@ -959,6 +1058,18 @@ function setupSocketListeners() {
         editing_questionnaire = res;
     });
 
-   
+    socket.on("quizUploaded", (res) => {
+        loadMyPosts();
+    });
+
+    socket.on("questionDownloaded", (res) => {
+        drawer = res;
+        loadMyPosts();
+    });
+
+    socket.on("quizDownloaded", (res) => {
+        quizzes = res;
+        loadMyPosts();
+    });
 
 }
