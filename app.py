@@ -773,18 +773,20 @@ async def handle_edit_questionary(websocket, res) -> None:
         return
     if not res["duration"].isdigit() and int(res["duration"]) < 0:
         return
-    if not res["shown_answers"] or not res["correct_answers"]:
+    if not "shown_answers" in res or not "correct_answers" in res:
         return
     for ans in res["correct_answers"]:
         if ans not in res["shown_answers"]:
             return
-        
+    
     drawer[question_id] = {
         "title": res["title"],
         "type": res["type"],
         "duration": int(res["duration"]),
         "shown_answers": {"answer": [ans for ans in res["shown_answers"]]},
-        "correct_answers": {"answer": [ans for ans in res["correct_answers"]]}
+        "correct_answers": {"answer": [ans for ans in res["correct_answers"]]},
+        "language": res["language"],
+        "subject": res["subject"]
     }
 
     with relative_open("drawer.json", "w") as f:
@@ -825,7 +827,9 @@ async def handle_new_question(websocket, res) -> None:
             "type": "uniqueanswer",
             "duration": 20,
             "shown_answers": ["A", "B"],
-            "correct_answers": []
+            "correct_answers": [],
+            "language": get_settings()["language"],
+            "subject": get_glossary()["Other"]
         })
 
         with relative_open("drawer.json", "w") as f:

@@ -136,6 +136,10 @@
     <div id="edit_popup_container">
       <div id="edit_popup">
         <div>
+          <h1>{{glossary["Language"]}}</h1>
+          <p id="language_p"></p>
+          <h1>{{glossary["Subject"]}}</h1>
+          <p id="subject_p"></p>
           <h1>{{glossary["Type"]}}</h1>
           <p id="type_p"></p>
           <h1>{{glossary["Duration"]}}</h1>
@@ -152,6 +156,18 @@
     </div>
     <div style="display: none;" id="edit_question_div" class="nav_content">
       <h1>{{glossary["EditQuestion"]}}</h1>
+
+      <h2>{{glossary["Language"]}}</h2>
+      <select id="edit_question_language">
+        <option value="en">🇬🇧 English</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="de">🇩🇪 Deutsch</option>
+      </select>
+
+      <h2>{{glossary["Subject"]}}</h2>
+      <input type="text" id="edit_question_subject">
 
       <h2>{{glossary["Type"]}}</h2>
       <select id="edit_question_type">

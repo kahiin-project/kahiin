@@ -228,6 +228,9 @@ function showQuestionInfos(question) {
             break;
     }
     document.getElementById("type_p").innerHTML = formattedType;
+    const flags = {en: "🇬🇧", fr: "🇫🇷", es: "🇪🇸", it: "🇮🇹", de: "🇩🇪"};
+    document.getElementById("language_p").innerHTML = flags[question.language];
+    document.getElementById("subject_p").innerHTML = question.subject;
 
     document.getElementById("duration_p").innerHTML = formatDuration(question["@duration"]);
 
@@ -282,7 +285,6 @@ document.getElementById("edit_popup_container").addEventListener("click", functi
 
 let quill;
 function editQuestion(id) {
-
     if (questionnaire == null) {
         return;
     }
@@ -291,6 +293,8 @@ function editQuestion(id) {
 
     document.getElementById("edit_question_type").value = drawer[id].type;
     document.getElementById("edit_question_duration").value = drawer[id].duration;
+    document.getElementById("edit_question_language").value = drawer[id].language;
+    document.getElementById("edit_question_subject").value = drawer[id].subject;
     shown_answers = drawer[id].shown_answers;
     switch(shown_answers.length) {
         case 2:
@@ -473,6 +477,8 @@ function editQuestion(id) {
         const title = getMarkdownQuillContent();
         const type = document.getElementById("edit_question_type").value;
         const duration = document.getElementById("edit_question_duration").value;
+        const language = document.getElementById("edit_question_language").value;
+        const subject = document.getElementById("edit_question_subject").value;
         let shown_answers = [];
         for(let i = 0; i < 4; i++) {
             if(document.getElementById(`edit_answer_input${i}`).value != ""){
@@ -491,7 +497,7 @@ function editQuestion(id) {
             }
         });
 
-        socket.emit("editQuestion", { passcode, id, title, type, duration, shown_answers, correct_answers });
+        socket.emit("editQuestion", { passcode, id, title, type, duration, shown_answers, correct_answers, language, subject });
         document.getElementById("edit_question_div").style.display = "none";
         document.getElementById("edit_div").style.display = "block";
 

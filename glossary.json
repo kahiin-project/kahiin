@@ -99,7 +99,10 @@
         "MyPosts": "Mes publications",
         "Contribute": "Contribuer",
         "MyQuizzes": "Mes questionnaires",
-        "MyQuestions": "Mes questions"
+        "MyQuestions": "Mes questions",
+        "Subject": "Matière",
+        "None": "Aucun",
+        "Other": "Autre"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -201,7 +204,10 @@
         "MyPosts": "My posts",
         "Contribute": "Contribute",
         "MyQuizzes": "My quizzes",
-        "MyQuestions": "My questions"
+        "MyQuestions": "My questions",
+        "Subject": "Subject",
+        "None": "None",
+        "Other": "Other"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -303,7 +309,10 @@
         "MyPosts": "Mis publicaciones",
         "Contribute": "Contribuir",
         "MyQuizzes": "Mis cuestionarios",
-        "MyQuestions": "Mis preguntas"
+        "MyQuestions": "Mis preguntas",
+        "Subject": "Tema",
+        "None": "Ninguno",
+        "Other": "Otro"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -405,7 +414,10 @@
         "MyPosts": "I miei post",
         "Contribute": "Contribuire",
         "MyQuizzes": "I miei questionari",
-        "MyQuestions": "Le mie domande"
+        "MyQuestions": "Le mie domande",
+        "Subject": "Materia",
+        "None": "Nessuno",
+        "Other": "Altro"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -507,6 +519,9 @@
         "MyPosts": "Meine Beiträge",
         "Contribute": "Beitragen",
         "MyQuizzes": "Meine Fragebögen",
-        "MyQuestions": "Meine Fragen"
+        "MyQuestions": "Meine Fragen",
+        "Subject": "Fach",
+        "None": "Keiner",
+        "Other": "Andere"
     }
 }
