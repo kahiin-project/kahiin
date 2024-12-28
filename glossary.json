@@ -105,7 +105,13 @@
         "Other": "Autre",
         "DownloadQuestion": "Télécharger la question",
         "DownloadQuiz": "Télécharger le questionnaire",
-        "DeleteQuiz": "Supprimer le quiz"
+        "DeleteQuiz": "Supprimer le quiz",
+        "Title": "Titre",
+        "QuestionID": "ID de la question",
+        "AccountID": "ID du compte",
+        "QuizName": "Nom du quiz",
+        "QuizID": "ID du quiz",
+        "International": "International"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -213,7 +219,13 @@
         "Other": "Other",
         "DownloadQuestion": "Download question",
         "DownloadQuiz": "Download quiz",
-        "DeleteQuiz": "Delete quiz"
+        "DeleteQuiz": "Delete quiz",
+        "Title": "Title",
+        "QuestionID": "Question ID",
+        "AccountID": "Account ID",
+        "QuizName": "Quiz Name",
+        "QuizID": "Quiz ID",
+        "International": "International"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -321,7 +333,13 @@
         "Other": "Otro",
         "DownloadQuestion": "Descargar la pregunta",
         "DownloadQuiz": "Descargar el cuestionario",
-        "DeleteQuiz": "Eliminar cuestionario"
+        "DeleteQuiz": "Eliminar cuestionario",
+        "Title": "Título",
+        "QuestionID": "ID de la pregunta",
+        "AccountID": "ID de la cuenta",
+        "QuizName": "Nombre del cuestionario",
+        "QuizID": "ID del cuestionario",
+        "International": "Internacional"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -429,7 +447,13 @@
         "Other": "Altro",
         "DownloadQuestion": "Scarica la domanda",
         "DownloadQuiz": "Scarica il questionario",
-        "DeleteQuiz": "Elimina il quiz"
+        "DeleteQuiz": "Elimina il quiz",
+        "Title": "Titolo",
+        "QuestionID": "ID della domanda",
+        "AccountID": "ID dell'account",
+        "QuizName": "Nome del quiz",
+        "QuizID": "ID del quiz",
+        "International": "Internazionale"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -537,6 +561,12 @@
         "Other": "Andere",
         "DownloadQuestion": "Frage herunterladen",
         "DownloadQuiz": "Fragebogen herunterladen",
-        "DeleteQuiz": "Fragebogen löschen"
+        "DeleteQuiz": "Fragebogen löschen",
+        "Title": "Titel",
+        "QuestionID": "Fragen-ID",
+        "AccountID": "Konto-ID",
+        "QuizName": "Fragebogenname",
+        "QuizID": "Fragebogen-ID",
+        "International": "International"
     }
 }

@@ -568,7 +568,186 @@ ${content}\`\`\``;
 
 // ---------------------- Functions Kahiin DB -------------------------
 
+function searchDB() {
+    document.getElementById("db_search_results_div").innerHTML = "";
+    if(document.getElementById("db_search_switch").checked){
+        const subject = document.getElementById("search_db_question_subject").value;
+        const language = document.getElementById("search_db_question_language").value;
+        const id_question = document.getElementById("search_db_question_id_question").value;
+        const id_acc = document.getElementById("search_db_question_id_acc").value;
+        const title = document.getElementById("search_db_question_title").value;
+        const duration = document.getElementById("search_db_question_duration").value;
+        const type = document.getElementById("search_db_question_type").value;
+
+        const params = { subject, language, id_question, id_acc, title, duration, type };
+        const filteredParams = Object.fromEntries(
+            Object.entries(params).filter(([key, value]) => value !== "" && value !== "none")
+        );
+
+        searchQuestions(filteredParams)
+            .then(data => {
+                data.forEach(question => {
+                    const questionElement = document.createElement('div');
+                    questionElement.classList.add('question');
+                    questionElement.style.marginTop = "25px";
+                    questionElement.style.cursor = "default";
+                    questionElement.style.textAlign = "center";
+                    questionElement.style.height = "50px";
+
+                    const questionTitle = question.title
+                        .split('\n')
+                        .map(line => line.trim().replace(/\s+/g, ' '))
+                        .join('\n');
+                    questionElement.innerHTML = marked(questionTitle);
+                    renderMathInElement(questionElement, {
+                        delimiters: [
+                            {left: "\$", right: "\$", display: false},
+                            {left: "\$$", right: "\$$", display: true}
+                        ]
+                    });
+                    hljs.highlightAll();
+                    questionElement.title = `ID: ${question.id_question}`;
+
+                    const barcodeButton = document.createElement('img');
+                    barcodeButton.style.right = "12px";
+                    barcodeButton.classList.add('barcode-button');
+                    barcodeButton.src = '/static/icon/barcode.svg';
+                    barcodeButton.title = glossary["OtherData"];
+                    barcodeButton.addEventListener('click', () => {
+                        showQuestionInfos({
+                            "@type": question.type,
+                            "@duration": question.duration,
+                            "shown_answers": question.shown_answers,
+                            "correct_answers": question.correct_answers,
+                            "title": question.title,
+                            "language": question.language,
+                            "subject": question.subject
+                        });
+                    });
+                    questionElement.appendChild(barcodeButton);
+
+                    const downloadButton = document.createElement('img');
+                    downloadButton.style.right = "62px";
+                    downloadButton.classList.add('download-button');
+                    downloadButton.src = '/static/icon/download.svg';
+                    downloadButton.title = glossary["DownloadQuestion"];
+                    downloadButton.addEventListener('click', () => {
+                        delete question["id_acc"];
+                        delete question["id_question"];
+                        socket.emit("downloadQuestion", { passcode, question });
+                    });
+                    questionElement.appendChild(downloadButton);
+
+                    document.getElementById("db_search_results_div").appendChild(questionElement);
+                });
+            })
+            .catch(error => {
+            console.error('Error searching questions:', error);
+            });
+    }else{
+        const name = document.getElementById("search_db_quiz_name").value;
+        const subject = document.getElementById("search_db_quiz_subject").value;
+        const language = document.getElementById("search_db_quiz_language").value;
+        const id_file = document.getElementById("search_db_quiz_id_file").value;
+        const id_acc = document.getElementById("search_db_quiz_id_acc").value;
+
+        const params = { name, subject, language, id_file, id_acc };
+        const filteredParams = Object.fromEntries(
+            Object.entries(params).filter(([key, value]) => value !== "" && value !== "none")
+        );
+
+        searchQuizzes(filteredParams)
+            .then(data => {
+                let space = document.createElement('div');
+                space.style.height = "25px";
+                document.getElementById("db_search_results_div").appendChild(space);
+                data.forEach(data => {                    
+                    const quizElement = document.createElement('div');
+                    quizElement.classList.add('question');
+                    quizElement.style.marginBottom = "5px";
+                    quizElement.style.padding = "10px";
+                    quizElement.style.fontSize = "25px";
+                    quizElement.style.height = "25px";
+                    quizElement.style.maxHeight = "none";
+                    quizElement.style.cursor = "default";
+                    quizElement.style.textAlign = "center";
+                    quizElement.innerHTML = data.name;
+                    quizElement.title = `ID: ${data.id_file}`;
+
+                    const downloadButton = document.createElement('img');
+                    downloadButton.classList.add('download-button');
+                    downloadButton.src = '/static/icon/download.svg';
+                    downloadButton.title = glossary["DownloadQuiz"];
+                    downloadButton.style.top = "8px";
+                    downloadButton.style.right = "8px";
+                    downloadButton.style.width = "30px";
+                    downloadButton.addEventListener('click', () => {
+                        socket.emit("downloadQuiz", { passcode, quiz_id: data.id_file, token: localStorage.getItem('token') });
+                    });
+                    quizElement.appendChild(downloadButton);
+
+                    const more_p = document.createElement('p');
+                    flags = {en: "🇬🇧", fr: "🇫🇷", es: "🇪🇸", it: "🇮🇹", de: "🇩🇪"};
+                    more_p.innerHTML = flags[data.language] + " " + data.subject;
+                    more_p.style.position = "absolute";
+                    more_p.style.left = "10px";
+                    more_p.style.top = "10px";
+                    more_p.style.color = "light-dark(#666, #aaa)";
+                    more_p.style.fontSize = "20px";
+                    quizElement.appendChild(more_p);
+
+                    document.getElementById("db_search_results_div").appendChild(quizElement);
+                });
+                space = document.createElement('div');
+                space.style.height = "25px";
+                document.getElementById("db_search_results_div").appendChild(space);
+            })
+            .catch(error => {
+            console.error('Error searching quizzes:', error);
+            });
+    }
+}
+
+function updateSearchInputs() {
+    document.getElementById("db_search_results_div").innerHTML = "";
+    if(document.getElementById("db_search_switch").checked){
+        document.getElementById("db_search_quizzes_div").style.display = "none";
+        document.getElementById("db_search_questions_div").style.display = "block";
+        
+        document.getElementById("search_db_question_subject").placeholder = glossary["Subject"];
+        document.getElementById("search_db_question_subject").value = "";
+        document.getElementById("search_db_question_language").placeholder = glossary["Language"];
+        document.getElementById("search_db_question_language").value = "none";
+        document.getElementById("search_db_question_id_question").placeholder = glossary["QuestionID"];
+        document.getElementById("search_db_question_id_question").value = "";
+        document.getElementById("search_db_question_id_acc").placeholder = glossary["AccountID"];
+        document.getElementById("search_db_question_id_acc").value = "";
+        document.getElementById("search_db_question_title").placeholder = glossary["Title"];
+        document.getElementById("search_db_question_title").value = "";
+        document.getElementById("search_db_question_duration").placeholder = glossary["Duration"];
+        document.getElementById("search_db_question_duration").value = "";
+        document.getElementById("search_db_question_type").placeholder = glossary["Type"];
+        document.getElementById("search_db_question_type").value = "";
+    }else{
+        document.getElementById("db_search_quizzes_div").style.display = "block";
+        document.getElementById("db_search_questions_div").style.display = "none";
+
+        document.getElementById("search_db_quiz_name").placeholder = glossary["QuizName"];
+        document.getElementById("search_db_quiz_name").value = "";
+        document.getElementById("search_db_quiz_subject").placeholder = glossary["Subject"];
+        document.getElementById("search_db_quiz_subject").value = "";
+        document.getElementById("search_db_quiz_language").placeholder = glossary["Language"];
+        document.getElementById("search_db_quiz_language").value = "none";
+        document.getElementById("search_db_quiz_id_file").placeholder = glossary["QuizID"];
+        document.getElementById("search_db_quiz_id_file").value = "";
+        document.getElementById("search_db_quiz_id_acc").placeholder = glossary["AccountID"];
+        document.getElementById("search_db_quiz_id_acc").value = "";
+    }
+}
+
 function loadMyPosts() {
+    document.getElementById("db_search_switch").addEventListener("change", updateSearchInputs);
+
     document.getElementById("db_quizzes_drawer").innerHTML = "";
     document.getElementById("db_questions_drawer").innerHTML = "";
     document.getElementById("db_posted_quizzes_div").innerHTML = "";
@@ -632,6 +811,7 @@ function loadMyPosts() {
                 .join('\n');
             
             quizElement.innerHTML = quizTitle;
+            quizElement.title = `ID: ${quiz.id_file}`;
 
             const trashButton = document.createElement('img');
             trashButton.classList.add('trash-button');
@@ -693,6 +873,7 @@ function loadMyPosts() {
                 ]
             });
             hljs.highlightAll();
+            questionElement.title = `ID: ${question.id_question}`;
 
             const trashButton = document.createElement('img');
             trashButton.classList.add('trash-button');
@@ -767,6 +948,8 @@ function navigate(index) {
                 break;
             case 2:
                 document.getElementById("kahiin_db_div").style.display = "block";
+                document.getElementById("db_search_switch").checked = false;
+                updateSearchInputs();
                 loadMyPosts();
                 break;
             case 3:
