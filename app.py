@@ -42,17 +42,18 @@ app.template_folder = 'web/templates'
 
 ## ----------------- Class ----------------- ##
 
-class Questionary:
+class Quiz:
     def __init__(self, root=None, tree=None) -> None:
         self.root = root
         self.tree = tree
-        self.filename = None
-        self.questionary = {"title": "", "questions": []}
+        self.filename = None 
+        self.quiz = {"title": "", "questions": []}
 
     def get_filename(self) -> str:
         return self.filename
 
-questionary = Questionary()
+quiz = Quiz()
+
 class SleepManager:
     def __init__(self):
         self._stop_event = asyncio.Event()
@@ -241,15 +242,15 @@ class Game:
     def reset(self):
         self.previous_leaderboard = []  
         self.current_leaderboard = []   
-        questionary.questionary = {"title": questionary.get_filename(),"questions": []}
-        questions = questionary.root.find('questions')
+        quiz.quiz = {"title": quiz.get_filename(),"questions": []}
+        questions = quiz.root.find('questions')
         for question in questions.findall('question'):
             title = question.find('title').text
             duration = question.get('duration')
             question_type = question.get('type')
             shown_answers = [answer.text for answer in question.find('shown_answers').findall('answer')]
             correct_answers = [answer.text for answer in question.find('correct_answers').findall('answer')]
-            questionary.questionary["questions"].append({
+            quiz.quiz["questions"].append({
                 "title": title,
                 "shown_answers": shown_answers,
                 "correct_answers": correct_answers,
@@ -439,8 +440,8 @@ async def handle_start_game(websocket, code: str) -> None:
     if game.running:
         await ws_manager.emit('error', "GameAlreadyRunning", to=websocket)
         return
-    if questionary.root is None:
-        await ws_manager.emit('error', "NoQuestionary", to=websocket)
+    if quiz.root is None:
+        await ws_manager.emit('error', "NoQuiz", to=websocket)
         return
     if len(client_list) == 0:
         await ws_manager.emit('error', "NoUsersConnected", to=websocket)
@@ -470,7 +471,7 @@ async def handle_next_question(websocket, res) -> None:
             await ws_manager.emit('error', "NoUsersConnected", to=websocket)
             return
             
-        if question_number == len(questionary.questionary["questions"]):
+        if question_number == len(quiz.quiz["questions"]):
             data = {
                 "game_lead": game.display()[0],
             }
@@ -481,16 +482,16 @@ async def handle_next_question(websocket, res) -> None:
                     continue
             return
             
-        question_not_answered = list(filter(lambda q: q is not None, questionary.questionary["questions"]))
-        question = random.choice(question_not_answered) if settings["randomOrder"] else questionary.questionary["questions"][question_number]
+        question_not_answered = list(filter(lambda q: q is not None, quiz.quiz["questions"]))
+        question = random.choice(question_not_answered) if settings["randomOrder"] else quiz.quiz["questions"][question_number]
         
         data = {
             "question_title": question["title"],
             "question_type": question["type"],
             "question_possible_answers": question["shown_answers"],
             "question_duration": question["duration"],
-            "question_number": (len(questionary.questionary["questions"]) - len(question_not_answered) + 1) if settings["randomOrder"] else questionary.questionary["questions"].index(question) + 1,
-            "question_count": len(questionary.questionary["questions"]),
+            "question_number": (len(quiz.quiz["questions"]) - len(question_not_answered) + 1) if settings["randomOrder"] else quiz.quiz["questions"].index(question) + 1,
+            "question_count": len(quiz.quiz["questions"]),
         }
 
         # Send question start to all clients
@@ -586,10 +587,10 @@ async def handle_get_spreadsheet(websocket, res) -> None:
     csv.append("Username,Score,MaxPossibleScore")
     client_list.sort(key=lambda x: x.score, reverse=True)
     for client in client_list:
-        csv.append(f"{client.username},{client.score},{500*len(questionary.questionary['questions'])}")
+        csv.append(f"{client.username},{client.score},{500*len(quiz.quiz['questions'])}")
     data = {
             "csv" : "\n".join(csv), 
-            "questionnaire_name": questionary.questionary["title"]
+            "quiz_name": quiz.quiz["title"]
             }
     
     for host in host_list:
@@ -597,35 +598,35 @@ async def handle_get_spreadsheet(websocket, res) -> None:
         
 ## ----------------- ws_manager Configuration Events ----------------- ##
 
-@ws_manager.on('sendNewQuestionary')
+@ws_manager.on('sendNewQuiz')
 @verification_wrapper
-async def handle_new_questionary(websocket, res) -> None:
+async def handle_new_quiz(websocket, res) -> None:
     """
-    Handle requests to send the questionary to the host.
+    Handle requests to send the quiz to the host.
 
-    :param res: Dictionary containing the passcode and the questionary
+    :param res: Dictionary containing the passcode and the quiz
     """
     # rename automatically the file to khn
     filename = filename.split(".")[0] + ".khn"
-    with relative_open(f"questionnaire/{res['filename']}", "wb") as f:
-        f.write(res["questionaire_data"])
+    with relative_open(f"quiz/{res['filename']}", "wb") as f:
+        f.write(res["quiz_data"])
     
-@ws_manager.on('listQuestionary')
+@ws_manager.on('listQuiz')
 @verification_wrapper
-async def handle_list_questionary(websocket, res) -> None:
-    questionaries = os.listdir(os.path.join(os.path.dirname(__file__), "questionnaire"))
-    questionaries.sort()
-    questionaries = [q[:-4] for q in questionaries if q != ".gitkeep"]
-    await ws_manager.emit("ListOfQuestionary", {"questionaries": questionaries}, to=websocket)
+async def handle_list_quiz(websocket, res) -> None:
+    quizs = os.listdir(os.path.join(os.path.dirname(__file__), "quiz"))
+    quizs.sort()
+    quizs = [q[:-4] for q in quizs if q != ".gitkeep"]
+    await ws_manager.emit("ListOfQuiz", {"quizs": quizs}, to=websocket)
 
-@ws_manager.on('selectQuestionary')
+@ws_manager.on('selectQuiz')
 @verification_wrapper
-async def handle_select_questionary(websocket, res) -> None:
-    if not res["questionnaire_name"].endswith(".khn"):
-        res["questionnaire_name"] += ".khn"
-    questionary.tree = ET.parse(os.path.join(os.path.dirname(__file__), "questionnaire", res["questionnaire_name"]))
-    questionary.root = questionary.tree.getroot()
-    questionary.filename = res["questionnaire_name"]
+async def handle_select_quiz(websocket, res) -> None:
+    if not res["quiz_name"].endswith(".khn"):
+        res["quiz_name"] += ".khn"
+    quiz.tree = ET.parse(os.path.join(os.path.dirname(__file__), "quiz", res["quiz_name"]))
+    quiz.root = quiz.tree.getroot()
+    quiz.filename = res["quiz_name"]
 
 @ws_manager.on('kickPlayer')
 @verification_wrapper
@@ -701,42 +702,39 @@ async def handle_unpause_game(websocket, code: str) -> None:
     except Exception as e:
         print(f"Error in handle_unpause_game: {str(e)}")
 
-@ws_manager.on('createQuestionary')
+@ws_manager.on('createQuiz')
 @verification_wrapper
-async def handle_create_questionary(websocket, res) -> None:
-    list_questionaries = os.listdir("questionnaire")
-    questionary_index = 1
-    while f"new_questionnaire{questionary_index}.khn" in list_questionaries:
-        questionary_index += 1
-    filename = f"new_questionnaire{questionary_index}.khn"
-    title = f"new_questionnaire{questionary_index}"
-    
-    # Create XML content
-    questionary = ET.Element("questionary")
-    subject = ET.SubElement(questionary, "subject")
+async def handle_create_quiz(websocket, res) -> None:
+    list_quizs = os.listdir("quiz")
+    quiz_index = 1
+    while f"new_quiz{quiz_index}.khn" in list_quizs:
+        quiz_index += 1
+    filename = f"new_quiz{quiz_index}.khn"
+    quiz = ET.Element("quiz")
+    subject = ET.SubElement(quiz, "subject") 
     subject.text = get_glossary()["Other"]
-    language = ET.SubElement(questionary, "language")
+    language = ET.SubElement(quiz, "language")
     with relative_open("settings.json", "r") as f:
         language.text = json.load(f)["language"]
-    questions = ET.SubElement(questionary, "questions")
+    questions = ET.SubElement(quiz, "questions")
     
-    tree = ET.ElementTree(questionary)
-    tree.write(f"questionnaire/{filename}", encoding="utf-8", xml_declaration=True)
+    tree = ET.ElementTree(quiz)
+    tree.write(f"quiz/{filename}", encoding="utf-8", xml_declaration=True)
     
-    await ws_manager.emit("editingQuestionnary", filename, to=websocket)
+    await ws_manager.emit("editingQuiz", filename, to=websocket)
 
-@ws_manager.on('deleteQuestionary')
+@ws_manager.on('deleteQuiz')
 @verification_wrapper
-async def handle_delete_questionary(websocket, res) -> None:
-    if not res["questionnaire_name"].endswith(".khn"):
-        res["questionnaire_name"] += ".khn"
-    os.remove(os.path.join(os.path.dirname(__file__), "questionnaire", res["questionnaire_name"]))
-    await ws_manager.emit("deletedQuestionnary", to=websocket)
+async def handle_delete_quiz(websocket, res) -> None:
+    if not res["quiz_name"].endswith(".khn"):
+        res["quiz_name"] += ".khn"
+    os.remove(os.path.join(os.path.dirname(__file__), "quiz", res["quiz_name"]))
+    await ws_manager.emit("deletedQuiz", to=websocket)
 
-@ws_manager.on("editQuestionaryName")
+@ws_manager.on("editQuizName")
 @verification_wrapper
-async def handle_edit_questionnaire_name(websocket, res) -> None:
-    list_questionaries = os.listdir(os.path.join(os.path.dirname(__file__), "questionnaire"))
+async def handle_edit_quiz_name(websocket, res) -> None:
+    list_quizs = os.listdir(os.path.join(os.path.dirname(__file__), "quiz"))
     forbiden_characters = '/\\|,.;:!?*"><'
     invalid_characters = False
     old_name = res["old_name"]
@@ -754,14 +752,14 @@ async def handle_edit_questionnaire_name(websocket, res) -> None:
         await ws_manager.emit('error', "EmptyName", to=websocket)
     elif invalid_characters:
         await ws_manager.emit('error', "SpecialCharacters")
-    elif new_name in list_questionaries:
+    elif new_name in list_quizs:
         await ws_manager.emit('error', "AlreadyExists", to=websocket)
     else:
         os.rename(
-            os.path.join(os.path.dirname(__file__), "questionnaire", old_name),
-            os.path.join(os.path.dirname(__file__), "questionnaire", new_name)
+            os.path.join(os.path.dirname(__file__), "quiz", old_name),
+            os.path.join(os.path.dirname(__file__), "quiz", new_name)
         )
-        await ws_manager.emit("editingQuestionnary", new_name, to=websocket)
+        await ws_manager.emit("editingQuiz", new_name, to=websocket)
 
 @ws_manager.on("editQuizSubject")
 @verification_wrapper
@@ -772,10 +770,10 @@ async def handle_edit_quiz_subject(websocket, res) -> None:
     if not quiz_name.endswith(".khn"):
         quiz_name += ".khn"
     if get_passcode() == passcode:
-        tree = ET.parse(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+        tree = ET.parse(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
         root = tree.getroot()
         root.find("subject").text = new_subject
-        tree.write(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+        tree.write(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 
@@ -788,16 +786,48 @@ async def handle_edit_quiz_language(websocket, res) -> None:
     if not quiz_name.endswith(".khn"):
         quiz_name += ".khn"
     if get_passcode() == passcode:
-        tree = ET.parse(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+        tree = ET.parse(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
         root = tree.getroot()
         root.find("language").text = new_language
-        tree.write(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+        tree.write(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
+    else:
+        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+
+@ws_manager.on("editQuizSubject")
+@verification_wrapper
+async def handle_edit_quiz_subject(websocket, res) -> None:
+    passcode = res["passcode"]
+    quiz_name = res["quiz_name"]
+    new_subject = res["new_subject"]
+    if not quiz_name.endswith(".khn"):
+        quiz_name += ".khn"
+    if get_passcode() == passcode:
+        tree = ET.parse(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
+        root = tree.getroot()
+        root.find("subject").text = new_subject
+        tree.write(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
+    else:
+        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+
+@ws_manager.on("editQuizLanguage")
+@verification_wrapper
+async def handle_edit_quiz_language(websocket, res) -> None:
+    passcode = res["passcode"]
+    quiz_name = res["quiz_name"]
+    new_language = res["new_language"]
+    if not quiz_name.endswith(".khn"):
+        quiz_name += ".khn"
+    if get_passcode() == passcode:
+        tree = ET.parse(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
+        root = tree.getroot()
+        root.find("language").text = new_language
+        tree.write(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 
 @ws_manager.on("editQuestion")
 @verification_wrapper
-async def handle_edit_questionary(websocket, res) -> None:
+async def handle_edit_quiz(websocket, res) -> None:
     question_id = res["id"]
 
     with relative_open("drawer.json", "r") as f:
@@ -910,30 +940,30 @@ async def handle_set_settings(websocket, res) -> None:
         for client in host_list+client_list+board_list:
             await ws_manager.emit("settings", settings, to=client.websocket)
 
-@ws_manager.on("getWholeQuestionnaire")
+@ws_manager.on("getWholeQuiz")
 @verification_wrapper
-async def handle_get_whole_questionnaire(websocket, res) -> None:
-    """Handle requests to get the whole questionnaire."""
+async def handle_get_whole_quiz(websocket, res) -> None:
+    """Handle requests to get the whole quiz."""
     code = res["passcode"]
-    questionnaire_name = res["questionnaire_name"]
-    if not questionnaire_name.endswith(".khn"):
-        questionnaire_name += ".khn"
+    quiz_name = res["quiz_name"]
+    if not quiz_name.endswith(".khn"):
+        quiz_name += ".khn"
     if get_passcode() == code:
-        with relative_open(f"questionnaire/{questionnaire_name}", "rb") as f:
+        with relative_open(f"quiz/{quiz_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
 
-            if "questions" not in dict_content["questionary"]:
-                dict_content["questionary"]["questions"] = []
+            if "questions" not in dict_content["quiz"]:
+                dict_content["quiz"]["questions"] = []
 
-            if isinstance(dict_content["questionary"]["questions"], dict):
-                questions = [dict_content["questionary"]["questions"]]
-                dict_content["questionary"]["questions"] = questions
-            elif dict_content["questionary"]["questions"] is None:
+            if isinstance(dict_content["quiz"]["questions"], dict):
+                questions = [dict_content["quiz"]["questions"]]
+                dict_content["quiz"]["questions"] = questions
+            elif dict_content["quiz"]["questions"] is None:
                 questions = []
-            elif isinstance(dict_content["questionary"]["questions"][0]["question"], dict):
-                questions = [dict_content["questionary"]["questions"][0]["question"]]
-                dict_content["questionary"]["questions"][0]["question"] = questions
+            elif isinstance(dict_content["quiz"]["questions"][0]["question"], dict):
+                questions = [dict_content["quiz"]["questions"][0]["question"]]
+                dict_content["quiz"]["questions"][0]["question"] = questions
 
             if not isinstance(questions, list):
                 questions = [e["question"] for e in questions]
@@ -950,18 +980,18 @@ async def handle_get_whole_questionnaire(websocket, res) -> None:
                 if isinstance(question, dict) and "correct_answers" not in question:
                     question["correct_answers"] = []
 
-            if not questionnaire_name.endswith(".khn"):
-                questionnaire_name += ".khn"
+            if not quiz_name.endswith(".khn"):
+                quiz_name += ".khn"
 
             questionnary = {
-                "subject": dict_content["questionary"]["subject"],
-                "language": dict_content["questionary"]["language"],
-                "title": questionnaire_name[:-4],
+                "subject": dict_content["quiz"]["subject"],
+                "language": dict_content["quiz"]["language"],
+                "title": quiz_name[:-4],
                 "questions": questions
             }
 
             json_content = json.dumps(questionnary)
-            await ws_manager.emit("wholeQuestionnaire", json_content, to=websocket)
+            await ws_manager.emit("wholeQuiz", json_content, to=websocket)
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 
@@ -973,25 +1003,25 @@ async def handle_move_question(websocket, res) -> None:
     if get_passcode() == code:
         from_index = res["from"]
         to_index = res["to"]
-        questionnaire_name = res["questionnaire_name"]
+        quiz_name = res["quiz_name"]
         
-        if not questionnaire_name.endswith(".khn"):
-            questionnaire_name += ".khn"
+        if not quiz_name.endswith(".khn"):
+            quiz_name += ".khn"
 
-        with relative_open(f"questionnaire/{questionnaire_name}", "rb") as f:
+        with relative_open(f"quiz/{quiz_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
-            if "questions" not in dict_content["questionary"]:
-                dict_content["questionary"]["questions"] = []
+            if "questions" not in dict_content["quiz"]:
+                dict_content["quiz"]["questions"] = []
 
-            if isinstance(dict_content["questionary"]["questions"], dict):
-                questions = [dict_content["questionary"]["questions"]]
-                dict_content["questionary"]["questions"] = questions
-            elif dict_content["questionary"]["questions"] is None:
+            if isinstance(dict_content["quiz"]["questions"], dict):
+                questions = [dict_content["quiz"]["questions"]]
+                dict_content["quiz"]["questions"] = questions
+            elif dict_content["quiz"]["questions"] is None:
                 questions = []
-            elif isinstance(dict_content["questionary"]["questions"][0]["question"], dict):
-                questions = [dict_content["questionary"]["questions"][0]["question"]]
-                dict_content["questionary"]["questions"][0]["question"] = questions
+            elif isinstance(dict_content["quiz"]["questions"][0]["question"], dict):
+                questions = [dict_content["quiz"]["questions"][0]["question"]]
+                dict_content["quiz"]["questions"][0]["question"] = questions
 
             if not isinstance(questions, list):
                 questions = [e["question"] for e in questions]
@@ -1012,21 +1042,21 @@ async def handle_move_question(websocket, res) -> None:
         # Move the question from from_index to to_index
         questions.insert(to_index, questions.pop(from_index))
 
-        with relative_open(f"questionnaire/{questionnaire_name}", "wb") as f:
+        with relative_open(f"quiz/{quiz_name}", "wb") as f:
             f.write(xmltodict.unparse(dict_content).encode())
 
-        if not questionnaire_name.endswith(".khn"):
-            questionnaire_name += ".khn"
+        if not quiz_name.endswith(".khn"):
+            quiz_name += ".khn"
 
         questionnary = {
-            "subject": dict_content["questionary"]["subject"],
-            "language": dict_content["questionary"]["language"],
-            "title": questionnaire_name[:-4],
+            "subject": dict_content["quiz"]["subject"],
+            "language": dict_content["quiz"]["language"],
+            "title": quiz_name[:-4],
             "questions": questions
         }
 
         json_content = json.dumps(questionnary)
-        await ws_manager.emit("wholeQuestionnaire", json_content, to=websocket)
+        await ws_manager.emit("wholeQuiz", json_content, to=websocket)
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 
@@ -1041,17 +1071,17 @@ async def handle_copy_question(websocket, res) -> None:
         question_to_copy["@type"] = question_to_copy.pop("type")
 
         target_index = res["to"]
-        questionnaire_name = res["questionnaire_name"]
+        quiz_name = res["quiz_name"]
         
-        if not questionnaire_name.endswith(".khn"):
-            questionnaire_name += ".khn"
+        if not quiz_name.endswith(".khn"):
+            quiz_name += ".khn"
 
-        with relative_open(f"questionnaire/{questionnaire_name}", "rb") as f:
+        with relative_open(f"quiz/{quiz_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
-            if "questions" not in dict_content["questionary"] or dict_content["questionary"]["questions"] is None:
-                dict_content["questionary"]["questions"] = {"question": []}
-            questions = dict_content["questionary"]["questions"].get("question", [])
+            if "questions" not in dict_content["quiz"] or dict_content["quiz"]["questions"] is None:
+                dict_content["quiz"]["questions"] = {"question": []}
+            questions = dict_content["quiz"]["questions"].get("question", [])
 
         # Ensure questions is a list
         if not isinstance(questions, list):
@@ -1065,23 +1095,23 @@ async def handle_copy_question(websocket, res) -> None:
         # Copy the question to the target index
         questions.insert(target_index, question_to_copy)
 
-        dict_content["questionary"]["questions"]["question"] = questions
+        dict_content["quiz"]["questions"]["question"] = questions
 
-        with relative_open(f"questionnaire/{questionnaire_name}", "wb") as f:
+        with relative_open(f"quiz/{quiz_name}", "wb") as f:
             f.write(xmltodict.unparse(dict_content).encode())
 
-        if not questionnaire_name.endswith(".khn"):
-            questionnaire_name += ".khn"
+        if not quiz_name.endswith(".khn"):
+            quiz_name += ".khn"
 
         questionnary = {
-            "subject": dict_content["questionary"]["subject"],
-            "language": dict_content["questionary"]["language"],
-            "title": questionnaire_name[:-4],
+            "subject": dict_content["quiz"]["subject"],
+            "language": dict_content["quiz"]["language"],
+            "title": quiz_name[:-4],
             "questions": questions
         }
 
         json_content = json.dumps(questionnary)
-        await ws_manager.emit("wholeQuestionnaire", json_content, to=websocket)
+        await ws_manager.emit("wholeQuiz", json_content, to=websocket)
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 
@@ -1092,14 +1122,14 @@ async def handle_delete_question(websocket, res) -> None:
     code = res["passcode"]
     if get_passcode() == code:
         index = res["index"]
-        questionnaire_name = res["questionnaire_name"]
+        quiz_name = res["quiz_name"]
         
-        if not questionnaire_name.endswith(".khn"):
-            questionnaire_name += ".khn"
-        with relative_open(f"questionnaire/{questionnaire_name}", "rb") as f:
+        if not quiz_name.endswith(".khn"):
+            quiz_name += ".khn"
+        with relative_open(f"quiz/{quiz_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
-            questions = dict_content["questionary"]["questions"].get("question", [])
+            questions = dict_content["quiz"]["questions"].get("question", [])
 
         # Ensure questions is a list
         if not isinstance(questions, list):
@@ -1109,23 +1139,23 @@ async def handle_delete_question(websocket, res) -> None:
         if 0 <= index < len(questions):
             del questions[index]
 
-        dict_content["questionary"]["questions"]["question"] = questions
+        dict_content["quiz"]["questions"]["question"] = questions
 
-        with relative_open(f"questionnaire/{questionnaire_name}", "wb") as f:
+        with relative_open(f"quiz/{quiz_name}", "wb") as f:
             f.write(xmltodict.unparse(dict_content).encode())
 
-        if not questionnaire_name.endswith(".khn"):
-            questionnaire_name += ".khn"
+        if not quiz_name.endswith(".khn"):
+            quiz_name += ".khn"
         
         questionnary = {
-            "subject": dict_content["questionary"]["subject"],
-            "language": dict_content["questionary"]["language"],
-            "title": questionnaire_name[:-4],
+            "subject": dict_content["quiz"]["subject"],
+            "language": dict_content["quiz"]["language"],
+            "title": quiz_name[:-4],
             "questions": questions
         }
 
         json_content = json.dumps(questionnary)
-        await ws_manager.emit("wholeQuestionnaire", json_content, to=websocket)
+        await ws_manager.emit("wholeQuiz", json_content, to=websocket)
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 
@@ -1155,7 +1185,7 @@ async def handle_upload_quiz_at_id(websocket, res) -> None:
         files = {
             'token': (None, token),
             'filename': (None, quiz),
-            'file': (quiz, open(f"questionnaire/{quiz}.khn", 'rb'))
+            'file': (quiz, open(f"quiz/{quiz}.khn", 'rb'))
         }
         response = requests.post(kahiin_db_address + "/quiz", files=files)
         if json.loads(response.text) == {"message": "Quiz uploaded successfully"}:
@@ -1219,8 +1249,8 @@ async def handle_download_quiz(websocket, res) -> None:
         quiz_name = get_quiz_name_from_id(token, quiz_id)
         if quiz_name == "InternalError":
             await ws_manager.emit("error", "InternalError", to=websocket)
-        if download_file(token, quiz_id, f"questionnaire/{quiz_name}.khn"):
-            quiz_list = os.listdir(os.path.join(os.path.dirname(__file__), "questionnaire"))
+        if download_file(token, quiz_id, f"quiz/{quiz_name}.khn"):
+            quiz_list = os.listdir(os.path.join(os.path.dirname(__file__), "quiz"))
             quiz_list.sort()
             quiz_list = [q[:-4] for q in quiz_list if q != ".gitkeep"]
             for quiz in quiz_list:

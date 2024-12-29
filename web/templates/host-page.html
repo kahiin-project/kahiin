@@ -76,7 +76,7 @@
       <button id="start_game" onclick="startSession()">
         {{glossary["StartGame"]}}
       </button>
-      <button id="pass_question" style="display: none;" onclick="passQuestion()">
+      <button id="skip_question" style="display: none;" onclick="passQuestion()">
         {{glossary["PassQuestion"]}}
       </button>
       <button id="pause_question" style="display: none;" onclick="pauseQuestion()">{{glossary["PauseQuestion"]}}</button>
@@ -96,33 +96,31 @@
         {{glossary["KickPlayer"]}}
       </button>
       <h2>{{glossary["Select"]}}</h2>
-      <input type="search" id="search_select_questionary" placeholder="search" onkeyup="search('select')">
-      <ul id="questionary_select_list"></ul>
+      <input type="search" id="search_select_quiz" placeholder="search" onkeyup="search('select')">
+      <ul id="quiz_select_list"></ul>
     </div>
 
     <!-- Create -->
     <div id="create_div" class="nav_content" style="display: none;">
       <h1>{{glossary["Create"]}}</h1>
-      <button id="create_questionary" onclick="createQuestionary()">{{glossary["CreateNewQuestionary"]}}</button>
+      <button id="create_quiz" onclick="createQuiz()">{{glossary["CreateNewQuiz"]}}</button>
       <h2>{{glossary["Edit"]}}</h2>
-      <input type="search" id="search_edit_questionary" placeholder="search" onkeyup="search('edit')">
-      <ul id="questionary_edit_list"></ul>
+      <input type="search" id="search_edit_quiz" placeholder="search" onkeyup="search('edit')">
+      <ul id="quiz_edit_list"></ul>
     </div>
 
     <!-- Edit -->
     <div id="edit_div" class="nav_content" style="display: none;">
       <h1>{{glossary["Edit"]}}</h1>
-      <input type="text" id="edit_questionnaire_name" placeholder="Questionary Name" onchange="editQuestionaryName(this.value)">
-      <h2>{{glossary["Language"]}}</h2>
-      <select id="edit_quiz_language_select" onchange="editQuizLanguage(this.value)">
+      <input type="text" id="edit_quiz_name" placeholder="Quiz Name" onchange="editQuizName(this.value)">
+      <input type="text" id="edit_quiz_subject_input" placeholder="Subject">
+      <select id="edit_quiz_language_select">
         <option value="en">🇬🇧 English</option>
         <option value="fr">🇫🇷 Français</option>
         <option value="es">🇪🇸 Español</option>
         <option value="it">🇮🇹 Italiano</option>
         <option value="de">🇩🇪 Deutsch</option>
       </select>
-      <h2>{{glossary["Subject"]}}</h2>
-      <input type="text" id="edit_quiz_subject_input" onchange="editQuizSubject(this.value)">
       <h2>{{glossary["Questions"]}}</h2>
       <table class="questions_div">
         <colgroup>
@@ -141,7 +139,7 @@
           </th>
         </tr>
       </table> 
-      <button class="delete_quiz_button" onclick="deleteQuestionary()">{{glossary["DeleteQuestionnaire"]}}</button>
+      <button class="delete_quiz_button" onclick="deleteQuiz()">{{glossary["DeleteQuiz"]}}</button>
     </div>
     <div id="edit_popup_container">
       <div id="edit_popup">
@@ -289,7 +287,7 @@
           </select>
         </div>
       </div>
-      <button class="questionary" id="db_search_button" onclick="searchDB()">{{glossary["Search"]}}</button>
+      <button class="quiz" id="db_search_button" onclick="searchDB()">{{glossary["Search"]}}</button>
       <div id="db_search_results_div"></div>
 
       <h2>{{glossary["Contribute"]}}</h2>

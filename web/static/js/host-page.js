@@ -8,7 +8,7 @@ let dyslexicMode = false;
 let drawer = [];
 let draggedIndex = null;
 let draggedQuestion = null;
-let questionnaire = null;
+let quiz = null;
 let quizzes = [];
 
 // ---------------------- Initialisation -------------------------
@@ -57,7 +57,6 @@ function submitPasscode() {
     passcode = hashSHA256(document.getElementById("passcode").value);
     socket.emit("hostConnect", passcode);
     getDrawer();
-    socket.emit("listQuestionary", { passcode });
 }
 
 function printError(error) {
@@ -81,7 +80,7 @@ function nextQuestion() {
     elementsToDisable.forEach(element => {
         document.getElementById(element).setAttribute("disabled", true);
     });
-    const elementsToEnable = ["pass_question","pause_question"];
+    const elementsToEnable = ["skip_question","pause_question"];
     elementsToEnable.forEach(element => {
         document.getElementById(element).removeAttribute("disabled");
     });
@@ -173,50 +172,50 @@ function createDrawerQuestionElement(id, title) {
 
 // ---------------------- Functions Create -------------------------
 
-function selectQuestionary(questionnaire_name) {
-    socket.emit("selectQuestionary", { passcode, questionnaire_name });
-    document.querySelectorAll(".questionary").forEach(element => {
+function selectQuiz(quiz_name) {
+    socket.emit("selectQuiz", { passcode, quiz_name });
+    document.querySelectorAll(".quiz").forEach(element => {
         element.style.background = "";
     });
-    document.getElementById(questionnaire_name).style.background = "#49cf38";
+    document.getElementById(quiz_name).style.background = "#49cf38";
 }
 
-function createQuestionary() {
-    socket.emit("createQuestionary", { passcode });
-    socket.emit("listQuestionary", { passcode });
+function createQuiz() {
+    socket.emit("createQuiz", { passcode });
+    socket.emit("listQuiz", { passcode });
 }
 
-function getWholeQuestionnaire(questionnaire_name) {
-    socket.emit("getWholeQuestionnaire", { passcode, questionnaire_name });
+function getWholeQuiz(quiz_name) {
+    socket.emit("getWholeQuiz", { passcode, quiz_name });
 }
 
 function getDrawer() {
     socket.emit("getDrawer", { passcode });
 }
 
-editing_questionnaire = ""
-function editQuestionary(questionnaire_name) {
-    document.getElementById("edit_questionnaire_name").value = "";
+editing_quiz = ""
+function editQuiz(quiz_name) {
+    document.getElementById("edit_quiz_name").value = "";
     document.getElementById("create_div").style.display = "none";
-    socket.emit("listQuestionary", { passcode });
-    document.getElementById("edit_questionnaire_name").value = questionnaire_name;
-    editing_questionnaire = questionnaire_name;
+    socket.emit("listQuiz", { passcode });
+    document.getElementById("edit_quiz_name").value = quiz_name;
+    editing_quiz = quiz_name;
     document.getElementById("edit_div").style.display = "block";
     document.getElementById("edit_div").scrollTop = 0;
 
     document.getElementById('dropbox').innerHTML = '';
-    getWholeQuestionnaire(questionnaire_name);
+    getWholeQuiz(quiz_name);
     getDrawer();
 }
 
-function editQuestionaryName(new_name) {
-    socket.emit("editQuestionaryName", { passcode, old_name: editing_questionnaire, new_name });
-    socket.emit("listQuestionary", { passcode });
+function editQuizName(new_name) {
+    socket.emit("editQuizName", { passcode, old_name: editing_quiz, new_name });
+    socket.emit("listQuiz", { passcode });
 }
 
 function editQuizLanguage(new_language) {
-    socket.emit("editQuizLanguage", { passcode, quiz_name: editing_questionnaire, new_language });
-    socket.emit("listQuestionary", { passcode });
+    socket.emit("editQuizLanguage", { passcode, quiz_name: editing_quiz, new_language });
+    socket.emit("listQuiz", { passcode });
 }
 
 let previous_quiz_subject = "";
@@ -226,14 +225,14 @@ function editQuizSubject(new_subject) {
         new_subject = previous_quiz_subject;
     }else{
         previous_quiz_subject = new_subject;
-        socket.emit("editQuizSubject", { passcode, quiz_name: editing_questionnaire, new_subject });
+        socket.emit("editQuizSubject", { passcode, quiz_name: editing_quiz, new_subject });
         socket.emit("listQuestionary", { passcode });
     }
 }
 
-function deleteQuestionary() {
-    const questionnaire_name = document.getElementById("edit_questionnaire_name").value;
-    socket.emit("deleteQuestionary", { passcode, questionnaire_name });
+function deleteQuiz() {
+    const quiz_name = document.getElementById("edit_quiz_name").value;
+    socket.emit("deleteQuiz", { passcode, quiz_name });
 }
 
 function showQuestionInfos(question) {
@@ -288,13 +287,13 @@ function showQuestionInfos(question) {
 }
 
 function showQuestionInfosFromDrawer(id) {
-    if (questionnaire == null) {
+    if (quiz == null) {
         return;
     }
-    if (id >= questionnaire.questions.length) {
+    if (id >= quiz.questions.length) {
         return;
     }
-    showQuestionInfos(questionnaire.questions[id]);
+    showQuestionInfos(quiz.questions[id]);
 }
 
 document.getElementById("edit_popup_container").addEventListener("click", function() {
@@ -303,7 +302,7 @@ document.getElementById("edit_popup_container").addEventListener("click", functi
 
 let quill;
 function editQuestion(id) {
-    if (questionnaire == null) {
+    if (quiz == null) {
         return;
     }
     document.getElementById("edit_div").style.display = "none";
@@ -1001,13 +1000,13 @@ function navigate(index) {
                 document.getElementById("play_div").style.display = "block";
                 break;
             case 1:
-                const questionary_select_list = document.getElementById("questionary_select_list");
-                const questionary_edit_list = document.getElementById("questionary_edit_list");
-                questionary_select_list.innerHTML = "";
-                questionary_edit_list.innerHTML = "";
-                quizzes.forEach(questionary => {
-                    questionary_select_list.innerHTML += `<button onclick="selectQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
-                    questionary_edit_list.innerHTML += `<button onclick="editQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
+                const quiz_select_list = document.getElementById("quiz_select_list");
+                const quiz_edit_list = document.getElementById("quiz_edit_list");
+                quiz_select_list.innerHTML = "";
+                quiz_edit_list.innerHTML = "";
+                quizzes.forEach(quiz => {
+                    quiz_select_list.innerHTML += `<button onclick="selectQuiz('${quiz}')" id="${quiz}" class="quiz">${quiz}</button>`;
+                    quiz_edit_list.innerHTML += `<button onclick="editQuiz('${quiz}')" id="${quiz}" class="quiz">${quiz}</button>`;
                 });
                 document.getElementById("create_div").style.display = "block";
                 break;
@@ -1039,8 +1038,8 @@ function navigate(index) {
 }
 
 function search(page) {
-    const searchText = document.getElementById(`search_${page}_questionary`).value;
-    document.querySelectorAll(`#questionary_${page}_list .questionary`).forEach(element => {
+    const searchText = document.getElementById(`search_${page}_quiz`).value;
+    document.querySelectorAll(`#quiz_${page}_list .quiz`).forEach(element => {
         if (element.innerHTML.toLowerCase().includes(searchText.toLowerCase())) {
             element.style.display = "block";
         } else {
@@ -1097,10 +1096,10 @@ function setupSocketListeners() {
             document.getElementById("error").innerHTML = glossary[res];
         } else if (res == "EmptyName" || res == "SpecialCharacters" || res == "AlreadyExists") { 
             alert(glossary[res]);
-            if(editing_questionnaire.endsWith(".khn")){
-                editing_questionnaire = editing_questionnaire.substring(0, editing_questionnaire.length - 4);
+            if(editing_quiz.endsWith(".khn")){
+                editing_quiz = editing_quiz.substring(0, editing_quiz.length - 4);
             }
-            document.getElementById("edit_questionnaire_name").value = editing_questionnaire;
+            document.getElementById("edit_quiz_name").value = editing_quiz;
         } else {
             alert(glossary[res]);
             document.getElementById("error").style.display = "block";
@@ -1133,7 +1132,7 @@ function setupSocketListeners() {
     socket.on("hostConnected", (res) => {
         document.getElementById("form").style.display = "none";
         document.getElementById("nav").style.display = "block";
-        socket.emit("listQuestionary", { passcode });
+        socket.emit("listQuiz", { passcode });
     });
 
     // ---------------------- socket.io Game -------------------------
@@ -1145,7 +1144,7 @@ function setupSocketListeners() {
         elementsToHide.forEach(element => {
             document.getElementById(element).style.display = "none";
         });
-        const elementsToShow = ["next_question", "show_leaderboard","pass_question","pause_question","question_number"];
+        const elementsToShow = ["next_question", "show_leaderboard","skip_question","pause_question","question_number"];
         elementsToShow.forEach(element => {
             document.getElementById(element).style.display = "block";
         });
@@ -1164,7 +1163,7 @@ function setupSocketListeners() {
         elementsToEnable.forEach(element => {
             document.getElementById(element).removeAttribute("disabled");
         });
-        const elementsToDisable = ["pass_question","pause_question"];
+        const elementsToDisable = ["skip_question","pause_question"];
         elementsToDisable.forEach(element => {
             document.getElementById(element).setAttribute("disabled", true);
         });
@@ -1175,7 +1174,7 @@ function setupSocketListeners() {
         elementsToShow.forEach(element => {
             document.getElementById(element).style.display = "block";
         });
-        const elementsToHide = ["next_question", "show_leaderboard","pass_question","pause_question","question_number"];
+        const elementsToHide = ["next_question", "show_leaderboard","skip_question","pause_question","question_number"];
         elementsToHide.forEach(element => {
             document.getElementById(element).style.display = "none";
         });
@@ -1190,7 +1189,7 @@ function setupSocketListeners() {
         const url = window.URL.createObjectURL(blob);
         const csv_link = document.createElement('a');
         csv_link.href = url;
-        csv_link.download = `${res.questionnaire_name}_leaderboard_${formattedDate}.csv`;
+        csv_link.download = `${res.quiz_name}_leaderboard_${formattedDate}.csv`;
         document.body.appendChild(csv_link);
         csv_link.click();
         document.body.removeChild(csv_link);
@@ -1199,30 +1198,30 @@ function setupSocketListeners() {
 
     // ---------------------- socket.io Create -------------------------
 
-    socket.on("ListOfQuestionary", (res) => {
-        const questionary_select_list = document.getElementById("questionary_select_list");
-        const questionary_edit_list = document.getElementById("questionary_edit_list");
-        questionary_select_list.innerHTML = "";
-        questionary_edit_list.innerHTML = "";
-        quizzes = res.questionaries;
-        res.questionaries.forEach(questionary => {
-            questionary_select_list.innerHTML += `<button onclick="selectQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
-            questionary_edit_list.innerHTML += `<button onclick="editQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
+    socket.on("ListOfQuiz", (res) => {
+        const quiz_select_list = document.getElementById("quiz_select_list");
+        const quiz_edit_list = document.getElementById("quiz_edit_list");
+        quiz_select_list.innerHTML = "";
+        quiz_edit_list.innerHTML = "";
+        quizzes = res.quizs;
+        res.quizs.forEach(quiz => {
+            quiz_select_list.innerHTML += `<button onclick="selectQuiz('${quiz}')" id="${quiz}" class="quiz">${quiz}</button>`;
+            quiz_edit_list.innerHTML += `<button onclick="editQuiz('${quiz}')" id="${quiz}" class="quiz">${quiz}</button>`;
         });
     });
 
-    socket.on("deletedQuestionnary", (res) => {
-        socket.emit("listQuestionary", { passcode });
+    socket.on("deletedQuiz", (res) => {
+        socket.emit("listQuiz", { passcode });
         navigate(1);
     });
 
-    socket.on("wholeQuestionnaire", (res) => {
+    socket.on("wholeQuiz", (res) => {
         document.getElementById('dropbox').innerHTML = '';
-        questionnaire = JSON.parse(res);
-        questions = questionnaire.questions;
-        previous_quiz_subject = questionnaire.subject;
-        document.getElementById("edit_quiz_subject_input").value = questionnaire.subject;
-        document.getElementById("edit_quiz_language_select").value = questionnaire.language;
+        quiz = JSON.parse(res);
+        questions = quiz.questions;
+        previous_quiz_subject = quiz.subject;
+        document.getElementById("edit_quiz_subject_input").value = quiz.subject;
+        document.getElementById("edit_quiz_language_select").value = quiz.language;
         
         if(questions == null || questions.length == 0){
             createDroppableSpace(0);
@@ -1263,7 +1262,7 @@ function setupSocketListeners() {
                 trashButton.src = '/static/icon/trash.svg';
                 trashButton.title = glossary["DeleteQuestion"];
                 trashButton.addEventListener('click', () => {
-                    socket.emit('deleteQuestion', { passcode, index, questionnaire_name: editing_questionnaire });
+                    socket.emit('deleteQuestion', { passcode, index, quiz_name: editing_quiz });
                 });
                 question_div.appendChild(trashButton);
     
@@ -1310,8 +1309,8 @@ function setupSocketListeners() {
         editQuestion(drawer.length - 1);
     });
 
-    socket.on("editingQuestionnary", (res) => {
-        editing_questionnaire = res;
+    socket.on("editingQuiz", (res) => {
+        editing_quiz = res;
     });
 
     socket.on("quizUploaded", (res) => {
