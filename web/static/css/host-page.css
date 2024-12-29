@@ -235,11 +235,11 @@ nav button img{
     cursor: text;
     box-sizing: border-box;
 }
-.nav_content .apply-button, #next_question, #show_leaderboard, #get_spreadsheet, .questionary, #create_questionary, #pass_question, #pause_question, #login, #create_account, #reset_password{
+.nav_content .apply-button, #next_question, #show_leaderboard, #get_spreadsheet, .questionnaire, #create_questionnaire, #skip_question, #pause_question, #login, #create_account, #reset_password{
     background: light-dark(#387fcf,#418bde);
     margin-bottom: 5px;
 }
-.nav_content .apply-button:hover, #next_question:hover, #show_leaderboard:hover, #get_spreadsheet:hover, .questionary:hover, #create_questionary:hover,  #pass_question:hover, #pause_question:hover, #login:hover, #create_account:hover, #reset_password:hover{
+.nav_content .apply-button:hover, #next_question:hover, #show_leaderboard:hover, #get_spreadsheet:hover, .questionnaire:hover, #create_questionnaire:hover,  #skip_question:hover, #pause_question:hover, #login:hover, #create_account:hover, #reset_password:hover{
     background: light-dark(#3473bb,#3d7fca);
 }
 .nav_content .delete-button{
@@ -285,7 +285,7 @@ nav button img{
     background: light-dark(#47c037,#4cc93a);
 }
 
-#questionary_select_list, #questionary_edit_list {
+#questionnaire_select_list, #questionnaire_edit_list {
     padding-left: 0px;
 }
 

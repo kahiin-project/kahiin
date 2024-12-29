@@ -76,7 +76,7 @@
       <button id="start_game" onclick="startSession()">
         {{glossary["StartGame"]}}
       </button>
-      <button id="pass_question" style="display: none;" onclick="passQuestion()">
+      <button id="skip_question" style="display: none;" onclick="passQuestion()">
         {{glossary["PassQuestion"]}}
       </button>
       <button id="pause_question" style="display: none;" onclick="pauseQuestion()">{{glossary["PauseQuestion"]}}</button>
@@ -96,23 +96,23 @@
         {{glossary["KickPlayer"]}}
       </button>
       <h2>{{glossary["Select"]}}</h2>
-      <input type="search" id="search_select_questionary" placeholder="search" onkeyup="search('select')">
-      <ul id="questionary_select_list"></ul>
+      <input type="search" id="search_select_questionnaire" placeholder="search" onkeyup="search('select')">
+      <ul id="questionnaire_select_list"></ul>
     </div>
 
     <!-- Create -->
     <div id="create_div" class="nav_content" style="display: none;">
       <h1>{{glossary["Create"]}}</h1>
-      <button id="create_questionary" onclick="createQuestionary()">{{glossary["CreateNewQuestionary"]}}</button>
+      <button id="create_questionnaire" onclick="createQuestionnaire()">{{glossary["CreateNewQuestionnaire"]}}</button>
       <h2>{{glossary["Edit"]}}</h2>
-      <input type="search" id="search_edit_questionary" placeholder="search" onkeyup="search('edit')">
-      <ul id="questionary_edit_list"></ul>
+      <input type="search" id="search_edit_questionnaire" placeholder="search" onkeyup="search('edit')">
+      <ul id="questionnaire_edit_list"></ul>
     </div>
 
     <!-- Edit -->
     <div id="edit_div" class="nav_content" style="display: none;">
       <h1>{{glossary["Edit"]}}</h1>
-      <input type="text" id="edit_questionnaire_name" placeholder="Questionary Name" onchange="editQuestionaryName(this.value)">
+      <input type="text" id="edit_questionnaire_name" placeholder="Questionnaire Name" onchange="editQuestionnaireName(this.value)">
       <h2>{{glossary["Questions"]}}</h2>
       <table class="questions_div">
         <colgroup>
@@ -131,7 +131,7 @@
           </th>
         </tr>
       </table> 
-      <button class="delete_quiz_button" onclick="deleteQuestionary()">{{glossary["DeleteQuestionnaire"]}}</button>
+      <button class="delete_quiz_button" onclick="deleteQuestionnaire()">{{glossary["DeleteQuestionnaire"]}}</button>
     </div>
     <div id="edit_popup_container">
       <div id="edit_popup">
@@ -279,7 +279,7 @@
           </select>
         </div>
       </div>
-      <button class="questionary" id="db_search_button" onclick="searchDB()">{{glossary["Search"]}}</button>
+      <button class="questionnaire" id="db_search_button" onclick="searchDB()">{{glossary["Search"]}}</button>
       <div id="db_search_results_div"></div>
 
       <h2>{{glossary["Contribute"]}}</h2>

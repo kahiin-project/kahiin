@@ -58,7 +58,6 @@ function submitPasscode() {
     passcode = hashSHA256(document.getElementById("passcode").value);
     socket.emit("hostConnect", passcode);
     getDrawer();
-    socket.emit("listQuestionary", { passcode });
 }
 
 function printError(error) {
@@ -82,7 +81,7 @@ function nextQuestion() {
     elementsToDisable.forEach(element => {
         document.getElementById(element).setAttribute("disabled", true);
     });
-    const elementsToEnable = ["pass_question","pause_question"];
+    const elementsToEnable = ["skip_question","pause_question"];
     elementsToEnable.forEach(element => {
         document.getElementById(element).removeAttribute("disabled");
     });
@@ -174,17 +173,17 @@ function createDrawerQuestionElement(id, title) {
 
 // ---------------------- Functions Create -------------------------
 
-function selectQuestionary(questionnaire_name) {
-    socket.emit("selectQuestionary", { passcode, questionnaire_name });
-    document.querySelectorAll(".questionary").forEach(element => {
+function selectQuestionnaire(questionnaire_name) {
+    socket.emit("selectQuestionnaire", { passcode, questionnaire_name });
+    document.querySelectorAll(".questionnaire").forEach(element => {
         element.style.background = "";
     });
     document.getElementById(questionnaire_name).style.background = "#49cf38";
 }
 
-function createQuestionary() {
-    socket.emit("createQuestionary", { passcode });
-    socket.emit("listQuestionary", { passcode });
+function createQuestionnaire() {
+    socket.emit("createQuestionnaire", { passcode });
+    socket.emit("listQuestionnaire", { passcode });
 }
 
 function getWholeQuestionnaire(questionnaire_name) {
@@ -196,10 +195,10 @@ function getDrawer() {
 }
 
 editing_questionnaire = ""
-function editQuestionary(questionnaire_name) {
+function editQuestionnaire(questionnaire_name) {
     document.getElementById("edit_questionnaire_name").value = "";
     document.getElementById("create_div").style.display = "none";
-    socket.emit("listQuestionary", { passcode });
+    socket.emit("listQuestionnaire", { passcode });
     document.getElementById("edit_questionnaire_name").value = questionnaire_name;
     editing_questionnaire = questionnaire_name;
     document.getElementById("edit_div").style.display = "block";
@@ -209,14 +208,14 @@ function editQuestionary(questionnaire_name) {
     getDrawer();
 }
 
-function editQuestionaryName(new_name) {
-    socket.emit("editQuestionaryName", { passcode, old_name: editing_questionnaire, new_name });
-    socket.emit("listQuestionary", { passcode });
+function editQuestionnaireName(new_name) {
+    socket.emit("editQuestionnaireName", { passcode, old_name: editing_questionnaire, new_name });
+    socket.emit("listQuestionnaire", { passcode });
 }
 
-function deleteQuestionary() {
+function deleteQuestionnaire() {
     const questionnaire_name = document.getElementById("edit_questionnaire_name").value;
-    socket.emit("deleteQuestionary", { passcode, questionnaire_name });
+    socket.emit("deleteQuestionnaire", { passcode, questionnaire_name });
 }
 
 function showQuestionInfos(question) {
@@ -982,13 +981,13 @@ function navigate(index) {
                 document.getElementById("play_div").style.display = "block";
                 break;
             case 1:
-                const questionary_select_list = document.getElementById("questionary_select_list");
-                const questionary_edit_list = document.getElementById("questionary_edit_list");
-                questionary_select_list.innerHTML = "";
-                questionary_edit_list.innerHTML = "";
-                quizzes.forEach(questionary => {
-                    questionary_select_list.innerHTML += `<button onclick="selectQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
-                    questionary_edit_list.innerHTML += `<button onclick="editQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
+                const questionnaire_select_list = document.getElementById("questionnaire_select_list");
+                const questionnaire_edit_list = document.getElementById("questionnaire_edit_list");
+                questionnaire_select_list.innerHTML = "";
+                questionnaire_edit_list.innerHTML = "";
+                quizzes.forEach(questionnaire => {
+                    questionnaire_select_list.innerHTML += `<button onclick="selectQuestionnaire('${questionnaire}')" id="${questionnaire}" class="questionnaire">${questionnaire}</button>`;
+                    questionnaire_edit_list.innerHTML += `<button onclick="editQuestionnaire('${questionnaire}')" id="${questionnaire}" class="questionnaire">${questionnaire}</button>`;
                 });
                 document.getElementById("create_div").style.display = "block";
                 break;
@@ -1017,8 +1016,8 @@ function navigate(index) {
 }
 
 function search(page) {
-    const searchText = document.getElementById(`search_${page}_questionary`).value;
-    document.querySelectorAll(`#questionary_${page}_list .questionary`).forEach(element => {
+    const searchText = document.getElementById(`search_${page}_questionnaire`).value;
+    document.querySelectorAll(`#questionnaire_${page}_list .questionnaire`).forEach(element => {
         if (element.innerHTML.toLowerCase().includes(searchText.toLowerCase())) {
             element.style.display = "block";
         } else {
@@ -1110,7 +1109,7 @@ function setupSocketListeners() {
     socket.on("hostConnected", (res) => {
         document.getElementById("form").style.display = "none";
         document.getElementById("nav").style.display = "block";
-        socket.emit("listQuestionary", { passcode });
+        socket.emit("listQuestionnaire", { passcode });
     });
 
     // ---------------------- socket.io Game -------------------------
@@ -1122,7 +1121,7 @@ function setupSocketListeners() {
         elementsToHide.forEach(element => {
             document.getElementById(element).style.display = "none";
         });
-        const elementsToShow = ["next_question", "show_leaderboard","pass_question","pause_question","question_number"];
+        const elementsToShow = ["next_question", "show_leaderboard","skip_question","pause_question","question_number"];
         elementsToShow.forEach(element => {
             document.getElementById(element).style.display = "block";
         });
@@ -1141,7 +1140,7 @@ function setupSocketListeners() {
         elementsToEnable.forEach(element => {
             document.getElementById(element).removeAttribute("disabled");
         });
-        const elementsToDisable = ["pass_question","pause_question"];
+        const elementsToDisable = ["skip_question","pause_question"];
         elementsToDisable.forEach(element => {
             document.getElementById(element).setAttribute("disabled", true);
         });
@@ -1152,7 +1151,7 @@ function setupSocketListeners() {
         elementsToShow.forEach(element => {
             document.getElementById(element).style.display = "block";
         });
-        const elementsToHide = ["next_question", "show_leaderboard","pass_question","pause_question","question_number"];
+        const elementsToHide = ["next_question", "show_leaderboard","skip_question","pause_question","question_number"];
         elementsToHide.forEach(element => {
             document.getElementById(element).style.display = "none";
         });
@@ -1176,20 +1175,20 @@ function setupSocketListeners() {
 
     // ---------------------- socket.io Create -------------------------
 
-    socket.on("ListOfQuestionary", (res) => {
-        const questionary_select_list = document.getElementById("questionary_select_list");
-        const questionary_edit_list = document.getElementById("questionary_edit_list");
-        questionary_select_list.innerHTML = "";
-        questionary_edit_list.innerHTML = "";
-        quizzes = res.questionaries;
-        res.questionaries.forEach(questionary => {
-            questionary_select_list.innerHTML += `<button onclick="selectQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
-            questionary_edit_list.innerHTML += `<button onclick="editQuestionary('${questionary}')" id="${questionary}" class="questionary">${questionary}</button>`;
+    socket.on("ListOfQuestionnaire", (res) => {
+        const questionnaire_select_list = document.getElementById("questionnaire_select_list");
+        const questionnaire_edit_list = document.getElementById("questionnaire_edit_list");
+        questionnaire_select_list.innerHTML = "";
+        questionnaire_edit_list.innerHTML = "";
+        quizzes = res.questionnaires;
+        res.questionnaires.forEach(questionnaire => {
+            questionnaire_select_list.innerHTML += `<button onclick="selectQuestionnaire('${questionnaire}')" id="${questionnaire}" class="questionnaire">${questionnaire}</button>`;
+            questionnaire_edit_list.innerHTML += `<button onclick="editQuestionnaire('${questionnaire}')" id="${questionnaire}" class="questionnaire">${questionnaire}</button>`;
         });
     });
 
-    socket.on("deletedQuestionnary", (res) => {
-        socket.emit("listQuestionary", { passcode });
+    socket.on("deletedQuestionnaire", (res) => {
+        socket.emit("listQuestionnaire", { passcode });
         navigate(1);
     });
 
@@ -1284,7 +1283,7 @@ function setupSocketListeners() {
         editQuestion(drawer.length - 1);
     });
 
-    socket.on("editingQuestionnary", (res) => {
+    socket.on("editingQuestionnaire", (res) => {
         editing_questionnaire = res;
     });
 
