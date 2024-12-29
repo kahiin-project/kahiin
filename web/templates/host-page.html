@@ -113,6 +113,16 @@
     <div id="edit_div" class="nav_content" style="display: none;">
       <h1>{{glossary["Edit"]}}</h1>
       <input type="text" id="edit_questionnaire_name" placeholder="Questionary Name" onchange="editQuestionaryName(this.value)">
+      <h2>{{glossary["Language"]}}</h2>
+      <select id="edit_quiz_language_select" onchange="editQuizLanguage(this.value)">
+        <option value="en">🇬🇧 English</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="de">🇩🇪 Deutsch</option>
+      </select>
+      <h2>{{glossary["Subject"]}}</h2>
+      <input type="text" id="edit_quiz_subject_input" onchange="editQuizSubject(this.value)">
       <h2>{{glossary["Questions"]}}</h2>
       <table class="questions_div">
         <colgroup>

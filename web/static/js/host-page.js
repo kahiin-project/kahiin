@@ -203,6 +203,7 @@ function editQuestionary(questionnaire_name) {
     document.getElementById("edit_questionnaire_name").value = questionnaire_name;
     editing_questionnaire = questionnaire_name;
     document.getElementById("edit_div").style.display = "block";
+    document.getElementById("edit_div").scrollTop = 0;
 
     document.getElementById('dropbox').innerHTML = '';
     getWholeQuestionnaire(questionnaire_name);
@@ -212,6 +213,23 @@ function editQuestionary(questionnaire_name) {
 function editQuestionaryName(new_name) {
     socket.emit("editQuestionaryName", { passcode, old_name: editing_questionnaire, new_name });
     socket.emit("listQuestionary", { passcode });
+}
+
+function editQuizLanguage(new_language) {
+    socket.emit("editQuizLanguage", { passcode, quiz_name: editing_questionnaire, new_language });
+    socket.emit("listQuestionary", { passcode });
+}
+
+let previous_quiz_subject = "";
+function editQuizSubject(new_subject) {
+    if(new_subject == ""){
+        document.getElementById("edit_quiz_subject_input").value = previous_quiz_subject;
+        new_subject = previous_quiz_subject;
+    }else{
+        previous_quiz_subject = new_subject;
+        socket.emit("editQuizSubject", { passcode, quiz_name: editing_questionnaire, new_subject });
+        socket.emit("listQuestionary", { passcode });
+    }
 }
 
 function deleteQuestionary() {
@@ -565,6 +583,8 @@ ${content}\`\`\``;
     .replaceAll("¶", "\\");
 
 }
+
+
 
 // ---------------------- Functions Kahiin DB -------------------------
 
@@ -1197,6 +1217,9 @@ function setupSocketListeners() {
         document.getElementById('dropbox').innerHTML = '';
         questionnaire = JSON.parse(res);
         questions = questionnaire.questions;
+        previous_quiz_subject = questionnaire.subject;
+        document.getElementById("edit_quiz_subject_input").value = questionnaire.subject;
+        document.getElementById("edit_quiz_language_select").value = questionnaire.language;
         
         if(questions == null || questions.length == 0){
             createDroppableSpace(0);

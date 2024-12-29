@@ -714,7 +714,7 @@ async def handle_create_questionary(websocket, res) -> None:
     # Create XML content
     questionary = ET.Element("questionary")
     subject = ET.SubElement(questionary, "subject")
-    subject.text = "None"
+    subject.text = get_glossary()["Other"]
     language = ET.SubElement(questionary, "language")
     with relative_open("settings.json", "r") as f:
         language.text = json.load(f)["language"]
@@ -762,6 +762,38 @@ async def handle_edit_questionnaire_name(websocket, res) -> None:
             os.path.join(os.path.dirname(__file__), "questionnaire", new_name)
         )
         await ws_manager.emit("editingQuestionnary", new_name, to=websocket)
+
+@ws_manager.on("editQuizSubject")
+@verification_wrapper
+async def handle_edit_quiz_subject(websocket, res) -> None:
+    passcode = res["passcode"]
+    quiz_name = res["quiz_name"]
+    new_subject = res["new_subject"]
+    if not quiz_name.endswith(".khn"):
+        quiz_name += ".khn"
+    if get_passcode() == passcode:
+        tree = ET.parse(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+        root = tree.getroot()
+        root.find("subject").text = new_subject
+        tree.write(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+    else:
+        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+
+@ws_manager.on("editQuizLanguage")
+@verification_wrapper
+async def handle_edit_quiz_language(websocket, res) -> None:
+    passcode = res["passcode"]
+    quiz_name = res["quiz_name"]
+    new_language = res["new_language"]
+    if not quiz_name.endswith(".khn"):
+        quiz_name += ".khn"
+    if get_passcode() == passcode:
+        tree = ET.parse(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+        root = tree.getroot()
+        root.find("language").text = new_language
+        tree.write(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+    else:
+        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 
 @ws_manager.on("editQuestion")
 @verification_wrapper
