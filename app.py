@@ -710,10 +710,9 @@ async def handle_create_questionnaire(websocket, res) -> None:
     while f"new_questionnaire{questionnaire_index}.khn" in list_questionnaires:
         questionnaire_index += 1
     filename = f"new_questionnaire{questionnaire_index}.khn"
-    
     questionnaire = ET.Element("questionnaire")
     subject = ET.SubElement(questionnaire, "subject") 
-    subject.text = "None"
+    subject.text = get_glossary()["Other"]
     language = ET.SubElement(questionnaire, "language")
     with relative_open("settings.json", "r") as f:
         language.text = json.load(f)["language"]
@@ -761,6 +760,70 @@ async def handle_edit_questionnaire_name(websocket, res) -> None:
             os.path.join(os.path.dirname(__file__), "questionnaire", new_name)
         )
         await ws_manager.emit("editingQuestionnaire", new_name, to=websocket)
+
+@ws_manager.on("editQuizSubject")
+@verification_wrapper
+async def handle_edit_quiz_subject(websocket, res) -> None:
+    passcode = res["passcode"]
+    quiz_name = res["quiz_name"]
+    new_subject = res["new_subject"]
+    if not quiz_name.endswith(".khn"):
+        quiz_name += ".khn"
+    if get_passcode() == passcode:
+        tree = ET.parse(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+        root = tree.getroot()
+        root.find("subject").text = new_subject
+        tree.write(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+    else:
+        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+
+@ws_manager.on("editQuizLanguage")
+@verification_wrapper
+async def handle_edit_quiz_language(websocket, res) -> None:
+    passcode = res["passcode"]
+    quiz_name = res["quiz_name"]
+    new_language = res["new_language"]
+    if not quiz_name.endswith(".khn"):
+        quiz_name += ".khn"
+    if get_passcode() == passcode:
+        tree = ET.parse(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+        root = tree.getroot()
+        root.find("language").text = new_language
+        tree.write(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+    else:
+        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+
+@ws_manager.on("editQuizSubject")
+@verification_wrapper
+async def handle_edit_quiz_subject(websocket, res) -> None:
+    passcode = res["passcode"]
+    quiz_name = res["quiz_name"]
+    new_subject = res["new_subject"]
+    if not quiz_name.endswith(".khn"):
+        quiz_name += ".khn"
+    if get_passcode() == passcode:
+        tree = ET.parse(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+        root = tree.getroot()
+        root.find("subject").text = new_subject
+        tree.write(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+    else:
+        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+
+@ws_manager.on("editQuizLanguage")
+@verification_wrapper
+async def handle_edit_quiz_language(websocket, res) -> None:
+    passcode = res["passcode"]
+    quiz_name = res["quiz_name"]
+    new_language = res["new_language"]
+    if not quiz_name.endswith(".khn"):
+        quiz_name += ".khn"
+    if get_passcode() == passcode:
+        tree = ET.parse(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+        root = tree.getroot()
+        root.find("language").text = new_language
+        tree.write(os.path.join(os.path.dirname(__file__), "questionnaire", quiz_name))
+    else:
+        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 
 @ws_manager.on("editQuestion")
 @verification_wrapper
