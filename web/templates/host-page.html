@@ -296,7 +296,7 @@
       <button class={{"on" if settings["endOnAllAnswered"] else "off"}} id='endOnAllAnsweredButton' onclick="editSettingsButton('endOnAllAnswered')">{{"ON" if settings["endOnAllAnswered"] else "OFF"}}</button>
       <h2>{{glossary["AdminPassword"]}}</h2>
       <input type="password" id="new_password" placeholder="New Password">
-      <input type="password" id="repeat_new_password" placeholder="Repeat New Password">
+      <input type="password" id="repeat_new_password" placeholder="Confirm Password">
       <button class="apply-button" onclick="applyNewPassword()">{{glossary["Apply"]}}</button>
       <div style="height: 50px"></div>
     </div>
@@ -328,11 +328,15 @@
     <div id="account_div" class="nav_content" style="display: none;">
       <h1>{{glossary["Account"]}}</h1>
       <h2>{{glossary["PersonalInformations"]}}</h2>
-      <p id="info">{{glossary["Email"]}}: <br>
-      {{glossary["Nickname"]}}: <br>
-      {{glossary["FirstName"]}}: <br>
-      {{glossary["LastName"]}}: <br>
-      </p>
+      <!--
+      <h3 style="text-align: left;margin-left: 50px;margin-top: 10px;">{{glossary["Email"]}}:</h3>
+      <input type="email" id="info_email">
+      -->
+      <h3 style="text-align: left;margin-left: 50px;margin-top: 10px;">{{glossary["Name"]}}:</h3>
+      <input type="text" id="info_name">
+      <h3 style="text-align: left;margin-left: 50px;margin-top: 10px;">{{glossary["Academy"]}}:</h3>
+      <input type="text" id="info_academy">
+      <button class="apply-button" onclick="editInfosPage()">{{glossary["Apply"]}}</button>
       <h2>{{glossary["ResetPassword"]}}</h2>
       <input type="password" id="new_password" placeholder="New Password">
       <input type="password" id="confirm_new_password" placeholder="Confirm Password">
@@ -341,7 +345,9 @@
       <p style="margin-left: 50px; color: gray;">{{glossary["TypePasswordToDelete"]}}</p>
       <input type="password" id="password_delete_account" placeholder="Password">
       <button id="delete_account" onclick="deleteAccountPage()">{{glossary["DeleteAccount"]}}</button>
-      <button id="logout" onclick="logout()" style="bottom:30px; position:absolute; display:flex;">{{glossary["Logout"]}}</button>
+      <div class="footer" style="position: absolute; bottom: 0px; left: 0px; right: 0px; height: 80px; background-color: #121212; align-content:center">
+      <button id="logout" onclick="logout()">{{glossary["Logout"]}}</button>
+      </div>
     </div>
 
     <script src="static/js/host-page.js"></script>

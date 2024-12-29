@@ -92,9 +92,7 @@
         "PersonalInformations": "Informations personnelles",
         "TypePasswordToDelete": "Entrez votre mot de passe pour supprimer votre compte",
         "Logout": "Déconnexion",
-        "Nickname": "Surnom",
-        "FirstName": "Prénom",
-        "LastName": "Nom",
+        "Name": "Nom",
         "Quizzes": "Questionnaires",
         "MyPosts": "Mes publications",
         "Contribute": "Contribuer",
@@ -105,7 +103,8 @@
         "Other": "Autre",
         "DownloadQuestion": "Télécharger la question",
         "DownloadQuiz": "Télécharger le questionnaire",
-        "DeleteQuiz": "Supprimer le quiz"
+        "DeleteQuiz": "Supprimer le quiz",
+        "Academy": "Académie"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -200,9 +199,7 @@
         "PersonalInformations": "Personal informations",
         "TypePasswordToDelete": "Enter your password to delete your account",
         "Logout": "Logout",
-        "Nickname": "Nickname",
-        "FirstName": "First Name",
-        "LastName": "Last Name",
+        "Name": "Name",
         "Quizzes": "Quizzes",
         "MyPosts": "My posts",
         "Contribute": "Contribute",
@@ -213,7 +210,8 @@
         "Other": "Other",
         "DownloadQuestion": "Download question",
         "DownloadQuiz": "Download quiz",
-        "DeleteQuiz": "Delete quiz"
+        "DeleteQuiz": "Delete quiz",
+        "Academy": "Academy"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -308,9 +306,7 @@
         "PersonalInformations": "Informaciones personales",
         "TypePasswordToDelete": "Ingrese su contraseña para eliminar su cuenta",
         "Logout": "Cerrar sesión",
-        "Nickname": "Apodo",
-        "FirstName": "Nombre",
-        "LastName": "Apellido",
+        "Name": "Nombre",
         "Quizzes": "Cuestionarios",
         "MyPosts": "Mis publicaciones",
         "Contribute": "Contribuir",
@@ -321,7 +317,8 @@
         "Other": "Otro",
         "DownloadQuestion": "Descargar la pregunta",
         "DownloadQuiz": "Descargar el cuestionario",
-        "DeleteQuiz": "Eliminar cuestionario"
+        "DeleteQuiz": "Eliminar cuestionario",
+        "Academy": "Academia"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -416,9 +413,7 @@
         "PersonalInformations": "Informazioni personali",
         "TypePasswordToDelete": "Inserisci la tua password per eliminare il tuo account",
         "Logout": "Disconnettersi",
-        "Nickname": "Soprannome",
-        "FirstName": "Nome",
-        "LastName": "Cognome",
+        "Name": "Nome",
         "Quizzes": "Questionari",
         "MyPosts": "I miei post",
         "Contribute": "Contribuire",
@@ -429,7 +424,8 @@
         "Other": "Altro",
         "DownloadQuestion": "Scarica la domanda",
         "DownloadQuiz": "Scarica il questionario",
-        "DeleteQuiz": "Elimina il quiz"
+        "DeleteQuiz": "Elimina il quiz",
+        "Academy": "Accademia"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -524,9 +520,7 @@
         "PersonalInformations": "Persönliche Informationen",
         "TypePasswordToDelete": "Geben Sie Ihr Passwort ein, um Ihr Konto zu löschen",
         "Logout": "Abmelden",
-        "Nickname": "Spitzname",
-        "FirstName": "Vorname",
-        "LastName": "Nachname",
+        "Name": "Nachname",
         "Quizzes": "Fragebögen",
         "MyPosts": "Meine Beiträge",
         "Contribute": "Beitragen",
@@ -537,6 +531,7 @@
         "Other": "Andere",
         "DownloadQuestion": "Frage herunterladen",
         "DownloadQuiz": "Fragebogen herunterladen",
-        "DeleteQuiz": "Fragebogen löschen"
+        "DeleteQuiz": "Fragebogen löschen",
+        "Academy": "Akademie"
     }
 }

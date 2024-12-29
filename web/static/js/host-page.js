@@ -774,6 +774,7 @@ function navigate(index) {
                 break;
             case 4:
                 if (localStorage.getItem('token') != null){ //modifier test (l'actuel sert juste à tester la fonction)
+                    getInfos()
                     document.getElementById("account_div").style.display = "block";
                 } else {
                     document.getElementById("login_div").style.display = "block";
@@ -796,7 +797,7 @@ function search(page) {
         }
     });
 }
-// ---------------------- Fuctions DB Front -------------------------
+// ---------------------- Fuctions DB Account -------------------------
 
 function loginPage() {
     login(document.getElementById("login_email").value,hashSHA256(document.getElementById("login_password").value))
@@ -818,8 +819,8 @@ function deleteAccountPage() {
     deleteAccount(document.getElementById("password_delete_account").value)
 }
 
-function getInfo() {
-
+function editInfosPage() {
+    editInfos(document.getElementById("info_name").value,document.getElementById("info_academy").value)
 }
 
 function logout(){

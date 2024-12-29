@@ -53,6 +53,7 @@ function login(email, password_hash) {
     })
     .then(data => {
         localStorage.setItem('token', data.token);
+        getInfos()
         document.getElementById("login_div").style.display = "none";
         document.getElementById("account_div").style.display = "block";
         return {"message": "Logged in successfully"};
@@ -85,6 +86,61 @@ function resetPassword(new_password_hash) {
     .then(data => {
         localStorage.clear();
         return data;
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+
+//Modify User Infos
+function editInfos(name, academy) {
+    return fetch(address + 'editInfos', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'token': localStorage.getItem('token'),
+            'name': name,
+            'academy': academy
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            printError("An error has occured");
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        return data;
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+
+//Modify User Infos
+function getInfos() {
+    return fetch(address + 'getInfos', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            'token': localStorage.getItem('token')
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            printError("An error has occured");
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        document.getElementById("info_name").value = data.name
+        document.getElementById("info_academy").value = data.academy
     })
     .catch(error => {
         console.error(error);
