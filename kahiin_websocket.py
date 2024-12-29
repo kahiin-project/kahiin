@@ -34,7 +34,10 @@ class WebSocketManager:
         """Décorateur pour enregistrer les gestionnaires d'événements"""
         def decorator(func):
             async def wrapper(*args, **kwargs):
-                return await func(*args, **kwargs)
+                try:
+                    return await func(*args, **kwargs)
+                except Exception as e:
+                    logging.error(f"Error in event handler '{event_name}': {e}")
             self.event_handlers[event_name] = wrapper
             return wrapper
         return decorator
