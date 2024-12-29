@@ -1167,12 +1167,14 @@ def download_file(token, file_id, output_filename):
     else:
         return False
 
-def get_quiz_name_from_id(quiz_id):
+def get_quiz_name_from_id(token, quiz_id):
     params = {
-        "token": "ee7ca787b516fe74371bc833b61612628236a781d146f5975732421068c17e58",
+        "token": token,
         "id_file": quiz_id
     }
     response = requests.get(f"{kahiin_db_address}/quiz", params=params)
+    if response.status_code != 200:
+        return "InternalError"
     return response.json()[0]["name"]
 
 @ws_manager.on("downloadQuiz")
@@ -1182,7 +1184,9 @@ async def handle_download_quiz(websocket, res) -> None:
     quiz_id = res["quiz_id"]
     token = res["token"]
     if get_passcode() == code:
-        quiz_name = get_quiz_name_from_id(quiz_id)
+        quiz_name = get_quiz_name_from_id(token, quiz_id)
+        if quiz_name == "InternalError":
+            await ws_manager.emit("error", "InternalError", to=websocket)
         if download_file(token, quiz_id, f"questionnaire/{quiz_name}.khn"):
             quiz_list = os.listdir(os.path.join(os.path.dirname(__file__), "questionnaire"))
             quiz_list.sort()

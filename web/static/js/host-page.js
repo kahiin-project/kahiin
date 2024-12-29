@@ -569,6 +569,7 @@ ${content}\`\`\``;
 // ---------------------- Functions Kahiin DB -------------------------
 
 function searchDB() {
+    document.getElementById("db_search_button").setAttribute("disabled", true);
     document.getElementById("db_search_results_div").innerHTML = "";
     if(document.getElementById("db_search_switch").checked){
         const subject = document.getElementById("search_db_question_subject").value;
@@ -586,13 +587,28 @@ function searchDB() {
 
         searchQuestions(filteredParams)
             .then(data => {
+                let space = document.createElement('div');
+                space.style.height = "25px";
+                document.getElementById("db_search_results_div").appendChild(space);
                 data.forEach(question => {
+                    const user_p = document.createElement('p');
+                    if(question.username == null || question.username == ""){
+                        user_p.innerHTML = glossary["Anonymous"];
+                    }else if(question.user_academy == null || question.user_academy == ""){
+                        user_p.innerHTML = `${question.username}`;
+                    }else{
+                        user_p.innerHTML = `${question.username} <label style="color: grey;">(${question.user_academy})</label>`;
+                    }
+                    user_p.classList.add('user_p');
+                    user_p.style.marginLeft = "25px";
+                    document.getElementById("db_search_results_div").appendChild(user_p);
+
                     const questionElement = document.createElement('div');
                     questionElement.classList.add('question');
-                    questionElement.style.marginTop = "25px";
                     questionElement.style.cursor = "default";
                     questionElement.style.textAlign = "center";
                     questionElement.style.height = "50px";
+                    questionElement.style.backgroundColor = "light-dark(#f4f4f4,#383838)";
 
                     const questionTitle = question.title
                         .split('\n')
@@ -640,6 +656,10 @@ function searchDB() {
 
                     document.getElementById("db_search_results_div").appendChild(questionElement);
                 });
+                space = document.createElement('div');
+                space.style.height = "25px";
+                document.getElementById("db_search_results_div").appendChild(space);
+                updateDyslexicFonts(dyslexicMode);
             })
             .catch(error => {
             console.error('Error searching questions:', error);
@@ -661,7 +681,18 @@ function searchDB() {
                 let space = document.createElement('div');
                 space.style.height = "25px";
                 document.getElementById("db_search_results_div").appendChild(space);
-                data.forEach(data => {                    
+                data.forEach(data => {
+                    const user_p = document.createElement('p');
+                    if(data.username == null || data.username == ""){
+                        user_p.innerHTML = glossary["Anonymous"];
+                    }else if(data.user_academy == null || data.user_academy == ""){
+                        user_p.innerHTML = `${data.username}`;
+                    }else{
+                        user_p.innerHTML = `${data.username} <label style="color: grey;">(${data.user_academy})</label>`;
+                    }
+                    user_p.classList.add('user_p');
+                    document.getElementById("db_search_results_div").appendChild(user_p);
+                    
                     const quizElement = document.createElement('div');
                     quizElement.classList.add('question');
                     quizElement.style.marginBottom = "5px";
@@ -673,6 +704,7 @@ function searchDB() {
                     quizElement.style.textAlign = "center";
                     quizElement.innerHTML = data.name;
                     quizElement.title = `ID: ${data.id_file}`;
+                    quizElement.style.backgroundColor = "light-dark(#f4f4f4,#383838)";
 
                     const downloadButton = document.createElement('img');
                     downloadButton.classList.add('download-button');
@@ -701,14 +733,21 @@ function searchDB() {
                 space = document.createElement('div');
                 space.style.height = "25px";
                 document.getElementById("db_search_results_div").appendChild(space);
+                updateDyslexicFonts(dyslexicMode);
             })
             .catch(error => {
             console.error('Error searching quizzes:', error);
             });
     }
+    updateDyslexicFonts(dyslexicMode);
+}
+
+function enableDBSearchButton() {
+    document.getElementById("db_search_button").removeAttribute("disabled");
 }
 
 function updateSearchInputs() {
+    enableDBSearchButton();
     document.getElementById("db_search_results_div").innerHTML = "";
     if(document.getElementById("db_search_switch").checked){
         document.getElementById("db_search_quizzes_div").style.display = "none";
@@ -727,7 +766,7 @@ function updateSearchInputs() {
         document.getElementById("search_db_question_duration").placeholder = glossary["Duration"];
         document.getElementById("search_db_question_duration").value = "";
         document.getElementById("search_db_question_type").placeholder = glossary["Type"];
-        document.getElementById("search_db_question_type").value = "";
+        document.getElementById("search_db_question_type").value = "none";
     }else{
         document.getElementById("db_search_quizzes_div").style.display = "block";
         document.getElementById("db_search_questions_div").style.display = "none";
@@ -765,6 +804,7 @@ function loadMyPosts() {
         uploadButton.appendChild(uploadImg);
         uploadButton.addEventListener('click', () => {
             socket.emit("uploadQuiz", { passcode, quiz, token: localStorage.getItem('token') });
+            enableDBSearchButton();
         });
         quizElement.appendChild(uploadButton);
 
@@ -784,6 +824,7 @@ function loadMyPosts() {
         uploadButton.addEventListener('click', () => {
             uploadQuestion(question.subject, question.language, question.title, question.shown_answers, question.correct_answers, question.duration, question.type).then(res => {
                 loadMyPosts();
+                enableDBSearchButton();
             });
         });
         drawerElement.appendChild(uploadButton);
@@ -823,6 +864,7 @@ function loadMyPosts() {
             trashButton.addEventListener('click', () => {
                 deleteQuiz(quiz.id_file).then(res => {
                     loadMyPosts();
+                    enableDBSearchButton();
                 });
             });
             quizElement.appendChild(trashButton);
@@ -850,6 +892,7 @@ function loadMyPosts() {
             quizElement.appendChild(more_p);
             
             document.getElementById("db_posted_quizzes_div").appendChild(quizElement);
+            updateDyslexicFonts(dyslexicMode);
         });
         space = document.createElement('div');
         space.style.height = "25px";
@@ -882,6 +925,7 @@ function loadMyPosts() {
             trashButton.addEventListener('click', () => {
                 deleteQuestion(question.id_question).then(res => {
                     loadMyPosts();
+                    enableDBSearchButton();
                 });
             });
             questionElement.appendChild(trashButton);
@@ -915,8 +959,10 @@ function loadMyPosts() {
             questionElement.appendChild(downloadButton);
 
             document.getElementById("db_posted_questions_div").appendChild(questionElement);
+            updateDyslexicFonts(dyslexicMode);
         });
     });
+    updateDyslexicFonts(dyslexicMode);
 }
 
 // ---------------------- Functions Navigation -------------------------

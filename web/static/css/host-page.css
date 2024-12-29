@@ -201,9 +201,9 @@ nav button img{
     color: white
 }
 .nav_content button[disabled="true"]{
-    background: light-dark(#e8e8e8,#171717) !important ;
-    color: light-dark(white,#252525)!important ;
-    cursor : not-allowed ;
+    background: light-dark(#e8e8e8,#171717);
+    color: light-dark(white,#252525);
+    cursor : not-allowed;
 }
 
 /* ON */
@@ -780,6 +780,10 @@ nav button img{
 #db_search_button{
     margin-top: 10px;
 }
+#db_search_button[disabled="true"]{
+    background: light-dark(#8eb7e5, #2a5a8a);
+    color: light-dark(white,grey);
+}
 #db_search_results_div{
     border: solid .5px #a7a7a7;
     border-radius: 5px;
@@ -787,4 +791,21 @@ nav button img{
     height: 400px;
     margin-left: 50px;
     width: calc(100% - 100px);
+    overflow-y: scroll;
+}
+#db_search_quizzes_div input, #db_search_quizzes_div div input, #db_search_questions_div input, #db_search_questions_div div input{
+    height: 39px;
+}
+#db_search_quizzes_div div select.dyslexic, #db_search_quizzes_div input.dyslexic, #db_search_quizzes_div div input.dyslexic, #db_search_questions_div div select.dyslexic, #db_search_questions_div input.dyslexic, #db_search_questions_div div input.dyslexic{
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.user_p{
+    color: light-dark(black, white);
+    margin-bottom: 2px;
+    margin-left: 25px;
+}
+.user_p.dyslexic{
+    margin-bottom: 5px;
 }

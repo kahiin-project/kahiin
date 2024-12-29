@@ -1,10 +1,10 @@
 // Client-side functions to interact with the API
 
-const address = "http://localhost:5000/";
+const kahiin_db_address = "http://localhost:5000/";
 
 // Signup function
 function signup(email, password_hash) {
-    return fetch(address + 'signup', {
+    return fetch(kahiin_db_address + 'signup', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -34,7 +34,7 @@ function signup(email, password_hash) {
 
 // Login function
 function login(email, password_hash) {
-    return fetch(address + 'login', {
+    return fetch(kahiin_db_address + 'login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -67,7 +67,7 @@ function login(email, password_hash) {
 
 // Reset Password
 function resetPassword(new_password_hash) {
-    return fetch('http://localhost:5000/reset-password', {
+    return fetch(kahiin_db_address + 'reset-password', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -94,7 +94,7 @@ function resetPassword(new_password_hash) {
 
 //Modify User Infos
 function editInfos(name, academy) {
-    return fetch(address + 'editInfos', {
+    return fetch(kahiin_db_address + 'editInfos', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -122,7 +122,7 @@ function editInfos(name, academy) {
 
 //Modify User Infos
 function getInfos() {
-    return fetch(address + 'getInfos', {
+    return fetch(kahiin_db_address + 'getInfos', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -149,7 +149,7 @@ function getInfos() {
 
 // Delete Account
 function deleteAccount(password) {
-    return fetch('http://localhost:5000/account', {
+    return fetch(kahiin_db_address + 'account', {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -175,7 +175,7 @@ function deleteAccount(password) {
 
 // Search Quizzes
 function searchQuizzes(params) {
-    const url = new URL('http://localhost:5000/quiz');
+    const url = new URL(kahiin_db_address + 'quiz');
     url.search = new URLSearchParams({
         'token': localStorage.getItem('token'),
         ...params
@@ -202,7 +202,7 @@ function searchQuizzes(params) {
 
 // Search Questions
 function searchQuestions(params) {
-    const url = new URL('http://localhost:5000/questions');
+    const url = new URL(kahiin_db_address + 'questions');
     url.search = new URLSearchParams({
         'token': localStorage.getItem('token'),
         ...params
@@ -229,7 +229,7 @@ function searchQuestions(params) {
 
 // Get Specific Question Content
 function getQuestionContent(id_question) {
-    const url = new URL('http://localhost:5000/question-content');
+    const url = new URL(kahiin_db_address + 'question-content');
     url.search = new URLSearchParams({
         'token': localStorage.getItem('token'),
         'id_question': id_question
@@ -257,7 +257,7 @@ function getQuestionContent(id_question) {
 // Get My Posts
 function getMyPosts() {
     const token = localStorage.getItem('token');
-    const url = new URL('http://localhost:5000/myposts');
+    const url = new URL(kahiin_db_address + 'myposts');
     url.searchParams.append('token', token);
 
     return fetch(url, {
@@ -281,7 +281,7 @@ function getMyPosts() {
 
 // Upload a New Question
 function uploadQuestion(subject, language, title, shown_answers, correct_answers, duration, type) {
-    return fetch('http://localhost:5000/question', {
+    return fetch(kahiin_db_address + 'question', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -315,7 +315,7 @@ function uploadQuestion(subject, language, title, shown_answers, correct_answers
 
 // Delete Quiz
 function deleteQuiz(id_file) {
-    return fetch('http://localhost:5000/quiz', {
+    return fetch(kahiin_db_address + 'quiz', {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -341,7 +341,7 @@ function deleteQuiz(id_file) {
 
 // Delete Question
 function deleteQuestion(id_question) {
-    return fetch('http://localhost:5000/question', {
+    return fetch(kahiin_db_address + 'question', {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'

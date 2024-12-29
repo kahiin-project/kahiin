@@ -26,6 +26,11 @@
 .dyslexic{
   font-family: 'Open Dyslexic', sans-serif;
 }
+ul.dyslexic button{
+  font-family: 'Open Dyslexic', sans-serif;
+  padding-top: 0;
+  padding-bottom: 0;
+}
 
 html, body{
   margin: 0;

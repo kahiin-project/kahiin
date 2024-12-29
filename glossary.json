@@ -110,7 +110,9 @@
         "QuizName": "Nom du quiz",
         "QuizID": "ID du quiz",
         "International": "International",
-        "Academy": "Académie"
+        "Academy": "Académie",
+        "Anonymous": "Anonyme",
+        "AllTypes": "Tous les types"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -223,7 +225,9 @@
         "QuizName": "Quiz Name",
         "QuizID": "Quiz ID",
         "International": "International",
-        "Academy": "Academy"
+        "Academy": "Academy",
+        "Anonymous": "Anonymous",
+        "AllTypes": "All types"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -336,7 +340,9 @@
         "QuizName": "Nombre del cuestionario",
         "QuizID": "ID del cuestionario",
         "International": "Internacional",
-        "Academy": "Academia"
+        "Academy": "Academia",
+        "Anonymous": "Anónimo",
+        "AllTypes": "Todos los tipos"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -449,7 +455,9 @@
         "QuizName": "Nome del quiz",
         "QuizID": "ID del quiz",
         "International": "Internazionale",
-        "Academy": "Accademia"
+        "Academy": "Accademia",
+        "Anonymous": "Anonimo",
+        "AllTypes": "Tutti i tipi"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -562,6 +570,8 @@
         "QuizName": "Fragebogenname",
         "QuizID": "Fragebogen-ID",
         "International": "International",
-        "Academy": "Akademie"
+        "Academy": "Akademie",
+        "Anonymous": "Anonym",
+        "AllTypes": "Alle Arten"
     }
 }

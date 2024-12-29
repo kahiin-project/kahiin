@@ -236,10 +236,10 @@
         <p class="right-p">{{glossary["Questions"]}}</p>
       </label>
       <div id="db_search_quizzes_div">
-        <input type="search" id="search_db_quiz_name">
+        <input type="search" id="search_db_quiz_name" onkeydown="enableDBSearchButton()">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <input type="search" id="search_db_quiz_subject" style="width: calc(100% - 50px);">
-          <select id="search_db_quiz_language" style="width: calc(100% - 50px); margin-left: 0; height: 39px; border: solid .5px #a7a7a7;">
+          <input type="search" id="search_db_quiz_subject" style="width: calc(100% - 50px);" onkeydown="enableDBSearchButton()">
+          <select id="search_db_quiz_language" style="width: calc(100% - 50px); margin-left: 0; height: 39px; border: solid .5px #a7a7a7;" onchange="enableDBSearchButton()">
             <option value="none">🌐 {{glossary["International"]}}</option>
             <option value="en">🇬🇧 English</option>
             <option value="fr">🇫🇷 Français</option>
@@ -249,15 +249,15 @@
           </select>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <input type="search" id="search_db_quiz_id_file" style="width: calc(100% - 50px);">
-          <input type="search" id="search_db_quiz_id_acc" style="width: calc(100% - 50px); margin-left: 0;">
+          <input type="search" id="search_db_quiz_id_file" style="width: calc(100% - 50px);" onkeydown="enableDBSearchButton()">
+          <input type="search" id="search_db_quiz_id_acc" style="width: calc(100% - 50px); margin-left: 0;" onkeydown="enableDBSearchButton()">
         </div>
       </div>
       <div id="db_search_questions_div">
-        <input type="search" id="search_db_question_title">
+        <input type="search" id="search_db_question_title" onkeydown="enableDBSearchButton()">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <input type="search" id="search_db_question_subject" style="width: calc(100% - 50px);">
-          <select id="search_db_question_language" style="width: calc(100% - 50px); margin-left: 0; height: 39px; border: solid .5px #a7a7a7;">
+          <input type="search" id="search_db_question_subject" style="width: calc(100% - 50px);" onkeydown="enableDBSearchButton()">
+          <select id="search_db_question_language" style="width: calc(100% - 50px); margin-left: 0; height: 39px; border: solid .5px #a7a7a7;" onchange="enableDBSearchButton()">
             <option value="none">🌐 {{glossary["International"]}}</option>
             <option value="en">🇬🇧 English</option>
             <option value="fr">🇫🇷 Français</option>
@@ -267,12 +267,16 @@
           </select>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <input type="search" id="search_db_question_id_question" style="width: calc(100% - 50px);">
-          <input type="search" id="search_db_question_id_acc" style="width: calc(100% - 50px); margin-left: 0;">
+          <input type="search" id="search_db_question_id_question" style="width: calc(100% - 50px);" onkeydown="enableDBSearchButton()">
+          <input type="search" id="search_db_question_id_acc" style="width: calc(100% - 50px); margin-left: 0;" onkeydown="enableDBSearchButton()">
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <input type="search" id="search_db_question_duration" style="width: calc(100% - 50px);">
-          <input type="search" id="search_db_question_type" style="width: calc(100% - 50px); margin-left: 0;">
+          <input type="search" id="search_db_question_duration" style="width: calc(100% - 50px);" onkeydown="enableDBSearchButton()">
+          <select type="search" id="search_db_question_type" style="width: calc(100% - 50px); margin-left: 0; height: 39px; border: solid .5px #a7a7a7;" onchange="enableDBSearchButton()">
+            <option value="none">🔍 {{glossary["AllTypes"]}}</option>
+            <option value="uniqueanswer">🔘 {{glossary["UniqueAnswer"]}}</option>
+            <option value="mcq">✅ {{glossary["MCQ"]}}</option>
+          </select>
         </div>
       </div>
       <button class="questionary" id="db_search_button" onclick="searchDB()">{{glossary["Search"]}}</button>
