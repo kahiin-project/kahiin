@@ -776,3 +776,15 @@ nav button img{
     padding: 20px;
     border-radius: 5px;
 }
+
+#db_search_button{
+    margin-top: 10px;
+}
+#db_search_results_div{
+    border: solid .5px #a7a7a7;
+    border-radius: 5px;
+    margin-top: 10px;
+    height: 400px;
+    margin-left: 50px;
+    width: calc(100% - 100px);
+}

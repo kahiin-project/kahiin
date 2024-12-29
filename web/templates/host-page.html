@@ -229,13 +229,54 @@
       <h1>Kahiin DB</h1>
       
       <h2>{{glossary["Search"]}}</h2>
-      <input type="search" id="search_db_type" placeholder="search" >
-      <label class="toggleSwitch">
-        <input type="checkbox">
+      <label class="toggleSwitch" style="margin-bottom: 10px;">
+        <input type="checkbox" id="db_search_switch">
         <a></a>
         <p class="left-p">{{glossary["Quizzes"]}}</p>
         <p class="right-p">{{glossary["Questions"]}}</p>
       </label>
+      <div id="db_search_quizzes_div">
+        <input type="search" id="search_db_quiz_name">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <input type="search" id="search_db_quiz_subject" style="width: calc(100% - 50px);">
+          <select id="search_db_quiz_language" style="width: calc(100% - 50px); margin-left: 0; height: 39px; border: solid .5px #a7a7a7;">
+            <option value="none">🌐 {{glossary["International"]}}</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="it">🇮🇹 Italiano</option>
+            <option value="de">🇩🇪 Deutsch</option>
+          </select>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <input type="search" id="search_db_quiz_id_file" style="width: calc(100% - 50px);">
+          <input type="search" id="search_db_quiz_id_acc" style="width: calc(100% - 50px); margin-left: 0;">
+        </div>
+      </div>
+      <div id="db_search_questions_div">
+        <input type="search" id="search_db_question_title">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <input type="search" id="search_db_question_subject" style="width: calc(100% - 50px);">
+          <select id="search_db_question_language" style="width: calc(100% - 50px); margin-left: 0; height: 39px; border: solid .5px #a7a7a7;">
+            <option value="none">🌐 {{glossary["International"]}}</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="it">🇮🇹 Italiano</option>
+            <option value="de">🇩🇪 Deutsch</option>
+          </select>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <input type="search" id="search_db_question_id_question" style="width: calc(100% - 50px);">
+          <input type="search" id="search_db_question_id_acc" style="width: calc(100% - 50px); margin-left: 0;">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <input type="search" id="search_db_question_duration" style="width: calc(100% - 50px);">
+          <input type="search" id="search_db_question_type" style="width: calc(100% - 50px); margin-left: 0;">
+        </div>
+      </div>
+      <button class="questionary" id="db_search_button" onclick="searchDB()">{{glossary["Search"]}}</button>
+      <div id="db_search_results_div"></div>
 
       <h2>{{glossary["Contribute"]}}</h2>
       <h3 style="text-align: left; margin-left: 50px; margin-top: 30px;">{{glossary["MyQuizzes"]}}</h3>

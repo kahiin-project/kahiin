@@ -104,6 +104,12 @@
         "DownloadQuestion": "Télécharger la question",
         "DownloadQuiz": "Télécharger le questionnaire",
         "DeleteQuiz": "Supprimer le quiz",
+        "Title": "Titre",
+        "QuestionID": "ID de la question",
+        "AccountID": "ID du compte",
+        "QuizName": "Nom du quiz",
+        "QuizID": "ID du quiz",
+        "International": "International",
         "Academy": "Académie"
     },
     "en": {
@@ -211,6 +217,12 @@
         "DownloadQuestion": "Download question",
         "DownloadQuiz": "Download quiz",
         "DeleteQuiz": "Delete quiz",
+        "Title": "Title",
+        "QuestionID": "Question ID",
+        "AccountID": "Account ID",
+        "QuizName": "Quiz Name",
+        "QuizID": "Quiz ID",
+        "International": "International",
         "Academy": "Academy"
     },
     "es": {
@@ -318,6 +330,12 @@
         "DownloadQuestion": "Descargar la pregunta",
         "DownloadQuiz": "Descargar el cuestionario",
         "DeleteQuiz": "Eliminar cuestionario",
+        "Title": "Título",
+        "QuestionID": "ID de la pregunta",
+        "AccountID": "ID de la cuenta",
+        "QuizName": "Nombre del cuestionario",
+        "QuizID": "ID del cuestionario",
+        "International": "Internacional",
         "Academy": "Academia"
     },
     "it": {
@@ -425,6 +443,12 @@
         "DownloadQuestion": "Scarica la domanda",
         "DownloadQuiz": "Scarica il questionario",
         "DeleteQuiz": "Elimina il quiz",
+        "Title": "Titolo",
+        "QuestionID": "ID della domanda",
+        "AccountID": "ID dell'account",
+        "QuizName": "Nome del quiz",
+        "QuizID": "ID del quiz",
+        "International": "Internazionale",
         "Academy": "Accademia"
     },
     "de": {
@@ -532,6 +556,12 @@
         "DownloadQuestion": "Frage herunterladen",
         "DownloadQuiz": "Fragebogen herunterladen",
         "DeleteQuiz": "Fragebogen löschen",
+        "Title": "Titel",
+        "QuestionID": "Fragen-ID",
+        "AccountID": "Konto-ID",
+        "QuizName": "Fragebogenname",
+        "QuizID": "Fragebogen-ID",
+        "International": "International",
         "Academy": "Akademie"
     }
 }
