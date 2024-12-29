@@ -1204,16 +1204,15 @@ def start_flask():
     # ws_manager.add_background_task(background_task())
     asyncio.run(ws_manager.start())
 
-if __name__ == '__main__':
+# Create personnal files if they don't exist
+if not os.path.exists(os.path.join(os.path.dirname(__file__), "drawer.json")):
+    with relative_open("drawer.json", "w") as f:
+        json.dump([], f)
+if not os.path.exists(os.path.join(os.path.dirname(__file__), "settings.json")):
+    with relative_open("settings.json", "w") as f:
+        json.dump({"language": "en", "dyslexicMode": False, "adminPassword": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4", "randomOrder": False, "endOnAllAnswered": True}, f)
 
-    # Create personnal files if they don't exist
-    if not os.path.exists("drawer.json"):
-        with relative_open("drawer.json", "w") as f:
-            json.dump([], f)
-    if not os.path.exists("settings.json"):
-        with relative_open("settings.json", "w") as f:
-            json.dump({"language": "en", "dyslexicMode": False, "adminPassword": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4", "randomOrder": False, "endOnAllAnswered": True}, f)
-    
+if __name__ == '__main__':
     # Start Flask
     start_flask()
 
