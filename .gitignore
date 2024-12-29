@@ -3,4 +3,4 @@ settings.json
 venv/
 .github/
 __pycache__/
-questionnaire/
+quiz/

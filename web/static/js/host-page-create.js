@@ -26,7 +26,7 @@ function createDroppableSpace(index) {
             socket.emit('copyQuestion', {
                 question: questionToCopy, 
                 to: targetIndex, 
-                questionnaire_name: document.getElementById("edit_questionnaire_name").value, 
+                quiz_name: document.getElementById("edit_quiz_name").value, 
                 passcode: passcode
             });
 
@@ -38,7 +38,7 @@ function createDroppableSpace(index) {
             socket.emit('moveQuestion', {
                 from: draggedIndex, 
                 to: targetIndex, 
-                questionnaire_name: document.getElementById("edit_questionnaire_name").value, 
+                quiz_name: document.getElementById("edit_quiz_name").value, 
                 passcode: passcode
             });
 
