@@ -350,8 +350,8 @@
       <h2>{{glossary["EndOnAllAnswered"]}}</h2>
       <button class={{"on" if settings["endOnAllAnswered"] else "off"}} id='endOnAllAnsweredButton' onclick="editSettingsButton('endOnAllAnswered')">{{"ON" if settings["endOnAllAnswered"] else "OFF"}}</button>
       <h2>{{glossary["AdminPassword"]}}</h2>
-      <input type="password" id="new_password" placeholder="New Password">
-      <input type="password" id="repeat_new_password" placeholder="Confirm Password">
+      <input type="password" id="new_password">
+      <input type="password" id="repeat_new_password">
       <button class="apply-button" onclick="applyNewPassword()">{{glossary["Apply"]}}</button>
       <div style="height: 50px"></div>
     </div>
@@ -360,18 +360,19 @@
     <div id="login_div" class="nav_content" style="display: none;">
       <h1>{{glossary["Login"]}}</h1>
       <h2>{{glossary["Email"]}}</h2>
-      <input type="email" id="login_email" placeholder="exemple@adress.com">
+      <input type="email" id="login_email" placeholder="email@example.com">
       <h2>{{glossary["Password"]}}</h2>
       <input type="password" id="login_password" placeholder="Password">
       <button id="login" onclick="loginPage()">{{glossary["Login"]}}</button>
-      <p id="no_account" onclick="navigate(5)">{{glossary["DontHaveAccount"]}} <br> {{glossary["CreateAccount"]}}</p>
+      <p id="no_account">{{glossary["DontHaveAccount"]}}</p>
+      <button id="create_account_button" onclick="navigate(5)">{{glossary["CreateAccount"]}}</button>
     </div>
 
     <!-- Signup -->
     <div id="signup_div" class="nav_content" style="display: none;">
       <h1>{{glossary["Signup"]}}</h1>
       <h2>{{glossary["Email"]}}</h2>
-      <input type="email" id="signup_email" placeholder="exemple@adress.com">
+      <input type="email" id="signup_email" placeholder="email@example.com">
       <h2>{{glossary["Password"]}}</h2>
       <input type="password" id="signup_password" placeholder="Password">
       <h2>{{glossary["ConfirmPassword"]}}</h2>
@@ -388,10 +389,43 @@
       <input type="email" id="info_email">
       -->
       <h3 style="text-align: left;margin-left: 50px;margin-top: 10px;">{{glossary["Name"]}}:</h3>
-      <input type="text" id="info_name">
+      <input type="text" id="info_name" onkeydown="document.getElementById('apply_user_infos_button').removeAttribute('disabled');">
       <h3 style="text-align: left;margin-left: 50px;margin-top: 10px;">{{glossary["Academy"]}}:</h3>
-      <input type="text" id="info_academy">
-      <button class="apply-button" onclick="editInfosPage()">{{glossary["Apply"]}}</button>
+      <select id="info_academy" style="margin-bottom: 10px;" onchange="document.getElementById('apply_user_infos_button').removeAttribute('disabled');">
+        <option value="">{{glossary["None"]}}</option>
+        <option value="Aix-Marseille">🇫🇷 Aix-Marseille</option>
+        <option value="Amiens">🇫🇷 Amiens</option>
+        <option value="Besançon">🇫🇷 Besançon</option>
+        <option value="Bordeaux">🇫🇷 Bordeaux</option>
+        <option value="Caen">🇫🇷 Caen</option>
+        <option value="Clermont-Ferrand">🇫🇷 Clermont-Ferrand</option>
+        <option value="Corse">🇫🇷 Corse</option>
+        <option value="Créteil">🇫🇷 Créteil</option>
+        <option value="Dijon">🇫🇷 Dijon</option>
+        <option value="Grenoble">🇫🇷 Grenoble</option>
+        <option value="Guadeloupe">🇫🇷 Guadeloupe</option>
+        <option value="Guyane">🇫🇷 Guyane</option>
+        <option value="Lille">🇫🇷 Lille</option>
+        <option value="Limoges">🇫🇷 Limoges</option>
+        <option value="Lyon">🇫🇷 Lyon</option>
+        <option value="Martinique">🇫🇷 Martinique</option>
+        <option value="Mayotte">🇫🇷 Mayotte</option>
+        <option value="Montpellier">🇫🇷 Montpellier</option>
+        <option value="Nancy-Metz">🇫🇷 Nancy-Metz</option>
+        <option value="Nantes">🇫🇷 Nantes</option>
+        <option value="Nice">🇫🇷 Nice</option>
+        <option value="Normandie">🇫🇷 Normandie</option>
+        <option value="Orléans-Tours">🇫🇷 Orléans-Tours</option>
+        <option value="Paris">🇫🇷 Paris</option>
+        <option value="Poitiers">🇫🇷 Poitiers</option>
+        <option value="Reims">🇫🇷 Reims</option>
+        <option value="Rennes">🇫🇷 Rennes</option>
+        <option value="Réunion">🇫🇷 Réunion</option>
+        <option value="Strasbourg">🇫🇷 Strasbourg</option>
+        <option value="Toulouse">🇫🇷 Toulouse</option>
+        <option value="Versailles">🇫🇷 Versailles</option>
+      </select>
+      <button class="apply-button" onclick="editInfosPage()" id="apply_user_infos_button" disabled="true">{{glossary["Apply"]}}</button>
       <h2>{{glossary["ResetPassword"]}}</h2>
       <input type="password" id="new_password" placeholder="New Password">
       <input type="password" id="confirm_new_password" placeholder="Confirm Password">
@@ -400,7 +434,6 @@
       <p style="margin-left: 50px; color: gray;">{{glossary["TypePasswordToDelete"]}}</p>
       <input type="password" id="password_delete_account" placeholder="Password">
       <button id="delete_account" onclick="deleteAccountPage()">{{glossary["DeleteAccount"]}}</button>
-      <div class="footer" style="position: absolute; bottom: 0px; left: 0px; right: 0px; height: 80px; background-color: #121212; align-content:center">
       <button id="logout" onclick="logout()">{{glossary["Logout"]}}</button>
       </div>
     </div>

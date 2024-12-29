@@ -176,12 +176,23 @@ nav button img{
 }
 .nav_content #no_account{
     text-align: center;
-    color : light-dark(blue,#5555FF);
+    color: gray;
     margin-top: 50px;
+    margin-bottom: 10px;
     font-weight: normal;
     font-size:20px;
-    text-decoration: underline;
 }
+#create_account_button{
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+    padding-right: 10px;
+    padding-left: 10px;
+    margin: 0;
+    color: light-dark(black,white);
+}
+
 .nav_content select, .nav_content button, .nav_content input{
     margin-left: 50px;
     width: calc(100% - 100px);
@@ -808,4 +819,21 @@ nav button img{
 }
 .user_p.dyslexic{
     margin-bottom: 5px;
+}
+
+#logout{
+    position: fixed;
+    top: 50px;
+    right: 50px;
+    width: fit-content;
+    padding-right: 10px;
+    padding-left: 10px;
+    box-shadow: 0 0 0 10px light-dark(white, #1c1b22);
+    margin-left: 0px;
+}
+
+#apply_user_infos_button[disabled="true"], #apply_user_infos_button[disabled="true"]:hover{
+    background: light-dark(#e8e8e8,#171717);
+    color: light-dark(white,#252525);
+    cursor : not-allowed;
 }

@@ -112,7 +112,9 @@
         "International": "International",
         "Academy": "Académie",
         "Anonymous": "Anonyme",
-        "AllTypes": "Tous les types"
+        "AllTypes": "Tous les types",
+        "NewPassword": "Nouveau mot de passe",
+        "ConfirmNewPassword": "Confirmer le nouveau mot de passe"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -179,8 +181,8 @@
         "Email": "Email",
         "Password": "Password",
         "ConfirmPassword": "Confirm password",
-        "DontHaveAccount": "Don't have account ?",
-        "CreateAccount": "Create account",
+        "DontHaveAccount": "Don't have an account ?",
+        "CreateAccount": "Create an account",
         "Signup": "Signup",
         "UnpauseQuestion": "Unpause question",
         "MCQ": "Multiple Choice Questionnaire",
@@ -227,7 +229,9 @@
         "International": "International",
         "Academy": "Academy",
         "Anonymous": "Anonymous",
-        "AllTypes": "All types"
+        "AllTypes": "All types",
+        "NewPassword": "New password",
+        "ConfirmNewPassword": "Confirm new password"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -342,7 +346,9 @@
         "International": "Internacional",
         "Academy": "Academia",
         "Anonymous": "Anónimo",
-        "AllTypes": "Todos los tipos"
+        "AllTypes": "Todos los tipos",
+        "NewPassword": "Nueva contraseña",
+        "ConfirmNewPassword": "Confirmar nueva contraseña"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -457,7 +463,9 @@
         "International": "Internazionale",
         "Academy": "Accademia",
         "Anonymous": "Anonimo",
-        "AllTypes": "Tutti i tipi"
+        "AllTypes": "Tutti i tipi",
+        "NewPassword": "Nuova password",
+        "ConfirmNewPassword": "Conferma la nuova password"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -572,6 +580,8 @@
         "International": "International",
         "Academy": "Akademie",
         "Anonymous": "Anonym",
-        "AllTypes": "Alle Arten"
+        "AllTypes": "Alle Arten",
+        "NewPassword": "Neues Passwort",
+        "ConfirmNewPassword": "Neues Passwort bestätigen"
     }
 }

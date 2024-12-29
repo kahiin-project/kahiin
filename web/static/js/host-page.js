@@ -14,7 +14,6 @@ let quizzes = [];
 // ---------------------- Initialisation -------------------------
 
 function init() {
-    document.getElementById('new_password').placeholder = glossary["NewPassword"];
     const wsUrl = `ws://${window.location.hostname}:8000?t=${Date.now()}`;
     socket = new WebSocketHandler(wsUrl);
     setupSocketListeners();
@@ -1020,8 +1019,11 @@ function navigate(index) {
                 break;
             case 3:
                 document.getElementById("settings_div").style.display = "block";
+                document.getElementById('new_password').placeholder = glossary["NewPassword"];
+                document.getElementById('repeat_new_password').placeholder = glossary["ConfirmNewPassword"];
                 break;
             case 4:
+                document.getElementById('apply_user_infos_button').setAttribute('disabled', 'true'); 
                 if (localStorage.getItem('token') != null){ //modifier test (l'actuel sert juste à tester la fonction)
                     getInfos()
                     document.getElementById("account_div").style.display = "block";
@@ -1070,6 +1072,7 @@ function deleteAccountPage() {
 
 function editInfosPage() {
     editInfos(document.getElementById("info_name").value,document.getElementById("info_academy").value)
+    document.getElementById('apply_user_infos_button').setAttribute('disabled', 'true'); 
 }
 
 function logout(){
