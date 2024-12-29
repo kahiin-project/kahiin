@@ -230,7 +230,7 @@ function editQuizSubject(new_subject) {
     }
 }
 
-function deleteQuiz() {
+function deleteQuizInLocal() {
     const quiz_name = document.getElementById("edit_quiz_name").value;
     socket.emit("deleteQuiz", { passcode, quiz_name });
 }
@@ -1066,7 +1066,15 @@ function resetPasswordPage() {
 }
 
 function deleteAccountPage() {
-    deleteAccount(document.getElementById("password_delete_account").value)
+    deleteAccount(hashSHA256(document.getElementById("password_delete_account").value)).then(res => {
+        if(typeof res == "object"){
+            if("message" in res){
+                if(res.message == "Account deleted successfully"){
+                    logout();
+                }
+            }
+        }
+    });
 }
 
 function editInfosPage() {

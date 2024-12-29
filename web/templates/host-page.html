@@ -113,8 +113,10 @@
     <div id="edit_div" class="nav_content" style="display: none;">
       <h1>{{glossary["Edit"]}}</h1>
       <input type="text" id="edit_quiz_name" placeholder="Quiz Name" onchange="editQuizName(this.value)">
-      <input type="text" id="edit_quiz_subject_input" placeholder="Subject">
-      <select id="edit_quiz_language_select">
+      <h2>{{glossary["Subject"]}}</h2>
+      <input type="text" id="edit_quiz_subject_input" placeholder="Subject" onchange="editQuizSubject(this.value)">
+      <h2>{{glossary["Language"]}}</h2>
+      <select id="edit_quiz_language_select" onchange="editQuizLanguage(this.value)">
         <option value="en">🇬🇧 English</option>
         <option value="fr">🇫🇷 Français</option>
         <option value="es">🇪🇸 Español</option>
@@ -139,7 +141,7 @@
           </th>
         </tr>
       </table> 
-      <button class="delete_quiz_button" onclick="deleteQuiz()">{{glossary["DeleteQuiz"]}}</button>
+      <button class="delete_quiz_button" onclick="deleteQuizInLocal()">{{glossary["DeleteQuiz"]}}</button>
     </div>
     <div id="edit_popup_container">
       <div id="edit_popup">
@@ -433,7 +435,7 @@
       <input type="password" id="password_delete_account" placeholder="Password">
       <button id="delete_account" onclick="deleteAccountPage()">{{glossary["DeleteAccount"]}}</button>
       <button id="logout" onclick="logout()">{{glossary["Logout"]}}</button>
-      </div>
+      <div style="height: 50px"></div>
     </div>
 
     <script src="static/js/host-page.js"></script>

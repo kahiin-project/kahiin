@@ -26,10 +26,6 @@ function signup(email, password_hash) {
         document.getElementById("login_div").style.display = "block";
         return data; // Traitez les données ici
     })
-    .catch(error => {
-        console.error(error);
-        printError("An error has occured");
-    });
 }
 
 // Login function
@@ -59,10 +55,6 @@ function login(email, password_hash) {
         return {"message": "Logged in successfully"};
         
     })
-    .catch(error => {
-        console.error(error);
-        printError("An error has occured");
-    });
 }
 
 // Reset Password
@@ -87,9 +79,6 @@ function resetPassword(new_password_hash) {
         localStorage.clear();
         return data;
     })
-    .catch(error => {
-        console.error(error);
-    });
 }
 
 //Modify User Infos
@@ -115,9 +104,6 @@ function editInfos(name, academy) {
     .then(data => {
         return data;
     })
-    .catch(error => {
-        console.error(error);
-    });
 }
 
 //Modify User Infos
@@ -142,9 +128,6 @@ function getInfos() {
         document.getElementById("info_name").value = data.name
         document.getElementById("info_academy").value = data.academy
     })
-    .catch(error => {
-        console.error(error);
-    });
 }
 
 // Delete Account
@@ -168,9 +151,6 @@ function deleteAccount(password) {
     .then(data => {
         return data; // Traitez les données ici
     })
-    .catch(error => {
-        console.error(error);
-    });
 }
 
 // Search Quizzes
@@ -195,9 +175,6 @@ function searchQuizzes(params) {
     .then(data => {
         return data; // Traitez les données ici
     })
-    .catch(error => {
-        console.error(error);
-    });
 }
 
 // Search Questions
@@ -222,9 +199,6 @@ function searchQuestions(params) {
     .then(data => {
         return data; // Traitez les données ici
     })
-    .catch(error => {
-        console.error(error);
-    });
 }
 
 // Get Specific Question Content
@@ -249,9 +223,6 @@ function getQuestionContent(id_question) {
     .then(data => {
         return data; // Traitez les données ici
     })
-    .catch(error => {
-        console.error(error);
-    });
 }
 
 // Get My Posts
@@ -274,9 +245,6 @@ function getMyPosts() {
     .then(data => {
         return data; // Traitez les données ici
     })
-    .catch(error => {
-        console.error(error);
-    });
 }
 
 // Upload a New Question
@@ -308,9 +276,6 @@ function uploadQuestion(subject, language, title, shown_answers, correct_answers
     .then(data => {
         return data; // Traitez les données ici
     })
-    .catch(error => {
-        console.error(error);
-    });
 }
 
 // Delete Quiz
@@ -334,9 +299,6 @@ function deleteQuiz(id_file) {
     .then(data => {
         return data; // Traitez les données ici
     })
-    .catch(error => {
-        console.error(error);
-    });
 }
 
 // Delete Question
@@ -360,7 +322,4 @@ function deleteQuestion(id_question) {
     .then(data => {
         return data; // Traitez les données ici
     })
-    .catch(error => {
-        console.error(error);
-    });
 }

@@ -983,14 +983,14 @@ async def handle_get_whole_quiz(websocket, res) -> None:
             if not quiz_name.endswith(".khn"):
                 quiz_name += ".khn"
 
-            questionnary = {
+            quiz = {
                 "subject": dict_content["quiz"]["subject"],
                 "language": dict_content["quiz"]["language"],
                 "title": quiz_name[:-4],
                 "questions": questions
             }
 
-            json_content = json.dumps(questionnary)
+            json_content = json.dumps(quiz)
             await ws_manager.emit("wholeQuiz", json_content, to=websocket)
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
@@ -1048,14 +1048,14 @@ async def handle_move_question(websocket, res) -> None:
         if not quiz_name.endswith(".khn"):
             quiz_name += ".khn"
 
-        questionnary = {
+        quiz = {
             "subject": dict_content["quiz"]["subject"],
             "language": dict_content["quiz"]["language"],
             "title": quiz_name[:-4],
             "questions": questions
         }
 
-        json_content = json.dumps(questionnary)
+        json_content = json.dumps(quiz)
         await ws_manager.emit("wholeQuiz", json_content, to=websocket)
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
@@ -1103,14 +1103,14 @@ async def handle_copy_question(websocket, res) -> None:
         if not quiz_name.endswith(".khn"):
             quiz_name += ".khn"
 
-        questionnary = {
+        quiz = {
             "subject": dict_content["quiz"]["subject"],
             "language": dict_content["quiz"]["language"],
             "title": quiz_name[:-4],
             "questions": questions
         }
 
-        json_content = json.dumps(questionnary)
+        json_content = json.dumps(quiz)
         await ws_manager.emit("wholeQuiz", json_content, to=websocket)
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
@@ -1147,14 +1147,14 @@ async def handle_delete_question(websocket, res) -> None:
         if not quiz_name.endswith(".khn"):
             quiz_name += ".khn"
         
-        questionnary = {
+        quiz = {
             "subject": dict_content["quiz"]["subject"],
             "language": dict_content["quiz"]["language"],
             "title": quiz_name[:-4],
             "questions": questions
         }
 
-        json_content = json.dumps(questionnary)
+        json_content = json.dumps(quiz)
         await ws_manager.emit("wholeQuiz", json_content, to=websocket)
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
