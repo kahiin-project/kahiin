@@ -11,7 +11,6 @@ import os
 import asyncio
 import socket
 import requests
-import sys
 
 kahiin_db_address = "http://localhost:5000"
 

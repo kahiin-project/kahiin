@@ -326,6 +326,10 @@ function setupSocketListeners() {
     podium.style.opacity = 1;
     const game_lead = res["game_lead"];
     let podiumConfig;
+
+    const podium_h1 = document.createElement("h1");
+    podium_h1.innerHTML = glossary["Podium"];
+    podium.appendChild(podium_h1);
     
     switch(game_lead.length) {
         case 1:
@@ -346,7 +350,7 @@ function setupSocketListeners() {
   
     podiumConfig.forEach((config, index) => {
         if (index >= game_lead.length) return;
-  
+
         const podium_item = document.createElement("div");
         podium_item.classList.add("podium__item");
         podium_item.style.animationDelay = `${index * 0.2}s`;
@@ -363,7 +367,7 @@ function setupSocketListeners() {
         podium_item.appendChild(podium_rank_div);
         podium.appendChild(podium_item);
     });
-    podium.style.transform = `translateX(${game_lead.length < 5 ? (5 - game_lead.length) * 20 : 0}px)`;
+    podium.style.transform = `translate(-50%, -50%)`;
   });
 
   socket.on("restart", (res) => {

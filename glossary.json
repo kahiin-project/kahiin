@@ -137,7 +137,8 @@
         "IncorrectPassword": "Mot de passe incorrect",
         "YouMustBeLoggedInToUseKahiinDB": "Vous devez être connecté pour utiliser KahiinDB",
         "MyAccount": "Mon compte",
-        "Restart": "Redémarrer"
+        "Restart": "Redémarrer",
+        "Podium": "Podium"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -277,7 +278,8 @@
         "IncorrectPassword": "Incorrect password",
         "YouMustBeLoggedInToUseKahiinDB": "You must be logged in to use KahiinDB",
         "MyAccount": "My Account",
-        "Restart": "Restart"
+        "Restart": "Restart",
+        "Podium": "Podium"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -417,7 +419,8 @@
         "IncorrectPassword": "Contraseña incorrecta",
         "YouMustBeLoggedInToUseKahiinDB": "Debes estar conectado para usar KahiinDB",
         "MyAccount": "Mi cuenta",
-        "Restart": "Reiniciar"
+        "Restart": "Reiniciar",
+        "Podium": "Podio"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -557,7 +560,8 @@
         "IncorrectPassword": "Password errata",
         "YouMustBeLoggedInToUseKahiinDB": "Devi essere connesso per utilizzare KahiinDB",
         "MyAccount": "Il mio account",
-        "Restart": "Ricomincia"
+        "Restart": "Ricomincia",
+        "Podium": "Podio"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -697,6 +701,7 @@
         "IncorrectPassword": "Falsches Passwort",
         "YouMustBeLoggedInToUseKahiinDB": "Sie müssen angemeldet sein, um KahiinDB zu verwenden",
         "MyAccount": "Mein Konto",
-        "Restart": "Neustart"
+        "Restart": "Neustart",
+        "Podium": "Podium"
     }
 }
