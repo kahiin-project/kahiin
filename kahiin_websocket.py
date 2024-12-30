@@ -163,6 +163,13 @@ class WebSocketManager:
         finally:
             ws_server.close()
             await ws_server.wait_closed()
+    
+    async def stop(self):
+        """Arrête le serveur WebSocket et Flask"""
+        for client in self.clients:
+            await client.close()
+        self.clients.clear()
+        self.background_coroutines.clear()
 
     
 

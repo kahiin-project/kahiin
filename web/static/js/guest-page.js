@@ -62,6 +62,7 @@ function sendMCQ() {
     document.getElementById(`button_${i}`).onclick = null;
   }
 };
+
   function setupSocketListeners() {
   // ---------------------- Socket.io main -------------------------
 
@@ -85,7 +86,6 @@ function sendMCQ() {
   });
 
   socket.on("settings", (res) => {
-    console.log(res);
     const elements = document.querySelectorAll('*');
     elements.forEach(element => {
       if (res.dyslexicMode) {
@@ -257,6 +257,11 @@ function sendMCQ() {
           document.getElementById(element).style.display = "block";
       });
   });
+
+  socket.on("restart", (res) => {
+    location.reload(true);
+  });
+
 }
 
 document.addEventListener("DOMContentLoaded", init);

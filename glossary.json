@@ -136,7 +136,8 @@
         "AccountDeleted": "Compte supprimé",
         "IncorrectPassword": "Mot de passe incorrect",
         "YouMustBeLoggedInToUseKahiinDB": "Vous devez être connecté pour utiliser KahiinDB",
-        "MyAccount": "Mon compte"
+        "MyAccount": "Mon compte",
+        "Restart": "Redémarrer"
     },
     "en": {
         "GameAlreadyRunning": "A game is already running.",
@@ -275,7 +276,8 @@
         "AccountDeleted": "Account deleted",
         "IncorrectPassword": "Incorrect password",
         "YouMustBeLoggedInToUseKahiinDB": "You must be logged in to use KahiinDB",
-        "MyAccount": "My Account"
+        "MyAccount": "My Account",
+        "Restart": "Restart"
     },
     "es": {
         "GameAlreadyRunning": "Ya hay un juego en curso.",
@@ -414,7 +416,8 @@
         "AccountDeleted": "Cuenta eliminada",
         "IncorrectPassword": "Contraseña incorrecta",
         "YouMustBeLoggedInToUseKahiinDB": "Debes estar conectado para usar KahiinDB",
-        "MyAccount": "Mi cuenta"
+        "MyAccount": "Mi cuenta",
+        "Restart": "Reiniciar"
     },
     "it": {
         "GameAlreadyRunning": "È già in corso una partita.",
@@ -553,7 +556,8 @@
         "AccountDeleted": "Account eliminato",
         "IncorrectPassword": "Password errata",
         "YouMustBeLoggedInToUseKahiinDB": "Devi essere connesso per utilizzare KahiinDB",
-        "MyAccount": "Il mio account"
+        "MyAccount": "Il mio account",
+        "Restart": "Ricomincia"
     },
     "de": {
         "GameAlreadyRunning": "Es läuft bereits ein Spiel.",
@@ -692,6 +696,7 @@
         "AccountDeleted": "Konto gelöscht",
         "IncorrectPassword": "Falsches Passwort",
         "YouMustBeLoggedInToUseKahiinDB": "Sie müssen angemeldet sein, um KahiinDB zu verwenden",
-        "MyAccount": "Mein Konto"
+        "MyAccount": "Mein Konto",
+        "Restart": "Neustart"
     }
 }

@@ -304,6 +304,12 @@ nav button img{
 #start_game:hover{
     background: light-dark(#47c037,#4cc93a);
 }
+#restart_all{
+    background: light-dark(#f0be34,#fac020);
+}
+#restart_all:hover{
+    background: light-dark(#ebb434,#f7b41f);
+}
 
 #quiz_select_list, #quiz_edit_list {
     padding-left: 0px;

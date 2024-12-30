@@ -365,6 +365,11 @@ function setupSocketListeners() {
     });
     podium.style.transform = `translateX(${game_lead.length < 5 ? (5 - game_lead.length) * 20 : 0}px)`;
   });
+
+  socket.on("restart", (res) => {
+    location.reload(true);
+  });
+
 }
 
 document.addEventListener("DOMContentLoaded", init);

@@ -1208,7 +1208,7 @@ function setupSocketListeners() {
     });
 
     socket.on("gameEnd", (res) => {
-        const elementsToShow = ["start_game", "get_spreadsheet", "start_game_will_remove_data"];
+        const elementsToShow = ["restart_all", "get_spreadsheet", "start_game_will_remove_data"];
         elementsToShow.forEach(element => {
             document.getElementById(element).style.display = "block";
         });
@@ -1365,4 +1365,12 @@ function setupSocketListeners() {
         loadMyPosts();
     });
 
+    socket.on("restart", (res) => {
+        location.reload(true);
+    });
+
+}
+
+function restartAll(){
+    socket.emit("restartAll", { passcode });
 }

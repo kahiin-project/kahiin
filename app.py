@@ -11,6 +11,7 @@ import os
 import asyncio
 import socket
 import requests
+import sys
 
 kahiin_db_address = "http://localhost:5000"
 
@@ -1259,6 +1260,28 @@ async def handle_download_quiz(websocket, res) -> None:
             await ws_manager.emit("quizDownloaded", quiz_list, to=websocket)
         else:
             await ws_manager.emit("error", "QuizNotFound", to=websocket)
+    else:
+        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+
+@ws_manager.on("restartAll")
+@verification_wrapper
+async def handle_restart_all(websocket, res) -> None:
+    global kahiin_db_address, quiz, sleep_manager, client_list, board_list, host_list, game
+    passcode = res["passcode"]
+    if get_passcode() == passcode:
+        for client in client_list + board_list + host_list:
+            await ws_manager.emit("restart", to=client.websocket)
+        await ws_manager.stop()
+
+        kahiin_db_address = "http://localhost:5000"
+        quiz = Quiz()
+        sleep_manager = SleepManager()
+        client_list = []
+        board_list = []
+        host_list = []
+        game = Game()
+
+        start_flask()
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 
