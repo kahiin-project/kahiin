@@ -10,6 +10,7 @@ let draggedIndex = null;
 let draggedQuestion = null;
 let quiz = null;
 let quizzes = [];
+let settings = {};
 
 // ---------------------- Initialisation -------------------------
 
@@ -1157,6 +1158,7 @@ function setupSocketListeners() {
         // endOnAllAnsweredButton.className = res.endOnAllAnswered ? "on" : "off";
         // endOnAllAnsweredButton.innerHTML = res.endOnAllAnswered ? "ON" : "OFF";
 
+        settings = res;
         dyslexicMode = res.dyslexicMode
         updateDyslexicFonts(dyslexicMode);
     });

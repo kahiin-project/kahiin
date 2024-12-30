@@ -11,7 +11,8 @@ function signup(email, password_hash) {
         },
         body: JSON.stringify({
             'email': email,
-            'password_hash': password_hash
+            'password_hash': password_hash,
+            'language': settings.language
         })
     })
     .then(response => {
@@ -94,7 +95,8 @@ function resetPassword(new_password_hash) {
         },
         body: JSON.stringify({
             'token': localStorage.getItem('token'),
-            'new_password_hash': new_password_hash
+            'new_password_hash': new_password_hash,
+            'language': settings.language
         })
     })
     .then(response => {
