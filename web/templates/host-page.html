@@ -40,8 +40,9 @@
     </div>
 
     <!-- Error -->
-    <div id="error_div" style="opacity: 0" class="nav_content">
-    </div>
+    <div id="error_div" style="opacity: 0" class="nav_content"></div>
+    <!-- Success -->
+    <div id="success_div" style="opacity: 0" class="nav_content"></div>
 
     <!-- Navigation -->
     <nav id="nav">
@@ -235,6 +236,10 @@
 
     <!-- Kahiin DB -->
 
+    <div id="kahiin_db_message_div" class="nav_content" style="display: none;">
+      <img src="static/icon/account.svg">
+      <button onclick="navigate(4);">{{glossary["MyAccount"]}}</button>
+    </div>
     <div id="kahiin_db_div" class="nav_content" style="display: none;">
       <h1>Kahiin DB</h1>
       
@@ -427,8 +432,8 @@
       </select>
       <button class="apply-button" onclick="editInfosPage()" id="apply_user_infos_button" disabled="true">{{glossary["Apply"]}}</button>
       <h2>{{glossary["ResetPassword"]}}</h2>
-      <input type="password" id="new_password" placeholder="New Password">
-      <input type="password" id="confirm_new_password" placeholder="Confirm Password">
+      <input type="password" id="new_account_password" placeholder="New Password">
+      <input type="password" id="confirm_new_account_password" placeholder="Confirm Password">
       <button id="reset_password" onclick="resetPasswordPage()">{{glossary["ResetPassword"]}}</button>
       <h2>{{glossary["DeleteAccount"]}}</h2>
       <p style="margin-left: 50px; color: gray;">{{glossary["TypePasswordToDelete"]}}</p>

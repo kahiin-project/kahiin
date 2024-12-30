@@ -59,14 +59,24 @@ function submitPasscode() {
     getDrawer();
 }
 
-function printError(error) {
+function alertError(error) {
     document.getElementById("error_div").innerHTML = error ;
-    document.getElementById("error_div").style.transform = "translate(-50%, 30px)" ;
+    document.getElementById("error_div").style.transform = "translate(-50%, 10px)" ;
     document.getElementById("error_div").style.opacity = "1" ;
     setTimeout(() => {
-        document.getElementById("error_div").style.transform = "translate(-50%, -30px)" ;
+        document.getElementById("error_div").style.transform = "translate(-50%, 0px)" ;
         document.getElementById("error_div").style.opacity = "0" ;
-    },5000)
+    }, 2000)
+}
+
+function alertSuccess(message) {
+    document.getElementById("success_div").innerHTML = message ;
+    document.getElementById("success_div").style.transform = "translate(-50%, 10px)" ;
+    document.getElementById("success_div").style.opacity = "1" ;
+    setTimeout(() => {
+        document.getElementById("success_div").style.transform = "translate(-50%, 0px)" ;
+        document.getElementById("success_div").style.opacity = "0" ;
+    }, 2000)
 }
 
 // ---------------------- Functions Game -------------------------
@@ -986,7 +996,7 @@ function loadMyPosts() {
 // ---------------------- Functions Navigation -------------------------
 function navigate(index) {
     document.getElementById("edit_popup_container").style.display = "none";
-    const elementsToHide = ["play_div", "settings_div", "create_div", "kahiin_db_div", "edit_div", "edit_question_div", "edit_popup_container", "login_div","signup_div", "account_div"];
+    const elementsToHide = ["play_div", "settings_div", "create_div", "kahiin_db_message_div", "kahiin_db_div", "edit_div", "edit_question_div", "edit_popup_container", "login_div","signup_div", "account_div"];
     elementsToHide.forEach(element => {
         document.getElementById(element).style.display = "none";
     });
@@ -1011,7 +1021,6 @@ function navigate(index) {
                 document.getElementById("create_div").style.display = "block";
                 break;
             case 2:
-                document.getElementById("kahiin_db_div").style.display = "block";
                 document.getElementById("db_search_switch").checked = false;
                 updateSearchInputs();
                 loadMyPosts();
@@ -1055,14 +1064,31 @@ function loginPage() {
 
 function signupPage() {
     if (document.getElementById("signup_password").value == document.getElementById("signup_verify").value) {
-        signup(document.getElementById("signup_email").value,hashSHA256(document.getElementById("signup_password").value))
-    };
+        if (document.getElementById("signup_password").value.length >= 8) {
+            signup(document.getElementById("signup_email").value, hashSHA256(document.getElementById("signup_password").value))
+        } else {
+            alertError(glossary["PasswordMustBe8Characters"]);
+        }
+    } else {
+        alertError(glossary["PasswordsDontMatch"]);
+    }
 }
 
 function resetPasswordPage() {
-    if (document.getElementById("new_password").value == document.getElementById("confirm_new_password").value) {
-        resetPassword(hashSHA256(document.getElementById("new_password").value))
-    }    
+    if (document.getElementById("new_account_password").value == document.getElementById("confirm_new_account_password").value) {
+        if (document.getElementById("new_account_password").value.length >= 8) {
+            resetPassword(hashSHA256(document.getElementById("new_account_password").value));
+            document.getElementById("new_account_password").value = "";
+            document.getElementById("confirm_new_account_password").value = "";
+            setTimeout(() => {
+                navigate(4);
+            }, 1000);
+        } else {
+            alertError(glossary["PasswordMustBe8Characters"]);
+        }
+    } else {
+        alertError(glossary["PasswordsDontMatch"]);
+    }
 }
 
 function deleteAccountPage() {
@@ -1070,6 +1096,7 @@ function deleteAccountPage() {
         if(typeof res == "object"){
             if("message" in res){
                 if(res.message == "Account deleted successfully"){
+                    alertSuccess(glossary["AccountDeleted"]);
                     logout();
                 }
             }

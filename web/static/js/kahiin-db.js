@@ -15,17 +15,40 @@ function signup(email, password_hash) {
         })
     })
     .then(response => {
-        if (!response.ok) {
-            printError("An error has occured");
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        document.getElementById("signup_div").style.display = "none";
-        document.getElementById("login_div").style.display = "block";
-        return data; // Traitez les données ici
-    })
+        return response.text().then(data => {
+            switch (response.status) {
+                case 200: // Success
+                    data = JSON.parse(data);
+                    document.getElementById("signup_div").style.display = "none";
+                    document.getElementById("login_div").style.display = "block";
+                    alertSuccess(glossary["VerificationEmailSent"]);
+                    return data;
+                case 400: // Invalid data structure or type
+                    switch (JSON.parse(data).error) {
+                        case 'Invalid data structure':
+                            alertError(glossary["FillAllFields"]);
+                            break;
+                        case 'Invalid data type for email':
+                            alertError(glossary["InvalidEmail"]);
+                            break;
+                        case 'Password can\'t be empty':
+                            alertError(glossary["PasswordEmpty"]);
+                            break;
+                        default:
+                            alertError(glossary["UnknownError"]);
+                    }
+                    break;
+                case 401: // Unauthorized email
+                    alertError(glossary["UnauthorizedEmail"]);
+                    break;
+                case 409: // Email already in use
+                    alertError(glossary["EmailInUse"]);
+                    break;
+                default: // Other HTTP errors
+                    throw new Error('HTTP error ' + response.status + ' : ' + response.statusText);
+            }
+        });
+    });
 }
 
 // Login function
@@ -41,20 +64,25 @@ function login(email, password_hash) {
         })
     })
     .then(response => {
-        if (!response.ok) {
-            printError("An error has occured");
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        localStorage.setItem('token', data.token);
-        getInfos()
-        document.getElementById("login_div").style.display = "none";
-        document.getElementById("account_div").style.display = "block";
-        return {"message": "Logged in successfully"};
-        
-    })
+        return response.text().then(data => {
+            switch (response.status) {
+                case 200: // Success
+                    localStorage.setItem('token', JSON.parse(data).token);
+                    getInfos();
+                    document.getElementById("login_div").style.display = "none";
+                    document.getElementById("account_div").style.display = "block";
+                    return { "message": "Logged in successfully" };
+                case 400: // Invalid data structure
+                    alertError(glossary["IncorrectEmailOrPassword"]);
+                    break;
+                case 401: // Invalid email or password
+                    alertError(glossary["IncorrectEmailOrPassword"]);
+                    break;
+                default: // Other HTTP errors
+                    throw new Error('HTTP error ' + response.status + ' : ' + response.statusText);
+            }
+        });
+    });
 }
 
 // Reset Password
@@ -70,18 +98,38 @@ function resetPassword(new_password_hash) {
         })
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        localStorage.clear();
-        return data;
-    })
+        return response.text().then(data => {
+            switch (response.status) {
+                case 200: // Success
+                    localStorage.clear();
+                    alertSuccess(glossary["VerificationEmailSent"]);
+                    return JSON.parse(data);
+                case 400: // Invalid data structure or type
+                    switch (JSON.parse(data).error) {
+                        case 'Invalid data structure':
+                            alertError(glossary["FillAllFields"]);
+                            break;
+                        case 'Invalid data type for new_password_hash':
+                            alertError(glossary["InvalidPassword"]);
+                            break;
+                        default:
+                            alertError(glossary["UnknownError"]);
+                    }
+                    break;
+                case 401: // Invalid token
+                    alertError(glossary["InvalidToken"]);
+                    break;
+                case 404: // Email not found
+                    alertError(glossary["EmailNotFound"]);
+                    break;
+                default: // Other HTTP errors
+                    throw new Error('HTTP error ' + response.status + ' : ' + response.statusText);
+            }
+        });
+    });
 }
 
-//Modify User Infos
+// Modify User Infos
 function editInfos(name, academy) {
     return fetch(kahiin_db_address + 'editInfos', {
         method: 'POST',
@@ -95,18 +143,34 @@ function editInfos(name, academy) {
         })
     })
     .then(response => {
-        if (!response.ok) {
-            printError("An error has occured");
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        return data;
-    })
+        return response.text().then(data => {
+            switch (response.status) {
+                case 200: // Success
+                    alertSuccess(glossary["UserInfosUpdated"]);
+                    return JSON.parse(data);
+                case 400: // Invalid data structure or type
+                    switch (JSON.parse(data).error) {
+                        case 'Invalid data structure':
+                            alertError(glossary["FillAllFields"]);
+                            break;
+                        case 'Invalid data type for name or academy':
+                            alertError(glossary["InvalidData"]);
+                            break;
+                        default:
+                            alertError(glossary["UnknownError"]);
+                    }
+                    break;
+                case 401: // Invalid token
+                    alertError(glossary["InvalidToken"]);
+                    break;
+                default: // Other HTTP errors
+                    throw new Error('HTTP error ' + response.status + ' : ' + response.statusText);
+            }
+        });
+    });
 }
 
-//Modify User Infos
+// Get User Infos
 function getInfos() {
     return fetch(kahiin_db_address + 'getInfos', {
         method: 'POST',
@@ -118,16 +182,30 @@ function getInfos() {
         })
     })
     .then(response => {
-        if (!response.ok) {
-            printError("An error has occured");
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        document.getElementById("info_name").value = data.name
-        document.getElementById("info_academy").value = data.academy
-    })
+        return response.text().then(data => {
+            switch (response.status) {
+                case 200: // Success
+                    const parsed = JSON.parse(data);
+                    document.getElementById("info_name").value = parsed.name;
+                    document.getElementById("info_academy").value = parsed.academy;
+                    return parsed;
+                case 400: // Invalid data structure or type
+                    switch (JSON.parse(data).error) {
+                        case 'Invalid data structure':
+                            alertError(glossary["FillAllFields"]);
+                            break;
+                        default:
+                            alertError(glossary["UnknownError"]);
+                    }
+                    break;
+                case 401: // Invalid token
+                    alertError(glossary["InvalidToken"]);
+                    break;
+                default: // Other HTTP errors
+                    throw new Error('HTTP error ' + response.status + ' : ' + response.statusText);
+            }
+        });
+    });
 }
 
 // Delete Account
@@ -143,14 +221,39 @@ function deleteAccount(password) {
         })
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        return data; // Traitez les données ici
-    })
+        return response.text().then(data => {
+            switch (response.status) {
+                case 200: // Success
+                    return JSON.parse(data);
+                case 400: // Invalid data structure or type
+                    switch (JSON.parse(data).error) {
+                        case 'Invalid data structure':
+                            alertError(glossary["FillAllFields"]);
+                            break;
+                        case 'Invalid data type for token or password':
+                            alertError(glossary["InvalidData"]);
+                            break;
+                        default:
+                            alertError(glossary["UnknownError"]);
+                    }
+                    break;
+                case 401: // Invalid token or password
+                    switch (JSON.parse(data).error) {
+                        case 'Invalid token':
+                            alertError(glossary["InvalidToken"]);
+                            break;
+                        case 'Invalid password':
+                            alertError(glossary["IncorrectPassword"]);
+                            break;
+                        default:
+                            alertError(glossary["UnknownError"]);
+                    }
+                    break;
+                default: // Other HTTP errors
+                    throw new Error('HTTP error ' + response.status + ' : ' + response.statusText);
+            }
+        });
+    });
 }
 
 // Search Quizzes
@@ -167,14 +270,27 @@ function searchQuizzes(params) {
         }
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        return data; // Traitez les données ici
-    })
+        return response.text().then(data => {
+            switch (response.status) {
+                case 200: // Success
+                    return JSON.parse(data);
+                case 400: // Invalid data structure or type
+                    switch (JSON.parse(data).error) {
+                        case 'Invalid data structure':
+                            alertError(glossary["FillAllFields"]);
+                            break;
+                        default:
+                            alertError(glossary["UnknownError"]);
+                    }
+                    break;
+                case 401: // Invalid token
+                    alertError(glossary["InvalidToken"]);
+                    break;
+                default: // Other HTTP errors
+                    throw new Error('HTTP error ' + response.status + ' : ' + response.statusText);
+            }
+        });
+    });
 }
 
 // Search Questions
@@ -191,14 +307,27 @@ function searchQuestions(params) {
         }
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        return data; // Traitez les données ici
-    })
+        return response.text().then(data => {
+            switch (response.status) {
+                case 200: // Success
+                    return JSON.parse(data);
+                case 400: // Invalid data structure or type
+                    switch (JSON.parse(data).error) {
+                        case 'Invalid data structure':
+                            alertError(glossary["FillAllFields"]);
+                            break;
+                        default:
+                            alertError(glossary["UnknownError"]);
+                    }
+                    break;
+                case 401: // Invalid token
+                    alertError(glossary["InvalidToken"]);
+                    break;
+                default: // Other HTTP errors
+                    throw new Error('HTTP error ' + response.status + ' : ' + response.statusText);
+            }
+        });
+    });
 }
 
 // Get Specific Question Content
@@ -215,14 +344,27 @@ function getQuestionContent(id_question) {
         }
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        return data; // Traitez les données ici
-    })
+        return response.text().then(data => {
+            switch (response.status) {
+                case 200: // Success
+                    return JSON.parse(data);
+                case 400: // Invalid data structure or type
+                    switch (JSON.parse(data).error) {
+                        case 'Invalid data structure':
+                            alertError(glossary["FillAllFields"]);
+                            break;
+                        default:
+                            alertError(glossary["UnknownError"]);
+                    }
+                    break;
+                case 401: // Invalid token
+                    alertError(glossary["InvalidToken"]);
+                    break;
+                default: // Other HTTP errors
+                    throw new Error('HTTP error ' + response.status + ' : ' + response.statusText);
+            }
+        });
+    });
 }
 
 // Get My Posts
@@ -237,14 +379,31 @@ function getMyPosts() {
         }
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        return data; // Traitez les données ici
-    })
+        return response.text().then(data => {
+            switch (response.status) {
+                case 200: // Success
+                    document.getElementById("kahiin_db_div").style.display = "block";
+                    document.getElementById("kahiin_db_message_div").style.display = "none";
+                    return JSON.parse(data);
+                case 400: // Invalid data structure or type
+                    switch (JSON.parse(data).error) {
+                        case 'Invalid data structure':
+                            alertError(glossary["FillAllFields"]);
+                            break;
+                        default:
+                            alertError(glossary["UnknownError"]);
+                    }
+                    break;
+                case 401: // Invalid token
+                    alertError(glossary["YouMustBeLoggedInToUseKahiinDB"]);
+                    document.getElementById("kahiin_db_message_div").style.display = "block";
+                    document.getElementById("kahiin_db_div").style.display = "none";
+                    break;
+                default: // Other HTTP errors
+                    throw new Error('HTTP error ' + response.status + ' : ' + response.statusText);
+            }
+        });
+    });
 }
 
 // Upload a New Question
@@ -268,14 +427,27 @@ function uploadQuestion(subject, language, title, shown_answers, correct_answers
         })
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        return data; // Traitez les données ici
-    })
+        return response.text().then(data => {
+            switch (response.status) {
+                case 200: // Success
+                    return JSON.parse(data);
+                case 400: // Invalid data structure or type
+                    switch (JSON.parse(data).error) {
+                        case 'Invalid data structure':
+                            alertError(glossary["FillAllFields"]);
+                            break;
+                        default:
+                            alertError(glossary["UnknownError"]);
+                    }
+                    break;
+                case 401: // Invalid token
+                    alertError(glossary["InvalidToken"]);
+                    break;
+                default: // Other HTTP errors
+                    throw new Error('HTTP error ' + response.status + ' : ' + response.statusText);
+            }
+        });
+    });
 }
 
 // Delete Quiz
@@ -291,14 +463,39 @@ function deleteQuiz(id_file) {
         })
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        return data; // Traitez les données ici
-    })
+        return response.text().then(data => {
+            switch (response.status) {
+                case 200: // Success
+                    return JSON.parse(data);
+                case 400: // Invalid data structure or type
+                    switch (JSON.parse(data).error) {
+                        case 'Invalid data structure':
+                            alertError(glossary["FillAllFields"]);
+                            break;
+                        default:
+                            alertError(glossary["UnknownError"]);
+                    }
+                    break;
+                case 401: // Invalid token or unauthorized to delete quiz
+                    switch (JSON.parse(data).error) {
+                        case 'Invalid token':
+                            alertError(glossary["InvalidToken"]);
+                            break;
+                        case 'Unauthorized to delete quiz':
+                            alertError(glossary["Unauthorized"]);
+                            break;
+                        default:
+                            alertError(glossary["UnknownError"]);
+                    }
+                    break;
+                case 404: // Quiz not found
+                    alertError(glossary["QuizNotFound"]);
+                    break;
+                default: // Other HTTP errors
+                    throw new Error('HTTP error ' + response.status + ' : ' + response.statusText);
+            }
+        });
+    });
 }
 
 // Delete Question
@@ -314,12 +511,37 @@ function deleteQuestion(id_question) {
         })
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        return data; // Traitez les données ici
-    })
+        return response.text().then(data => {
+            switch (response.status) {
+                case 200: // Success
+                    return JSON.parse(data);
+                case 400: // Invalid data structure or type
+                    switch (JSON.parse(data).error) {
+                        case 'Invalid data structure':
+                            alertError(glossary["FillAllFields"]);
+                            break;
+                        default:
+                            alertError(glossary["UnknownError"]);
+                    }
+                    break;
+                case 401: // Invalid token or unauthorized to delete question
+                    switch (JSON.parse(data).error) {
+                        case 'Invalid token':
+                            alertError(glossary["InvalidToken"]);
+                            break;
+                        case 'Unauthorized to delete question':
+                            alertError(glossary["Unauthorized"]);
+                            break;
+                        default:
+                            alertError(glossary["UnknownError"]);
+                    }
+                    break;
+                case 404: // Question not found
+                    alertError(glossary["QuestionNotFound"]);
+                    break;
+                default: // Other HTTP errors
+                    throw new Error('HTTP error ' + response.status + ' : ' + response.statusText);
+            }
+        });
+    });
 }

@@ -133,20 +133,28 @@ nav button img{
 }
 @media (prefers-color-scheme: dark){nav button img{filter:invert(1)}}
 
-#error_div{
+#error_div, #success_div{
     transition: 0.5s ease-in-out;
     display: block;
-    position:absolute;
-    background: red;
+    position: absolute;
+    background: light-dark(#c03737,#cf4040);
     color: white;
-    width: 700px;
-    height: 40px;
+    width: fit-content;
+    height: fit-content;
+    padding: 12px;
+    padding-bottom: 8px;
     border-radius: 15px;
     text-align: center;
-    font-size: calc(97%);
-    top:10px;
+    font-size: 1.1em;
+    top: 10px;
     left: 58%;
     transform: translateX(-50%);
+}
+#error_div.dyslexic, #success_div.dyslexic{
+    padding-bottom: 12px;
+}
+#success_div{
+    background: #32cd32;
 }
 
 .nav_content{
@@ -756,6 +764,32 @@ nav button img{
   
 .toggleSwitch input:checked + a {
     left: 50%;
+}
+
+#kahiin_db_message_div img{
+    position: absolute;
+    left: 50%;
+    top: calc(50% - 70px);
+    transform: translateX(-50%) translateY(-50%);
+    width: 100px;
+    height: 100px;
+}
+#kahiin_db_message_div button{
+    position: absolute;
+    left: 50%;
+    top: calc(50% + 10px);
+    transform: translateX(-50%) translateY(-50%);
+    width: fit-content;
+    padding-right: 10px;
+    padding-left: 10px;
+    margin: 0;
+    box-shadow: 0 0 0 10px light-dark(white, #1c1b22);
+    color: light-dark(black, white);
+}
+@media (prefers-color-scheme: dark){
+    #kahiin_db_message_div img{
+        filter: invert(1);
+    }
 }
 
 #db_posted_quizzes_div, #db_posted_questions_div{
