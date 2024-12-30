@@ -187,7 +187,7 @@
       </select>
 
       <h2>{{glossary["Duration"]}} (s)</h2>
-      <input type="number" id="edit_question_duration" onchange="editQuestionDuration()">
+      <input type="number" id="edit_question_duration">
 
       <h2>{{glossary["Question"]}}</h2>
       <p>{{glossary["LaTeXSupport"]}}</p>
@@ -387,15 +387,15 @@
 
     <!-- Account -->
     <div id="account_div" class="nav_content" style="display: none;">
-      <h1>{{glossary["Account"]}}</h1>
+      <h1 id="account_h1">{{glossary["Account"]}}</h1>
       <h2>{{glossary["PersonalInformations"]}}</h2>
       <!--
       <h3 style="text-align: left;margin-left: 50px;margin-top: 10px;">{{glossary["Email"]}}:</h3>
       <input type="email" id="info_email">
       -->
-      <h3 style="text-align: left;margin-left: 50px;margin-top: 10px;">{{glossary["Name"]}}:</h3>
+      <h3 style="text-align: left;margin-left: 50px;margin-top: 10px;">{{glossary["Name"]}}</h3>
       <input type="text" id="info_name" onkeydown="document.getElementById('apply_user_infos_button').removeAttribute('disabled');">
-      <h3 style="text-align: left;margin-left: 50px;margin-top: 10px;">{{glossary["Academy"]}}:</h3>
+      <h3 style="text-align: left;margin-left: 50px;margin-top: 10px;">{{glossary["Academy"]}}</h3>
       <select id="info_academy" style="margin-bottom: 10px;" onchange="document.getElementById('apply_user_infos_button').removeAttribute('disabled');">
         <option value="">{{glossary["None"]}}</option>
         <option value="Aix-Marseille">🇫🇷 Aix-Marseille</option>

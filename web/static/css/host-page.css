@@ -134,6 +134,7 @@ nav button img{
 @media (prefers-color-scheme: dark){nav button img{filter:invert(1)}}
 
 #error_div, #success_div{
+    z-index: 2;
     transition: 0.5s ease-in-out;
     display: block;
     position: absolute;

@@ -186,6 +186,7 @@ function getInfos() {
             switch (response.status) {
                 case 200: // Success
                     const parsed = JSON.parse(data);
+                    document.getElementById("account_h1").innerHTML = `${glossary["Account"]} <label style="color: grey; font-size: 30px;">(id ${parsed.id_acc})</label>`;
                     document.getElementById("info_name").value = parsed.name;
                     document.getElementById("info_academy").value = parsed.academy;
                     return parsed;

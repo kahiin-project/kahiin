@@ -323,6 +323,7 @@ function editQuestion(id) {
     document.getElementById("edit_question_language").value = drawer[id].language;
     document.getElementById("edit_question_subject").value = drawer[id].subject;
     shown_answers = drawer[id].shown_answers;
+    shown_answers = shown_answers.answer;
     switch(shown_answers.length) {
         case 2:
             document.getElementById("edit_answer_input0").value = shown_answers[0];
@@ -1105,7 +1106,7 @@ function deleteAccountPage() {
 }
 
 function editInfosPage() {
-    editInfos(document.getElementById("info_name").value,document.getElementById("info_academy").value)
+    editInfos(document.getElementById("info_name").value, document.getElementById("info_academy").value)
     document.getElementById('apply_user_infos_button').setAttribute('disabled', 'true'); 
 }
 
