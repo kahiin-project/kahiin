@@ -614,10 +614,10 @@ async def handle_new_quiz(websocket, res) -> None:
 @ws_manager.on('listQuiz')
 @verification_wrapper
 async def handle_list_quiz(websocket, res) -> None:
-    quizs = os.listdir(os.path.join(os.path.dirname(__file__), "quiz"))
-    quizs.sort()
-    quizs = [q[:-4] for q in quizs if q != ".gitkeep"]
-    await ws_manager.emit("ListOfQuiz", {"quizs": quizs}, to=websocket)
+    quizzes = os.listdir(os.path.join(os.path.dirname(__file__), "quiz"))
+    quizzes.sort()
+    quizzes = [q[:-4] for q in quizzes if q != ".gitkeep"]
+    await ws_manager.emit("ListOfQuiz", {"quizzes": quizzes}, to=websocket)
 
 @ws_manager.on('selectQuiz')
 @verification_wrapper
@@ -705,9 +705,9 @@ async def handle_unpause_game(websocket, code: str) -> None:
 @ws_manager.on('createQuiz')
 @verification_wrapper
 async def handle_create_quiz(websocket, res) -> None:
-    list_quizs = os.listdir("quiz")
+    list_quizzes = os.listdir(os.path.join(os.path.dirname(__file__), "quiz"))
     quiz_index = 1
-    while f"new_quiz{quiz_index}.khn" in list_quizs:
+    while f"new_quiz{quiz_index}.khn" in list_quizzes:
         quiz_index += 1
     filename = f"new_quiz{quiz_index}.khn"
     quiz = ET.Element("quiz")
@@ -719,7 +719,7 @@ async def handle_create_quiz(websocket, res) -> None:
     questions = ET.SubElement(quiz, "questions")
     
     tree = ET.ElementTree(quiz)
-    tree.write(f"quiz/{filename}", encoding="utf-8", xml_declaration=True)
+    tree.write(os.path.join(os.path.dirname(__file__), 'quiz', filename), encoding="utf-8", xml_declaration=True)
     
     await ws_manager.emit("editingQuiz", filename, to=websocket)
 
@@ -734,7 +734,7 @@ async def handle_delete_quiz(websocket, res) -> None:
 @ws_manager.on("editQuizName")
 @verification_wrapper
 async def handle_edit_quiz_name(websocket, res) -> None:
-    list_quizs = os.listdir(os.path.join(os.path.dirname(__file__), "quiz"))
+    list_quizzes = os.listdir(os.path.join(os.path.dirname(__file__), "quiz"))
     forbiden_characters = '/\\|,.;:!?*"><'
     invalid_characters = False
     old_name = res["old_name"]
@@ -752,7 +752,7 @@ async def handle_edit_quiz_name(websocket, res) -> None:
         await ws_manager.emit('error', "EmptyName", to=websocket)
     elif invalid_characters:
         await ws_manager.emit('error', "SpecialCharacters")
-    elif new_name in list_quizs:
+    elif new_name in list_quizzes:
         await ws_manager.emit('error', "AlreadyExists", to=websocket)
     else:
         os.rename(
@@ -761,7 +761,7 @@ async def handle_edit_quiz_name(websocket, res) -> None:
         )
         await ws_manager.emit("editingQuiz", new_name, to=websocket)
 
-@ws_manager.on("editQuizSubject")
+@ws_manager.on("editquizzesubject")
 @verification_wrapper
 async def handle_edit_quiz_subject(websocket, res) -> None:
     passcode = res["passcode"]
@@ -793,7 +793,7 @@ async def handle_edit_quiz_language(websocket, res) -> None:
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 
-@ws_manager.on("editQuizSubject")
+@ws_manager.on("editquizzesubject")
 @verification_wrapper
 async def handle_edit_quiz_subject(websocket, res) -> None:
     passcode = res["passcode"]
@@ -1295,6 +1295,8 @@ if not os.path.exists(os.path.join(os.path.dirname(__file__), "drawer.json")):
 if not os.path.exists(os.path.join(os.path.dirname(__file__), "settings.json")):
     with relative_open("settings.json", "w") as f:
         json.dump({"language": "en", "dyslexicMode": False, "adminPassword": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4", "randomOrder": False, "endOnAllAnswered": True}, f)
+if not os.path.exists(os.path.join(os.path.dirname(__file__), "quiz")):
+    os.makedirs(os.path.join(os.path.dirname(__file__), "quiz"))
 
 if __name__ == '__main__':
     # Start Flask
