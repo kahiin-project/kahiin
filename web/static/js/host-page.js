@@ -324,7 +324,8 @@ function editQuestion(id) {
     document.getElementById("edit_question_language").value = drawer[id].language;
     document.getElementById("edit_question_subject").value = drawer[id].subject;
     shown_answers = drawer[id].shown_answers;
-    shown_answers = shown_answers.answer;
+
+    //shown_answers = shown_answers.answer;
     switch(shown_answers.length) {
         case 2:
             document.getElementById("edit_answer_input0").value = shown_answers[0];
