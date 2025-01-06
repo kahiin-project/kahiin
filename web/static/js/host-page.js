@@ -230,13 +230,13 @@ function editQuizLanguage(new_language) {
 }
 
 let previous_quiz_subject = "";
-function editQuizSubject(new_subject) {
+function editquizzesubject(new_subject) {
     if(new_subject == ""){
         document.getElementById("edit_quiz_subject_input").value = previous_quiz_subject;
         new_subject = previous_quiz_subject;
     }else{
         previous_quiz_subject = new_subject;
-        socket.emit("editQuizSubject", { passcode, quiz_name: editing_quiz, new_subject });
+        socket.emit("editquizzesubject", { passcode, quiz_name: editing_quiz, new_subject });
         socket.emit("listQuestionary", { passcode });
     }
 }
@@ -1242,8 +1242,8 @@ function setupSocketListeners() {
         const quiz_edit_list = document.getElementById("quiz_edit_list");
         quiz_select_list.innerHTML = "";
         quiz_edit_list.innerHTML = "";
-        quizzes = res.quizs;
-        res.quizs.forEach(quiz => {
+        quizzes = res.quizzes;
+        res.quizzes.forEach(quiz => {
             quiz_select_list.innerHTML += `<button onclick="selectQuiz('${quiz}')" id="${quiz}" class="quiz">${quiz}</button>`;
             quiz_edit_list.innerHTML += `<button onclick="editQuiz('${quiz}')" id="${quiz}" class="quiz">${quiz}</button>`;
         });
