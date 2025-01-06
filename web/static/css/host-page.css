@@ -220,7 +220,7 @@ nav button img{
     border: none;
     color: white
 }
-.nav_content button[disabled="true"]{
+.nav_content button[disabled="true"]{ 
     background: light-dark(#e8e8e8,#171717);
     color: light-dark(white,#252525);
     cursor : not-allowed;
@@ -835,9 +835,9 @@ nav button img{
 #db_search_button{
     margin-top: 10px;
 }
-#db_search_button[disabled="true"]{
-    background: light-dark(#8eb7e5, #2a5a8a);
-    color: light-dark(white,grey);
+#db_search_button[disabled="true"]{ 
+    background: light-dark(#8eb7e5, #2a5a8a) !important;  
+    color: light-dark(white,grey) !important;
 }
 #db_search_results_div{
     border: solid .5px #a7a7a7;
