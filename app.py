@@ -338,7 +338,7 @@ async def handle_board_connect(websocket, passcode: str) -> None:
         IP = '127.0.0.1'
     finally:
         s.close()
-    qr_img = qrcodemaker.make("http://{IP}/guest")
+    qr_img = qrcodemaker.make(f"http://{IP}:8080/guest'\n\n' +")
     qr_img = qr_img.convert("LA")
     data = qr_img.getdata()
     new_data = [(255, 0) if item == (255,255) else item for item in data]
@@ -347,6 +347,7 @@ async def handle_board_connect(websocket, passcode: str) -> None:
     qr_img.save(buffered, format="PNG")
     qr_img_str = b64encode(buffered.getvalue()).decode()
     await ws_manager.emit('qrcode', f"data:image/png;base64,{qr_img_str}", to=websocket)
+    await ws_manager.emit("url", f"http://{IP}:8080/guest", to=websocket)
     for c in client_list:
         await ws_manager.emit('newUser', data={'username': c.username}, to=websocket)
 
@@ -514,8 +515,8 @@ async def handle_next_question(websocket, res) -> None:
         async def timer_task():
             try:
                 await sleep_manager.sleep(2 + question["duration"])
-                if sleep_manager.running():
-                    await end_question(question["correct_answers"])
+                if not sleep_manager.running():
+                    await end_question(client_list[0].expected_response)
             except Exception:
                 pass
 
