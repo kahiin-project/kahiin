@@ -102,6 +102,10 @@ function setupSocketListeners() {
   socket.on("qrcode", (res) => {
     document.getElementById("qrcode").src = res;
   });
+
+  socket.on("url", (res) => {
+    document.getElementById("scan").innerText += '\n\n' + res;
+  });
   
   socket.on("boardConnected", (res) => {
     elementsToHide = ["form"];
