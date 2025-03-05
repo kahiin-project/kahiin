@@ -2,6 +2,24 @@
 
 An open source game for school classes, with server runnable on any terminal.
 
+### Installation
+
+#### Easy way (Docker)
+
+1. Install [Docker](https://docs.docker.com/get-docker/)
+2. Run the following command:
+```bash
+docker built -t kahiin .
+docker run --network=host kahiin
+```
+
+#### Manual way (Only for Linux)
+1. Install [Python](https://www.python.org/downloads/)
+2. Run the installation script:
+```bash
+bash start.sh
+```
+
 ### Credits
 
 - Javascript libraries
