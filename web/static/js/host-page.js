@@ -211,6 +211,10 @@ function editQuiz(quiz_name) {
     socket.emit("listQuiz", { passcode });
     document.getElementById("edit_quiz_name").value = quiz_name;
     editing_quiz = quiz_name;
+    if (quiz_name.includes("'") || quiz_name.includes('"')) {
+        alertError("Quiz name cannot contain single or double quotes.");
+        return;
+    }
     document.getElementById("edit_div").style.display = "block";
     document.getElementById("edit_div").scrollTop = 0;
 
@@ -218,8 +222,11 @@ function editQuiz(quiz_name) {
     getWholeQuiz(quiz_name);
     getDrawer();
 }
-
 function editQuizName(new_name) {
+    if (new_name.includes("'") || new_name.includes('"')) {
+        alertError("Quiz name cannot contain single or double quotes.");
+        return;
+    }
     socket.emit("editQuizName", { passcode, old_name: editing_quiz, new_name });
     socket.emit("listQuiz", { passcode });
 }
@@ -230,13 +237,13 @@ function editQuizLanguage(new_language) {
 }
 
 let previous_quiz_subject = "";
-function editquizzesubject(new_subject) {
+function editQuizSubject(new_subject) {
     if(new_subject == ""){
         document.getElementById("edit_quiz_subject_input").value = previous_quiz_subject;
         new_subject = previous_quiz_subject;
     }else{
         previous_quiz_subject = new_subject;
-        socket.emit("editquizzesubject", { passcode, quiz_name: editing_quiz, new_subject });
+        socket.emit("editQuizSubject", { passcode, quiz_name: editing_quiz, new_subject });
         socket.emit("listQuestionary", { passcode });
     }
 }

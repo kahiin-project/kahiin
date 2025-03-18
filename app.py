@@ -1066,7 +1066,7 @@ async def handle_edit_quiz_language(websocket, res) -> None:
     tree.write(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
 
 
-@ws_manager.on("editquizzesubject")
+@ws_manager.on("editQuizSubject")
 @verification_wrapper
 async def handle_edit_quiz_subject(websocket, res) -> None:
     """
@@ -1084,6 +1084,7 @@ async def handle_edit_quiz_subject(websocket, res) -> None:
     root = tree.getroot()
     root.find("subject").text = new_subject
     tree.write(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
+    
 
 @ws_manager.on("editQuestion")
 @verification_wrapper
