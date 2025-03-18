@@ -19,7 +19,24 @@ class Room:
     clients: Set[websockets.WebSocketServerProtocol] = field(default_factory=set)
 
 class WebSocketManager:
+    """
+    Class to manage WebSocket connections and events
+
+    Attributes:
+        event_handlers (Dict[str, Callable]): Registered event handlers
+        clients (Set[WebSocketServerProtocol]): Connected WebSocket clients
+        background_coroutines (Set[Coroutine]): Background coroutines to run
+        rooms (Dict[str, Room]): Rooms to manage clients
+        flask_app (Optional[Flask]): Flask app to run
+        executor (ThreadPoolExecutor): Executor for running background tasks
+    """
     def __init__(self, flask_app: Optional[Flask] = None):
+        """
+        Initialize the WebSocketManager
+        
+        Parameters:
+            flask_app (Optional[Flask]): Flask app to run
+        """
         self.event_handlers: Dict[str, Callable] = {}
         self.clients: Set[WebSocketServerProtocol] = set()
         self.background_coroutines: Set[Coroutine] = set()
@@ -31,7 +48,10 @@ class WebSocketManager:
     
     
     def on(self, event_name: str):
-        """Décorateur pour enregistrer les gestionnaires d'événements"""
+        """Wrapper to register an event handler
+        
+        Parameters:
+            event_name (str): Name of the event to handle"""
         def decorator(func):
             async def wrapper(*args, **kwargs):
                 try:
@@ -43,7 +63,13 @@ class WebSocketManager:
         return decorator
 
     async def emit(self, event: str, data: Any = {}, room: Optional[str] = None, to = None):
-        """Émet un événement aux clients spécifiés"""
+        """Emit an event to the specified clients
+        
+        Parameters:
+            event (str): Name of the event to emit
+            data (Any): Data to send with the event
+            room (Optional[str]): Name of the room to emit to
+            to (Optional[WebSocketServerProtocol]): Specific client to emit to"""
         message = json.dumps({
             'event': event,
             'data': data
@@ -52,10 +78,8 @@ class WebSocketManager:
         target_clients = []
         
         if room:
-            # Émettre aux clients de la room spécifiée
             target_clients = list(self.rooms[room].clients)
         else:
-            # Émettre uniquement au client WebSocket actuel
             target_clients = [to] if to else []
 
         if not event == 'ping':
@@ -73,7 +97,11 @@ class WebSocketManager:
                 await self.handle_disconnect(client)
                     
     async def handle_disconnect(self, websocket: WebSocketServerProtocol):
-        """Gère la déconnexion d'un client"""
+        """
+        Handle client disconnection
+        
+        Parameters:
+            websocket (WebSocketServerProtocol): Client to disconnect"""
         logging.info(f"Client disconnected: {websocket.remote_address}")
         self.clients.discard(websocket)
         for room in self.rooms.values():
@@ -82,6 +110,12 @@ class WebSocketManager:
             await self.event_handlers['disconnect'](websocket)
 
     async def handle_client(self, websocket: WebSocketServerProtocol, path: str = None):
+        """Handle a new WebSocket client
+
+        Parameters:
+            websocket (WebSocketServerProtocol): Client WebSocket connection
+            path (str): Path of the WebSocket connection
+        """
         try:
             self.clients.add(websocket)
             last_ping = time.time()
@@ -94,7 +128,7 @@ class WebSocketManager:
                     data = json.loads(message)
                     event = data.get('event')
                     
-                    # Gestion du heartbeat
+                    # Heartbeat
                     if event == 'ping':
                         last_ping = time.time()
                         await websocket.send(json.dumps({'event': 'pong'}))
@@ -109,7 +143,6 @@ class WebSocketManager:
                     logging.error(f"Invalid JSON received: {message}")
                     
                 if time.time() - last_ping > 15:
-                    # Send disconnect event to server
                     await self.handle_disconnect(websocket)
                     raise websockets.exceptions.ConnectionClosed(1000, "Heartbeat timeout")
                     
@@ -119,11 +152,16 @@ class WebSocketManager:
             await self.handle_disconnect(websocket)
         
     def add_background_task(self, coro: Coroutine):
-        """Ajoute une tâche de fond à exécuter"""
+        """
+        Add a background coroutine to run
+        
+        Parameters:
+            coro (Coroutine): Coroutine to run in the background
+        """
         self.background_coroutines.add(coro)
 
     async def run_background_tasks(self):
-        """Exécute toutes les tâches de fond"""
+        """Run background tasks in the event loop"""
         while True:
             for coro in list(self.background_coroutines):
                 try:
@@ -133,11 +171,16 @@ class WebSocketManager:
             await asyncio.sleep(0.1)
     
     def run_flask(self):
-        """Démarre Flask dans un thread séparé"""
+        """Start flask app in a separate thread"""
         self.flask_app.run(host='0.0.0.0', port=8080, debug=False, threaded=True)
     
     async def start(self, host: str = '0.0.0.0', ws_port: int = 8000):
-        """Démarre le serveur WebSocket et Flask"""
+        """Start the WebSocket server
+
+        Parameters:
+            host (str): Host to run the server on
+            ws_port (int): Port to run the WebSocket server on
+        """
         ws_server = await websockets.server.serve(
             self.handle_client,
             host=host,
@@ -146,26 +189,26 @@ class WebSocketManager:
             ping_timeout=60
         )
         
-        # Création des tâches de fond
+        # Create a background task to run background coroutines
         background_task = asyncio.create_task(self.run_background_tasks())
         
         print(f"WebSocket server started on {host}:{ws_port}")
         print(f"Flask server starting on {host}:8080")
         
-        # Démarrage des serveurs
+        # Start all the servers
         try:
             flask_thread = threading.Thread(target=self.run_flask)
             flask_thread.start()
             await asyncio.gather(
                 background_task,
-                asyncio.Future()  # Maintient le serveur en vie
+                asyncio.Future()  # Run forever
             )
         finally:
             ws_server.close()
             await ws_server.wait_closed()
     
     async def stop(self):
-        """Arrête le serveur WebSocket et Flask"""
+        """Stop the WebSocket server"""
         for client in self.clients:
             await client.close()
         self.clients.clear()
