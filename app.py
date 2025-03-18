@@ -576,9 +576,10 @@ async def handle_connect(websocket, username: str) -> None:
         print([i.username for i in client_list])
         await ws_manager.emit('error', "UsernameAlreadyTaken", to=websocket)
         return
-    if len(username) > 40 or len(username) < 1:
+    if len(username) > 40 or len(username) < 1 or not all(c.isalpha() or c in [' ', '-'] for c in username):
         await ws_manager.emit('error', "InvalidUsername", to=websocket)
         return
+
     
     Client(websocket=websocket, username=username, connections=client_list)
     await ws_manager.emit('guestConnected', to=websocket)
@@ -1084,7 +1085,7 @@ async def handle_edit_quiz_subject(websocket, res) -> None:
     root = tree.getroot()
     root.find("subject").text = new_subject
     tree.write(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
-    
+
 
 @ws_manager.on("editQuestion")
 @verification_wrapper
