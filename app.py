@@ -523,7 +523,7 @@ async def handle_board_connect(websocket, passcode: str) -> None:
         IP = '127.0.0.1'
     finally:
         s.close()
-    qr_img = qrcodemaker.make(f"http://{IP}:8080/guest'\n\n' +")
+    qr_img = qrcodemaker.make(f"http://{IP}:8080/guest")
     qr_img = qr_img.convert("LA")
     data = qr_img.getdata()
     new_data = [(255, 0) if item == (255,255) else item for item in data]
