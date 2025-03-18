@@ -10,7 +10,8 @@ An open source game for school classes, with server runnable on any terminal.
 2. Run the following command:
 ```bash
 docker build -t kahiin .
-docker run --network=host kahiin
+sudo docker volume create kahiin
+docker run --network=host -v kahiin:/kahiin/quiz kahiin
 ```
 
 #### Manual way (Only for Linux)
