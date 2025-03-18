@@ -20,42 +20,101 @@ except ImportError:
     from .kahiin_websocket import ws_manager, flask_app as app
 
 def relative_open(filename: str, mode: str = "r", encoding: str = None):
+    """
+    Method to open a relative file with it's name.
+    Parameters:
+        filename (str): The name of the file to open.
+        mode (str): The mode to open the file in.
+        encoding (str): The encoding of the file.
+    
+    Returns:
+        file: The file object.
+    """
     full_path = os.path.join(os.path.dirname(__file__), filename)
     return open(full_path, mode=mode, encoding=encoding)
 
 def get_settings() -> dict:
+    """
+    Get the settings for the current language.
+    Returns: 
+        dict: The settings for the current language.
+    """
     with relative_open("settings.json", "r") as f:
         return json.load(f)
 
 def get_passcode():
+    """
+    Get the passcode for the admin.
+    Returns:
+        str: The passcode for the admin.
+    """
     return get_settings()["adminPassword"]
 
 def get_glossary() -> dict:
+    """
+    Get the glossary for the current language.
+    Returns: 
+        dict: The glossary for the current language.
+    """
     with relative_open("glossary.json", "r") as g:
         with relative_open("settings.json", "r") as s:
             return json.load(g)[json.load(s)["language"]]
 
-# Initialize Flask application and ws_manager
-# Set static and template folders
 app.static_folder = 'web/static'
 app.template_folder = 'web/templates'
 
-## ----------------- Class ----------------- ##
+## ----------------- Classes ----------------- ##
 
 class Quiz:
+    """
+    Class used to parse and store the quiz data.
+    Attributes:
+        root (xml.etree.ElementTree.Element): The root element of the quiz.
+        tree (xml.etree.ElementTree.ElementTree): The tree of the quiz.
+        filename (str): The name of the file containing the quiz.
+        quiz (dict): The quiz data.
+
+    """
     def __init__(self, root=None, tree=None) -> None:
+        """
+        Initialize a new Quiz instance.
+        Parameters:
+            root (xml.etree.ElementTree.Element): The root element of the quiz. Defaults to None.
+            tree (xml.etree.ElementTree.ElementTree): The tree of the quiz. Defaults to None.
+
+        """
         self.root = root
         self.tree = tree
         self.filename = None 
         self.quiz = {"title": "", "questions": []}
 
     def get_filename(self) -> str:
+        """
+        Get the name of the file containing the quiz.
+
+        Returns:
+            str: The name of the file containing the quiz.
+        """
         return self.filename
 
 quiz = Quiz()
 
 class SleepManager:
+    """
+    Class used to manage sleep, used when the question is paused and resumed.
+    Attributes:
+        _stop_event (asyncio.Event): The event used to stop the sleep.
+        _is_sleeping (bool): A boolean indicating if the sleep is running.
+        _current_task (asyncio.Task): The current task.
+        _duration (int): The duration of the sleep.
+        _time_start (int): The time when the sleep started.
+        _pause_time (int): The time when the sleep was paused.
+        _is_paused (bool): A boolean indicating if the sleep is paused.
+    """
     def __init__(self):
+        """
+        Initialize a new SleepManager instance.
+        """
         self._stop_event = asyncio.Event()
         self._is_sleeping = False
         self._current_task = None
@@ -65,6 +124,11 @@ class SleepManager:
         self._is_paused = False
 
     async def sleep(self, duration):
+        """
+        Async method to sleep for a certain duration.
+        Parameters:
+            duration (int): The duration to sleep for.
+        """
         self._duration = duration
         self._time_start = time.time()
         try:
@@ -78,26 +142,47 @@ class SleepManager:
         self._current_task = None
 
     def stop(self):
+        """
+        Method to stop the sleep async task.
+        """
         if self._current_task and not self._current_task.done():
             self._current_task.cancel()
         self._is_sleeping = False
         self._is_paused = False
 
     def pause(self):
+        """
+        Method to pause the sleep.
+        """
         if self._current_task and not self._current_task.done():
             self._current_task.cancel()
             self._pause_time = time.time()
         self._is_paused = True
 
     def is_paused(self):
+        """
+        Function to check if the sleep is paused.
+
+        Returns:
+            bool: A boolean indicating if the sleep is paused.
+        """
         return self._is_paused
 
     def reset(self):
+        """
+        Method to reset the sleep async task.
+        """
         self._stop_event.clear()
         self._current_task = None
         self._pause_time = 0
 
     def current(self):
+        """
+        Get the current time left in the sleep.
+
+        Returns:
+            int: The current time left in the sleep.
+        """
         if self._is_paused:
             elapsed = self._pause_time - self._time_start
             return int(self._duration - elapsed)
@@ -105,6 +190,12 @@ class SleepManager:
         return int(self._duration - elapsed)
 
     def running(self):
+        """
+        Check if the sleep is running.
+
+        Returns:
+            bool: A boolean indicating if the sleep is running.
+        """
         return self._is_sleeping
 
 sleep_manager = SleepManager()
@@ -128,7 +219,28 @@ client_list = []
 
 
 class Client(GameTab):
+    """
+    Class representing a connected client child of the GameTab class.
+    Attributes:
+        username (str): The username of the client.
+        score (int): The score of the client.
+        time_begin (int): The time when the client started answering the question.
+        time_end (int): The time when the client finished answering the question.
+        response_time (int): The time taken by the client to respond.
+        timer_time (int): The time the client had to answer the question.
+        user_answer (str): The answer provided by the client.
+        expected_response (list): The expected response.
+        question_type (str): The type of the question.
+    """
     def __init__(self, websocket, username: str, connections: list) -> None:
+        """
+        Initialize a new Client instance.
+
+        Parameters:
+            websocket (WebSocket): The websocket of the client.
+            username (str): The username of the client.
+            connections (list): The list of connections.
+        """
         super().__init__(websocket, connections)
         self.username = username
         self.score = 0
@@ -136,12 +248,19 @@ class Client(GameTab):
         self.time_end = 0
         self.response_time = 0
         self.timer_time = 0
-
         self.user_answer = ""
         self.expected_response = []
         self.question_type = ""
 
     def evalScore(self) -> None:
+        """
+        Method to generate the score of the client using the following formula:
+        score = (1 - response_time / allowed_time) * 500
+        
+        Returns:
+            int: The score of the client.
+        """
+
         if type(self.user_answer) != list:
             return
         self.response_time = self.time_end - self.time_begin
@@ -166,7 +285,19 @@ board_list = []
 
 
 class Board(GameTab):
+    """
+    Class representing a connected board child of the GameTab class.
+    Attributes:
+        websocket (WebSocket): The websocket of the board.
+        connections (list): The list of connections.
+    """
     def __init__(self, websocket, connections: list) -> None:
+        """
+        Initialize a new Board instance.
+        
+        Parameters:
+            websocket (WebSocket): The websocket of the board.
+            connections (list): The list of connections."""
         super().__init__(websocket, connections)
 
 
@@ -175,48 +306,83 @@ host_list = []
 
 
 class Host(GameTab):
+    """
+    Class representing a connected host child of the GameTab class.
+
+    Attributes:
+        websocket (WebSocket): The websocket of the host.
+        connections (list): The list of connections.
+    """
     def __init__(self, websocket, connections: list) -> None:
         super().__init__(websocket, connections)
 
 
 class Game:
+    """
+    Class representing the current game.
+    Attributes:
+        previous_leaderboard (list): The previous leaderboard.
+        current_leaderboard (list): The current leaderboard.
+        promoted_users (list): The list of promoted users.
+        running (bool): A boolean indicating if the game is running.
+    """
     def __init__(self) -> None:
+        """
+        Initialize a new Game instance.
+        """
         self.previous_leaderboard = []
         self.current_leaderboard = []
         self.promoted_users = []
         self.running = False
 
     def handleFirstLeaderboard(self):
+        """
+        Method used to generate the first leaderboard, only called once.
+        """
         self.current_leaderboard = sorted(
             client_list, key=lambda x: x.score, reverse=True)
 
     def handleNextLeaderboard(self):
+        """
+        Method used to generate the next leaderboard.
+        """
         self.previous_leaderboard = self.current_leaderboard
         self.current_leaderboard = sorted(
             client_list, key=lambda x: x.score, reverse=True)
 
-    def genPromotedUsers(self, previous: list[list], current: list[list]) -> list[list]:
-        # Créer des dictionnaires de rang pour l'ancien et le nouveau classement
+    def genPromotedUsers(self) -> list[list]:
+        """
+        Method used to generate the list of promoted users.
+        Follows the following rules:
+        1. The user was not in the previous top 5.
+        2. The user gained at least 2 places.
+        3. The user is not already in the promoted list.
+        
+        Returns:
+            list[list]: The list of promoted users.
+        """
+        previous = [[user.username, user.score]
+                              for user in self.previous_leaderboard]
+        current = [[user.username, user.score]
+                              for user in self.previous_leaderboard]
         previous_ranks = {username: i+1 for i, (username, _) in enumerate(previous)}
         current_ranks = {username: i+1 for i, (username, _) in enumerate(current)}
         
         self.promoted_users = []
         
-        # Pour chaque joueur dans le classement actuel
         for username, _ in current:
             if username in previous_ranks:
                 previous_rank = previous_ranks[username]
                 current_rank = current_ranks[username]
                 
-                # Calculer la différence de rang (nombre de places gagnées)
                 rank_improvement = previous_rank - current_rank
                 
-                # Ajouter le joueur s'il :
-                # 1. N'est pas dans le top 5 précédent
-                # 2. A gagné au moins 3 places
-                # 3. N'est pas déjà dans la liste des promus
+                # Add the player if they:
+                # 1. Were not in the previous top 5
+                # 2. Gained at least 2 places
+                # 3. Are not already in the promoted list
                 if (previous_rank > 5 and 
-                    rank_improvement >= 3 and 
+                    rank_improvement >= 2 and 
                     username not in [user[0] for user in self.promoted_users]):
                     self.promoted_users.append([username, rank_improvement])
 
@@ -224,6 +390,12 @@ class Game:
         return self.promoted_users
 
     def display(self):
+        """
+        Method used to return the current leaderboard and promoted user.
+
+        Returns:
+            list[list], list[list]: The current leaderboard and the promoted users.
+        """
         if not self.current_leaderboard:
             self.handleFirstLeaderboard()
             current_leaderboard = [[user.username, user.score]
@@ -233,13 +405,13 @@ class Game:
         self.handleNextLeaderboard()
         current_leaderboard = [[user.username, user.score]
                              for user in self.current_leaderboard]
-        previous_leaderboard = [[user.username, user.score]
-                              for user in self.previous_leaderboard]
-        promoted_users = self.genPromotedUsers(
-            previous_leaderboard, current_leaderboard)  
+        promoted_users = self.genPromotedUsers()  
         return current_leaderboard[:5], promoted_users
 
     def reset(self):
+        """
+        Method used to reset the game.
+        """
         self.previous_leaderboard = []  
         self.current_leaderboard = []   
         quiz.quiz = {"title": quiz.get_filename(),"questions": []}
@@ -264,6 +436,13 @@ game = Game()
 ## ----------------- Functions ----------------- ##
 
 def verification_wrapper(func):
+    """
+    Wrapper function to verify the passcode provided by the client.
+    Parameters:
+        func (function): The function to wrap.
+    Returns:
+        function: The wrapped function.
+    """
     async def wrap(*args, **kwargs):
         real_passcode = get_passcode()
         # Vérifier si args[1] est un dict ou une string
@@ -308,9 +487,13 @@ def route_landing_page() -> str:
 
 @ws_manager.on('connect')
 async def handle_connect(websocket) -> None:
-    """Handle client connection events."""
+    """Handle client connection events. Init client class and adds if to the client list.
+    
+    Parameters:
+        websocket (WebSocket): The websocket of the client.
+        """
     data = get_settings()
-    # Remove all settings except dyslexic mode before sending
+
     filtered_data = {key: value for key, value in data.items() if key == "dyslexicMode" or key == "language"}
     await ws_manager.emit("settings", filtered_data, to=websocket)
     await ws_manager.emit("glossary", get_glossary(), to=websocket)
@@ -319,9 +502,11 @@ async def handle_connect(websocket) -> None:
 @verification_wrapper
 async def handle_board_connect(websocket, passcode: str) -> None:
     """
-    Handle board connection requests.
+    Handle board connection requests. Init the board class and add it to the board list.
 
-    :param code: Passcode provided by the board
+    Parameters:
+        websocket (WebSocket): The websocket of the board.
+        passcode: Used for verification wrapper.
     """
     if game.running:
         await ws_manager.emit('error', "GameAlreadyRunning")
@@ -355,6 +540,13 @@ async def handle_board_connect(websocket, passcode: str) -> None:
 @ws_manager.on('hostConnect')
 @verification_wrapper
 async def handle_host_connect(websocket, passcode: str) -> None:
+    """
+    Handle host connection requests. Init the host class and add it to the host list.
+
+    Parameters:
+        websocket (WebSocket): The websocket of the host.
+        passcode: Used for verification wrapper.
+    """
     if game.running:
         await ws_manager.emit('error', "GameAlreadyRunning", to=websocket)
         return
@@ -367,19 +559,22 @@ async def handle_host_connect(websocket, passcode: str) -> None:
 @ws_manager.on('guestConnect')
 async def handle_connect(websocket, username: str) -> None:
     """
-    Handle new user connection requests.
+    Handle guest connection requests. Init the guest class and add it to the guest list
 
-    :param username: Username provided by the new user
+    Parameters:
+        websocket (WebSocket): The websocket of the guest
+        username: The username of the guest
     """
-    # Check if the username is already taken
     if game.running:
         await ws_manager.emit('error', "GameAlreadyRunning", to=websocket)
         return
-    if any(c.username == username for c in client_list):
-        await ws_manager.emit('error', "UsernameAlreadyTaken", to=websocket)
-        return
     if any(client.websocket == websocket for client in client_list):
-        await ws_manager.emit('error', "UserAlreadyConnected", to=websocket)
+        # Client may send multiple connect request by error, thus blocking it will make them unable to connect
+        # await ws_manager.emit('error', "UserAlreadyConnected", to=websocket)
+        return
+    if any(c.username == username for c in client_list):
+        print([i.username for i in client_list])
+        await ws_manager.emit('error', "UsernameAlreadyTaken", to=websocket)
         return
     if len(username) > 40 or len(username) < 1:
         await ws_manager.emit('error', "InvalidUsername", to=websocket)
@@ -392,7 +587,10 @@ async def handle_connect(websocket, username: str) -> None:
             
 @ws_manager.on('disconnect')
 async def handle_disconnect(websocket) -> None:
-    """Handle client disconnection events."""
+    """Handle client disconnection events. Remove client from his list
+    
+    Parameters: 
+        websocket (WebSocket): The websocket of the client"""
     target_websocket = websocket
     client = next((client for client in client_list if client.websocket == target_websocket), None) # Get first client with the target_websocket, is used to not iter the list multiple times
     if client:
@@ -437,7 +635,14 @@ async def handle_disconnect(websocket) -> None:
 
 @ws_manager.on('startSession')
 @verification_wrapper
-async def handle_start_game(websocket, code: str) -> None:
+async def handle_start_game(websocket, passcode: str) -> None:
+    """
+    Handle the start of the game.
+
+    Parameters:
+        websocket (WebSocket): The host websocket.
+        passcode (str): Used for verification wrapper.
+    """
     if game.running:
         await ws_manager.emit('error', "GameAlreadyRunning", to=websocket)
         return
@@ -460,106 +665,117 @@ async def handle_start_game(websocket, code: str) -> None:
 @ws_manager.on("nextQuestion")
 @verification_wrapper
 async def handle_next_question(websocket, res) -> None:
-    try:
-        settings = get_settings()
-        question_number = res["question_count"]
-        
-        # Reset all old user answer for the new question
-        for client in client_list:
-            client.user_answer = ""
-            
-        if len(client_list) == 0:
-            await ws_manager.emit('error', "NoUsersConnected", to=websocket)
-            return
-            
-        if question_number == len(quiz.quiz["questions"]):
-            data = {
-                "game_lead": game.display()[0],
-            }
-            for client in client_list + board_list + host_list:
-                try:
-                    await ws_manager.emit("gameEnd", data, to=client.websocket)
-                except Exception:
-                    continue
-            return
-            
-        question_not_answered = list(filter(lambda q: q is not None, quiz.quiz["questions"]))
-        question = random.choice(question_not_answered) if settings["randomOrder"] else quiz.quiz["questions"][question_number]
-        
-        data = {
-            "question_title": question["title"],
-            "question_type": question["type"],
-            "question_possible_answers": question["shown_answers"],
-            "question_duration": question["duration"],
-            "question_number": (len(quiz.quiz["questions"]) - len(question_not_answered) + 1) if settings["randomOrder"] else quiz.quiz["questions"].index(question) + 1,
-            "question_count": len(quiz.quiz["questions"]),
-        }
+    """
+    Handle the start of the game.
 
-        # Send question start to all clients
+    Parameters:
+        websocket (WebSocket): The host websocket
+        res (dict): Dict containing {passcode, question_count}
+    """
+    settings = get_settings()
+    question_number = res["question_count"]
+    
+    # Reset all old user answer for the new question
+    for client in client_list:
+        client.user_answer = ""
+        
+    if len(client_list) == 0:
+        await ws_manager.emit('error', "NoUsersConnected", to=websocket)
+        return
+        
+    if question_number == len(quiz.quiz["questions"]):
+        data = {
+            "game_lead": game.display()[0],
+        }
         for client in client_list + board_list + host_list:
             try:
-                await ws_manager.emit("questionStart", data, to=client.websocket)
+                await ws_manager.emit("gameEnd", data, to=client.websocket)
             except Exception:
                 continue
+        return
+        
+    question_not_answered = list(filter(lambda q: q is not None, quiz.quiz["questions"]))
+    question = random.choice(question_not_answered) if settings["randomOrder"] else quiz.quiz["questions"][question_number]
+    
+    data = {
+        "question_title": question["title"],
+        "question_type": question["type"],
+        "question_possible_answers": question["shown_answers"],
+        "question_duration": question["duration"],
+        "question_number": (len(quiz.quiz["questions"]) - len(question_not_answered) + 1) if settings["randomOrder"] else quiz.quiz["questions"].index(question) + 1,
+        "question_count": len(quiz.quiz["questions"]),
+    }
 
-        # Initialize client data
-        current_time = time.time()
-        for client in client_list:
-            client.time_begin = current_time
-            client.expected_response = question["correct_answers"]
-            client.question_type = question["type"]
-            client.timer_time = question["duration"]
-            client.user_answer = None
-            client.time_end = 0
+    # Send question start to all clients
+    for client in client_list + board_list + host_list:
+        try:
+            await ws_manager.emit("questionStart", data, to=client.websocket)
+        except Exception:
+            continue
 
-        async def timer_task():
-            try:
-                await sleep_manager.sleep(2 + question["duration"])
-                if not sleep_manager.running():
-                    await end_question(client_list[0].expected_response)
-            except Exception:
-                pass
+    # Initialize client data
+    current_time = time.time()
+    for client in client_list:
+        client.time_begin = current_time
+        client.expected_response = question["correct_answers"]
+        client.question_type = question["type"]
+        client.timer_time = question["duration"]
+        client.user_answer = None
+        client.time_end = 0
 
-        asyncio.create_task(timer_task())
+    async def timer_task():
+        try:
+            await sleep_manager.sleep(2 + question["duration"])
+            if not sleep_manager.running():
+                await end_question(client_list[0].expected_response)
+        except Exception:
+            pass
 
-    except Exception as e:
-        print(f"Error in handle_next_question: {str(e)}")
+    asyncio.create_task(timer_task())
+
 
 async def end_question(correct_answers):
-    """Helper function to handle question ending logic"""
-    try:
-        data = {
-            "question_correct_answer": correct_answers
-        }
-        if sleep_manager.is_paused():
-            return
-        current_time = time.time()
-        for client in client_list:
-            if client.user_answer is None:
-                client.user_answer = []
-            if client.time_end == 0:
-                client.time_end = current_time
-            
-        for client in client_list:
-            try:
-                client.evalScore()
-            except Exception:
-                continue
+    """Handle the host ending the question.
 
-        for client in client_list + board_list + host_list:
-            try:
-                await ws_manager.emit("questionEnd", data, to=client.websocket)
-            except Exception:
-                continue
+    Parameters:
+        correct_answers (str): Used to send the correct answers to the board
+    """
+    data = {
+        "question_correct_answer": correct_answers
+    }
+    if sleep_manager.is_paused():
+        return
+    current_time = time.time()
+    for client in client_list:
+        if client.user_answer is None:
+            client.user_answer = []
+        if client.time_end == 0:
+            client.time_end = current_time
+        
+    for client in client_list:
+        try:
+            client.evalScore()
+        except Exception:
+            continue
 
-    except Exception as e:
-        print(f"Error in end_question: {str(e)}")
+    for client in client_list + board_list + host_list:
+        try:
+            await ws_manager.emit("questionEnd", data, to=client.websocket)
+        except Exception:
+            continue
+
 
 
 
 @ws_manager.on('showLeaderboard')
 @verification_wrapper
-async def handle_show_leaderboard(websocket, code: str) -> None:
+async def handle_show_leaderboard(websocket, passcode: str) -> None:
+    """Handle the host showing the leaderboard.
+
+    Parameters:
+        websocket (WebSocket): The host websocket
+        passcode (str): Used for verification wrapper.
+    """
     game_lead, promoted_users = game.display()
     for client in board_list:
         await ws_manager.emit('leaderboard', {
@@ -567,6 +783,12 @@ async def handle_show_leaderboard(websocket, code: str) -> None:
 
 @ws_manager.on('sendAnswer')
 async def handle_answer(websocket, res) -> None:
+    """Handle the guest sending it's answer.
+
+    Parameters:
+        websocket (WebSocket): The guest websocket.
+        res (dict): Dict containing {answer, question_number}
+    """
     user_answer = res["answers"]
     target_websocket = websocket
     if sleep_manager.is_paused():
@@ -583,7 +805,16 @@ async def handle_answer(websocket, res) -> None:
     await ws_manager.emit('error' , "UserNotFound", to=websocket)
 
 @ws_manager.on('getSpreadsheet')
-async def handle_get_spreadsheet(websocket, res) -> None:
+@verification_wrapper
+async def handle_get_spreadsheet(websocket, passcode: str) -> None:
+
+    """
+    Handle the sending the csv spreadsheet to the host.
+
+    Parameters:
+        websocket (WebSocket): The host websocket
+        passwode (str): Used for verification wrapper.
+    """
     csv = []
     csv.append("Username,Score,MaxPossibleScore")
     client_list.sort(key=lambda x: x.score, reverse=True)
@@ -605,9 +836,10 @@ async def handle_new_quiz(websocket, res) -> None:
     """
     Handle requests to send the quiz to the host.
 
-    :param res: Dictionary containing the passcode and the quiz
+    Parameters:
+        websocket (WebSocket): The websocket of the host
+        res (dict): Dictionary containing {filename, passcode}
     """
-    # rename automatically the file to khn
     filename = filename.split(".")[0] + ".khn"
     with relative_open(f"quiz/{res['filename']}", "wb") as f:
         f.write(res["quiz_data"])
@@ -615,6 +847,13 @@ async def handle_new_quiz(websocket, res) -> None:
 @ws_manager.on('listQuiz')
 @verification_wrapper
 async def handle_list_quiz(websocket, res) -> None:
+    """
+    Handle the listing of all the quizzes to the host
+
+    Parameters:
+        websocket (WebSocket): The websocket of the host
+        res (dict): Dictionary containing {passcode}
+    """
     quizzes = os.listdir(os.path.join(os.path.dirname(__file__), "quiz"))
     quizzes.sort()
     quizzes = [q[:-4] for q in quizzes if q != ".gitkeep"]
@@ -623,6 +862,12 @@ async def handle_list_quiz(websocket, res) -> None:
 @ws_manager.on('selectQuiz')
 @verification_wrapper
 async def handle_select_quiz(websocket, res) -> None:
+    """
+    Handle the selection of the quiz
+    
+    Parameters:
+        websocket (WebSocket): The websocket of the host
+        res (dict): Dictionary containing {passcode, quiz_name}"""
     if not res["quiz_name"].endswith(".khn"):
         res["quiz_name"] += ".khn"
     quiz.tree = ET.parse(os.path.join(os.path.dirname(__file__), "quiz", res["quiz_name"]))
@@ -632,6 +877,12 @@ async def handle_select_quiz(websocket, res) -> None:
 @ws_manager.on('kickPlayer')
 @verification_wrapper
 async def handle_kick_player(websocket,res) -> None:
+    """
+    Handle the kicking of a player 
+
+    Parameters:
+        websocket (WebSocket): The websocket of the host
+        res (dict): Dictionary containing {passcode, username}"""
     for client in client_list:
         if client.username == res["username"]:
             client_list.remove(client)
@@ -643,69 +894,87 @@ async def handle_kick_player(websocket,res) -> None:
 
 @ws_manager.on('stopQuestion')
 @verification_wrapper
-async def handle_stop_game(websocket, code: str) -> None:
-    try:
-        if not game.running:
-            await ws_manager.emit("error", "GameNotRunning", to=websocket)
-            return
-        if not sleep_manager.running():
-            await ws_manager.emit("error", "QuestionNotRunning", to=websocket)
-            return
+async def handle_stop_game(websocket, passcode: str) -> None:
+    """
+    Handle the kicking of player 
 
-        sleep_manager.stop()
-        
-        await end_question(client_list[0].expected_response)
-        
-    except Exception as e:
-        print(f"Error in handle_stop_game: {str(e)}")
+    Parameters:
+        websocket (WebSocket): The websocket of the host.
+        passcode (str): Used for verification wrapper.
+    """
+    if not game.running:
+        await ws_manager.emit("error", "GameNotRunning", to=websocket)
+        return
+    if not sleep_manager.running():
+        await ws_manager.emit("error", "QuestionNotRunning", to=websocket)
+        return
+
+    sleep_manager.stop()
+    
+    await end_question(client_list[0].expected_response)
 
 @ws_manager.on('pauseQuestion') 
 @verification_wrapper
-async def handle_pause_game(websocket, code: str) -> None:
-    try:
-        if not game.running:
-            await ws_manager.emit("error", "GameNotRunning", to=websocket)
-            return
+async def handle_pause_game(websocket, passcode: str) -> None:
+    """
+    Handle the host pausing the game. Using the asynchronous sleep_manager
 
-        sleep_manager.pause()
-        for client in board_list + client_list:
-            await ws_manager.emit("pauseQuestion", to=client.websocket)
+    Parameters:
+        websocket (WebSocket): The websocket of the host.
+        passcode (str): Used for verification wrapper.
+    """
+    if not game.running:
+        await ws_manager.emit("error", "GameNotRunning", to=websocket)
+        return
+
+    sleep_manager.pause()
+    for client in board_list + client_list:
+        await ws_manager.emit("pauseQuestion", to=client.websocket)
             
-    except Exception as e:
-        print(f"Error in handle_pause_game: {str(e)}")
 
 @ws_manager.on('unpauseQuestion')
 @verification_wrapper 
-async def handle_unpause_game(websocket, code: str) -> None:
-    try:
-        if not game.running:
-            await ws_manager.emit("error", "GameNotRunning", to=websocket)
-            return
-        if not sleep_manager.is_paused():
-            return
-        remaining_sec = sleep_manager.current()
-        sleep_manager.stop() # Clean stop before resuming
+async def handle_unpause_game(websocket, passcode: str) -> None:
+    """
+    Handle the host unpausing the game. Using the asynchronous sleep_manager
+    
+    Parameters:
+        websocket (WebSocket): The websocket of the host.
+        passcode (str): Used for verification wrapper.
+    """
+    if not game.running:
+        await ws_manager.emit("error", "GameNotRunning", to=websocket)
+        return
+    if not sleep_manager.is_paused():
+        return
+    remaining_sec = sleep_manager.current()
+    sleep_manager.stop() # Clean stop before resuming
 
-        async def resume_timer():
-            try:
-                await sleep_manager.sleep(remaining_sec)
-                if not sleep_manager.running():
-                    await end_question(client_list[0].expected_response)
-            except asyncio.CancelledError:
-                pass
+    async def resume_timer():
+        try:
+            await sleep_manager.sleep(remaining_sec)
+            if not sleep_manager.running():
+                await end_question(client_list[0].expected_response)
+        except asyncio.CancelledError:
+            pass
 
-        for client in board_list + client_list:
-            await ws_manager.emit("unpauseQuestion", to=client.websocket)
+    for client in board_list + client_list:
+        await ws_manager.emit("unpauseQuestion", to=client.websocket)
 
-        timer_task = asyncio.create_task(resume_timer())
-        sleep_manager._current_task = timer_task
+    timer_task = asyncio.create_task(resume_timer())
+    sleep_manager._current_task = timer_task
 
-    except Exception as e:
-        print(f"Error in handle_unpause_game: {str(e)}")
 
 @ws_manager.on('createQuiz')
 @verification_wrapper
 async def handle_create_quiz(websocket, res) -> None:
+    """
+    Handle the creation of a new quiz.
+
+    Parameters:
+        websocket (WebSocket): The websocket of the host.
+        res (dict): Dictionary containing {passcode}
+    """
     list_quizzes = os.listdir(os.path.join(os.path.dirname(__file__), "quiz"))
     quiz_index = 1
     while f"new_quiz{quiz_index}.khn" in list_quizzes:
@@ -727,6 +996,13 @@ async def handle_create_quiz(websocket, res) -> None:
 @ws_manager.on('deleteQuiz')
 @verification_wrapper
 async def handle_delete_quiz(websocket, res) -> None:
+    """
+    Handle the deletion of a quiz.
+
+    Parameters:
+        websocket (WebSocket): The websocket of the host.
+        res (dict): Dictionary containing {passcode, quiz_name}
+    """
     if not res["quiz_name"].endswith(".khn"):
         res["quiz_name"] += ".khn"
     os.remove(os.path.join(os.path.dirname(__file__), "quiz", res["quiz_name"]))
@@ -735,6 +1011,13 @@ async def handle_delete_quiz(websocket, res) -> None:
 @ws_manager.on("editQuizName")
 @verification_wrapper
 async def handle_edit_quiz_name(websocket, res) -> None:
+    """
+    Handle the renaming of a quiz.
+
+    Parameters:
+        websocket (WebSocket): The websocket of the host.
+        res (dict): Dictionary containing {passcode, old_name, new_name}
+    """
     list_quizzes = os.listdir(os.path.join(os.path.dirname(__file__), "quiz"))
     forbiden_characters = '/\\|,.;:!?*"><'
     invalid_characters = False
@@ -762,25 +1045,17 @@ async def handle_edit_quiz_name(websocket, res) -> None:
         )
         await ws_manager.emit("editingQuiz", new_name, to=websocket)
 
-@ws_manager.on("editquizzesubject")
-@verification_wrapper
-async def handle_edit_quiz_subject(websocket, res) -> None:
-    passcode = res["passcode"]
-    quiz_name = res["quiz_name"]
-    new_subject = res["new_subject"]
-    if not quiz_name.endswith(".khn"):
-        quiz_name += ".khn"
-    if get_passcode() == passcode:
-        tree = ET.parse(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
-        root = tree.getroot()
-        root.find("subject").text = new_subject
-        tree.write(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
-    else:
-        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 
 @ws_manager.on("editQuizLanguage")
 @verification_wrapper
 async def handle_edit_quiz_language(websocket, res) -> None:
+    """
+    Handle editing the language of a quiz.
+
+    Parameters:
+        websocket (WebSocket): The websocket of the host.
+        res (dict): Dictionary containing {passcode, quiz_name, new_language}
+    """
     passcode = res["passcode"]
     quiz_name = res["quiz_name"]
     new_language = res["new_language"]
@@ -797,6 +1072,13 @@ async def handle_edit_quiz_language(websocket, res) -> None:
 @ws_manager.on("editquizzesubject")
 @verification_wrapper
 async def handle_edit_quiz_subject(websocket, res) -> None:
+    """
+    Handle the changing of the subject of a quiz.
+
+    Parameters:
+        websocket (WebSocket): The websocket of the host.
+        res (dict): Dictionary containing {passcode, quiz_name, new_subject}
+    """
     passcode = res["passcode"]
     quiz_name = res["quiz_name"]
     new_subject = res["new_subject"]
@@ -806,22 +1088,6 @@ async def handle_edit_quiz_subject(websocket, res) -> None:
         tree = ET.parse(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
         root = tree.getroot()
         root.find("subject").text = new_subject
-        tree.write(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
-    else:
-        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
-
-@ws_manager.on("editQuizLanguage")
-@verification_wrapper
-async def handle_edit_quiz_language(websocket, res) -> None:
-    passcode = res["passcode"]
-    quiz_name = res["quiz_name"]
-    new_language = res["new_language"]
-    if not quiz_name.endswith(".khn"):
-        quiz_name += ".khn"
-    if get_passcode() == passcode:
-        tree = ET.parse(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
-        root = tree.getroot()
-        root.find("language").text = new_language
         tree.write(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
     else:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
@@ -829,12 +1095,18 @@ async def handle_edit_quiz_language(websocket, res) -> None:
 @ws_manager.on("editQuestion")
 @verification_wrapper
 async def handle_edit_quiz(websocket, res) -> None:
+    """
+    Handle the editing of a question.
+
+    Parameters:
+        websocket (WebSocket): The websocket of the host.
+        res (dict): Dictionary containing {passcode, type, duration, shown_answers, correct_answers, language, subject, id, title}
+    """
     question_id = res["id"]
 
     with relative_open("drawer.json", "r") as f:
         drawer = json.load(f)
 
-    # Update the drawer with the new question data
     if not res["type"] in ["uniqueanswer", "mcq"]:
         return
     if not res["duration"].isdigit() and int(res["duration"]) < 0:
@@ -865,12 +1137,18 @@ async def handle_edit_quiz(websocket, res) -> None:
 @ws_manager.on("deleteQuestionInDrawer")
 @verification_wrapper
 async def handle_delete_question_in_drawer(websocket, res) -> None:
+    """
+    Handle the deletion of a question in the drawer.
+
+    Parameters:
+        websocket (WebSocket): The websocket of the host.
+        res (dict): Dictionary containing {passcode, id}
+    """
     question_id = res["id"]
 
     with relative_open("drawer.json", "r") as f:
         drawer = json.load(f)
 
-    # Delete the question from the drawer
     del drawer[question_id]
 
     with relative_open("drawer.json", "w") as f:
@@ -883,19 +1161,26 @@ async def handle_delete_question_in_drawer(websocket, res) -> None:
 @ws_manager.on("newQuestion")
 @verification_wrapper
 async def handle_new_question(websocket, res) -> None:
+    """
+    Handle the addition of a new question to the drawer.
+
+    Parameters:
+        websocket (WebSocket): The websocket of the host.
+        res (dict): Dictionary containing {passcode}
+    """
+    glossary = get_glossary()
     if get_passcode() == res["passcode"]:
         with relative_open("drawer.json", "r") as f:
             drawer = json.load(f)
 
-        # Add the new question to the drawer
         drawer.append({
-            "title": get_glossary()["NewQuestion"],
+            "title": glossary["NewQuestion"],
             "type": "uniqueanswer",
             "duration": 20,
             "shown_answers": ["A", "B"],
             "correct_answers": [],
             "language": get_settings()["language"],
-            "subject": get_glossary()["Other"]
+            "subject": glossary["Other"]
         })
 
         with relative_open("drawer.json", "w") as f:
@@ -906,9 +1191,14 @@ async def handle_new_question(websocket, res) -> None:
             await ws_manager.emit("questionAdded", drawer, to=websocket)
 
 @ws_manager.on("getSettings")
-async def handle_get_settings(websocket, code: str) -> None:
-    """Handle requests to get settings."""
-    if get_passcode == code:
+async def handle_get_settings(websocket, passcode: str) -> None:
+    """Handle requests to get settings.
+    
+    Parameters:
+        websocket (WebSocket): The websocket of the client.
+        passcode (str): Used for verification wrapper.
+    """
+    if get_passcode() == passcode:
         await ws_manager.emit("settings", get_settings(), to=websocket)
     else:
         data = get_settings()
@@ -918,7 +1208,12 @@ async def handle_get_settings(websocket, code: str) -> None:
 @ws_manager.on("setSettings")
 @verification_wrapper
 async def handle_set_settings(websocket, res) -> None:
-    """Handle requests to set a specific setting."""
+    """Handle requests to set a specific setting.
+    
+    Parameters:
+        websocket (WebSocket): The websocket of the client.
+        res (dict): Dictionary containing {passcode, settings}
+    """
     try:
         with relative_open("settings.json", "r") as f:
             content = f.read().strip()
@@ -944,12 +1239,17 @@ async def handle_set_settings(websocket, res) -> None:
 @ws_manager.on("getWholeQuiz")
 @verification_wrapper
 async def handle_get_whole_quiz(websocket, res) -> None:
-    """Handle requests to get the whole quiz."""
-    code = res["passcode"]
+    """Handle requests to get the whole quiz.
+    
+    Parameters:
+        websocket (WebSocket): The websocket of the client.
+        res (dict): Dictionary containing {passcode, quiz_name}
+    """
+    passcode = res["passcode"]
     quiz_name = res["quiz_name"]
     if not quiz_name.endswith(".khn"):
         quiz_name += ".khn"
-    if get_passcode() == code:
+    if get_passcode() == passcode:
         with relative_open(f"quiz/{quiz_name}", "rb") as f:
             xml_content = f.read()
             dict_content = xmltodict.parse(xml_content)
@@ -999,9 +1299,14 @@ async def handle_get_whole_quiz(websocket, res) -> None:
 @ws_manager.on("moveQuestion")
 @verification_wrapper
 async def handle_move_question(websocket, res) -> None:
-    """Handle requests to move a question."""
-    code = res["passcode"]
-    if get_passcode() == code:
+    """Handle requests to move a question.
+    
+    Parameters:
+        websocket (WebSocket): The websocket of the client.
+        res (dict): Dictionary containing {passcode, from, to, quiz_name}
+    """
+    passcode = res["passcode"]
+    if get_passcode() == passcode:
         from_index = res["from"]
         to_index = res["to"]
         quiz_name = res["quiz_name"]
@@ -1064,9 +1369,14 @@ async def handle_move_question(websocket, res) -> None:
 @ws_manager.on("copyQuestion")
 @verification_wrapper
 async def handle_copy_question(websocket, res) -> None:
-    """Handle requests to copy a question."""
-    code = res["passcode"]
-    if get_passcode() == code:
+    """Handle requests to copy a question.
+    
+    Parameters:
+        websocket (WebSocket): The websocket of the client.
+        res (dict): Dictionary containing {passcode, question, to, quiz_name}
+    """
+    passcode = res["passcode"]
+    if get_passcode() == passcode:
         question_to_copy = res["question"]
         question_to_copy["@duration"] = question_to_copy.pop("duration")
         question_to_copy["@type"] = question_to_copy.pop("type")
@@ -1119,9 +1429,14 @@ async def handle_copy_question(websocket, res) -> None:
 @ws_manager.on("deleteQuestion")
 @verification_wrapper
 async def handle_delete_question(websocket, res) -> None:
-    """Handle requests to delete a question."""
-    code = res["passcode"]
-    if get_passcode() == code:
+    """Handle requests to delete a question.
+    
+    Parameters:
+        websocket (WebSocket): The websocket of the client.
+        res (dict): Dictionary containing {passcode, index, quiz_name}
+    """
+    passcode = res["passcode"]
+    if get_passcode() == passcode:
         index = res["index"]
         quiz_name = res["quiz_name"]
         
@@ -1163,9 +1478,14 @@ async def handle_delete_question(websocket, res) -> None:
 @ws_manager.on("getDrawer")
 @verification_wrapper
 async def handle_get_drawer(websocket, res) -> None:
-    """Handle requests to get the drawer."""
-    code = res["passcode"]
-    if get_passcode() == code:
+    """Handle requests to get the drawer.
+    
+    Parameters:
+        websocket (WebSocket): The websocket of the client.
+        res (dict): Dictionary containing {passcode}
+    """
+    passcode = res["passcode"]
+    if get_passcode() == passcode:
         with relative_open("drawer.json", "r") as f:
             drawer = json.load(f)
             await ws_manager.emit("drawer", drawer, to=websocket)
@@ -1175,11 +1495,18 @@ async def handle_get_drawer(websocket, res) -> None:
 @ws_manager.on("uploadQuiz")
 @verification_wrapper
 async def handle_upload_quiz_at_id(websocket, res) -> None:
-    code = res["passcode"]
+    """
+    Handle the upload of a quiz to kahiindb.
+    
+    Parameters:
+        websocket (WebSocket): The websocket of the client.
+        res (dict): Dictionary containing {passcode, quiz, token}
+    """
+    passcode = res["passcode"]
     quiz = res["quiz"]
     token = res["token"]
     
-    if get_passcode() == code:
+    if get_passcode() == passcode:
         # Send the quiz_id and token to kahiindb
         if quiz.endswith(".khn"):
             quiz = quiz[:-4]
@@ -1197,6 +1524,12 @@ async def handle_upload_quiz_at_id(websocket, res) -> None:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 
 def already_in_drawer(question):
+    """
+    Check if a question is already in the drawer.
+    
+    Parameters:
+        question (dict): The question to check.
+    """
     with relative_open("drawer.json", "r") as f:
         drawer = json.load(f)
         for q in drawer:
@@ -1207,9 +1540,16 @@ def already_in_drawer(question):
 @ws_manager.on("downloadQuestion")
 @verification_wrapper
 async def handle_download_question(websocket, res) -> None:
-    code = res["passcode"]
+    """
+    Handle the download of a question from the drawer.
+    
+    Parameters:
+        websocket (WebSocket): The websocket of the client.
+        res (dict): Dictionary containing {passcode, question}
+    """
+    passcode = res["passcode"]
     question = res["question"]
-    if get_passcode() == code:
+    if get_passcode() == passcode:
         with relative_open("drawer.json", "r") as f:
             drawer = json.load(f)
             if not already_in_drawer(question):
@@ -1221,6 +1561,14 @@ async def handle_download_question(websocket, res) -> None:
         await ws_manager.emit("error", "InvalidPasscode", to=websocket)
 
 def download_file(token, file_id, output_filename):
+    """
+    Download a file from kahiindb.
+    
+    Parameters:
+        token (str): The token to use for the download.
+        file_id (str): The id of the file to download.
+        output_filename (str): The name of the file to save the download to.
+    """
     full_url = f"{kahiin_db_address}/download?token={token}&id_file={file_id}"
     response = requests.get(full_url)
     if response.status_code == 200:
@@ -1231,6 +1579,13 @@ def download_file(token, file_id, output_filename):
         return False
 
 def get_quiz_name_from_id(token, quiz_id):
+    """
+    Get the name of a quiz from its id.
+
+    Parameters:
+        token (str): The token to use for the download.
+        quiz_id (str): The id of the quiz to get the name of.
+    """
     params = {
         "token": token,
         "id_file": quiz_id
@@ -1243,10 +1598,10 @@ def get_quiz_name_from_id(token, quiz_id):
 @ws_manager.on("downloadQuiz")
 @verification_wrapper
 async def handle_download_quiz(websocket, res) -> None:
-    code = res["passcode"]
+    passcode = res["passcode"]
     quiz_id = res["quiz_id"]
     token = res["token"]
-    if get_passcode() == code:
+    if get_passcode() == passcode:
         quiz_name = get_quiz_name_from_id(token, quiz_id)
         if quiz_name == "InternalError":
             await ws_manager.emit("error", "InternalError", to=websocket)
@@ -1266,6 +1621,13 @@ async def handle_download_quiz(websocket, res) -> None:
 @ws_manager.on("restartAll")
 @verification_wrapper
 async def handle_restart_all(websocket, res) -> None:
+    """
+    Handle the restart of a new game.
+
+    Parameters:
+        websocket (WebSocket): The websocket of the client.
+        res (dict): Dictionary containing {passcode}
+    """
     global kahiin_db_address, quiz, sleep_manager, client_list, board_list, host_list, game
     passcode = res["passcode"]
     if get_passcode() == passcode:
@@ -1295,11 +1657,11 @@ if not os.path.exists(os.path.join(os.path.dirname(__file__), "drawer.json")):
         json.dump([], f)
 if not os.path.exists(os.path.join(os.path.dirname(__file__), "settings.json")):
     with relative_open("settings.json", "w") as f:
+        # Default admin password is 1234
         json.dump({"language": "en", "dyslexicMode": False, "adminPassword": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4", "randomOrder": False, "endOnAllAnswered": True}, f)
 if not os.path.exists(os.path.join(os.path.dirname(__file__), "quiz")):
     os.makedirs(os.path.join(os.path.dirname(__file__), "quiz"))
 
 if __name__ == '__main__':
-    # Start Flask
     start_flask()
 
