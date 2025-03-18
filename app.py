@@ -772,7 +772,7 @@ async def end_question(correct_answers):
 async def handle_show_leaderboard(websocket, passcode: str) -> None:
     """Handle the host showing the leaderboard.
 
-    Parameters:
+    Parameters:'\n\n' +
         websocket (WebSocket): The host websocket
         passcode (str): Used for verification wrapper.
     """
@@ -1056,18 +1056,15 @@ async def handle_edit_quiz_language(websocket, res) -> None:
         websocket (WebSocket): The websocket of the host.
         res (dict): Dictionary containing {passcode, quiz_name, new_language}
     """
-    passcode = res["passcode"]
     quiz_name = res["quiz_name"]
     new_language = res["new_language"]
     if not quiz_name.endswith(".khn"):
         quiz_name += ".khn"
-    if get_passcode() == passcode:
-        tree = ET.parse(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
-        root = tree.getroot()
-        root.find("language").text = new_language
-        tree.write(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
-    else:
-        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+    tree = ET.parse(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
+    root = tree.getroot()
+    root.find("language").text = new_language
+    tree.write(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
+
 
 @ws_manager.on("editquizzesubject")
 @verification_wrapper
@@ -1079,18 +1076,14 @@ async def handle_edit_quiz_subject(websocket, res) -> None:
         websocket (WebSocket): The websocket of the host.
         res (dict): Dictionary containing {passcode, quiz_name, new_subject}
     """
-    passcode = res["passcode"]
     quiz_name = res["quiz_name"]
     new_subject = res["new_subject"]
     if not quiz_name.endswith(".khn"):
         quiz_name += ".khn"
-    if get_passcode() == passcode:
-        tree = ET.parse(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
-        root = tree.getroot()
-        root.find("subject").text = new_subject
-        tree.write(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
-    else:
-        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+    tree = ET.parse(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
+    root = tree.getroot()
+    root.find("subject").text = new_subject
+    tree.write(os.path.join(os.path.dirname(__file__), "quiz", quiz_name))
 
 @ws_manager.on("editQuestion")
 @verification_wrapper
@@ -1169,26 +1162,25 @@ async def handle_new_question(websocket, res) -> None:
         res (dict): Dictionary containing {passcode}
     """
     glossary = get_glossary()
-    if get_passcode() == res["passcode"]:
-        with relative_open("drawer.json", "r") as f:
-            drawer = json.load(f)
+    with relative_open("drawer.json", "r") as f:
+        drawer = json.load(f)
 
-        drawer.append({
-            "title": glossary["NewQuestion"],
-            "type": "uniqueanswer",
-            "duration": 20,
-            "shown_answers": ["A", "B"],
-            "correct_answers": [],
-            "language": get_settings()["language"],
-            "subject": glossary["Other"]
-        })
+    drawer.append({
+        "title": glossary["NewQuestion"],
+        "type": "uniqueanswer",
+        "duration": 20,
+        "shown_answers": ["A", "B"],
+        "correct_answers": [],
+        "language": get_settings()["language"],
+        "subject": glossary["Other"]
+    })
 
-        with relative_open("drawer.json", "w") as f:
-            json.dump(drawer, f, indent=4)
+    with relative_open("drawer.json", "w") as f:
+        json.dump(drawer, f, indent=4)
 
-        with relative_open("drawer.json", "r") as f:
-            drawer = json.load(f)
-            await ws_manager.emit("questionAdded", drawer, to=websocket)
+    with relative_open("drawer.json", "r") as f:
+        drawer = json.load(f)
+        await ws_manager.emit("questionAdded", drawer, to=websocket)
 
 @ws_manager.on("getSettings")
 async def handle_get_settings(websocket, passcode: str) -> None:
@@ -1245,56 +1237,52 @@ async def handle_get_whole_quiz(websocket, res) -> None:
         websocket (WebSocket): The websocket of the client.
         res (dict): Dictionary containing {passcode, quiz_name}
     """
-    passcode = res["passcode"]
     quiz_name = res["quiz_name"]
     if not quiz_name.endswith(".khn"):
         quiz_name += ".khn"
-    if get_passcode() == passcode:
-        with relative_open(f"quiz/{quiz_name}", "rb") as f:
-            xml_content = f.read()
-            dict_content = xmltodict.parse(xml_content)
+    with relative_open(f"quiz/{quiz_name}", "rb") as f:
+        xml_content = f.read()
+        dict_content = xmltodict.parse(xml_content)
 
-            if "questions" not in dict_content["quiz"]:
-                dict_content["quiz"]["questions"] = []
+        if "questions" not in dict_content["quiz"]:
+            dict_content["quiz"]["questions"] = []
 
-            if isinstance(dict_content["quiz"]["questions"], dict):
-                questions = [dict_content["quiz"]["questions"]]
-                dict_content["quiz"]["questions"] = questions
-            elif dict_content["quiz"]["questions"] is None:
-                questions = []
-            elif isinstance(dict_content["quiz"]["questions"][0]["question"], dict):
-                questions = [dict_content["quiz"]["questions"][0]["question"]]
-                dict_content["quiz"]["questions"][0]["question"] = questions
+        if isinstance(dict_content["quiz"]["questions"], dict):
+            questions = [dict_content["quiz"]["questions"]]
+            dict_content["quiz"]["questions"] = questions
+        elif dict_content["quiz"]["questions"] is None:
+            questions = []
+        elif isinstance(dict_content["quiz"]["questions"][0]["question"], dict):
+            questions = [dict_content["quiz"]["questions"][0]["question"]]
+            dict_content["quiz"]["questions"][0]["question"] = questions
 
-            if not isinstance(questions, list):
-                questions = [e["question"] for e in questions]
-            elif(len(questions) == 0):
-                questions = []
-            else:
-                questions = questions[0]["question"]
-            
-            if not isinstance(questions, list):
-                questions = [questions]
+        if not isinstance(questions, list):
+            questions = [e["question"] for e in questions]
+        elif(len(questions) == 0):
+            questions = []
+        else:
+            questions = questions[0]["question"]
+        
+        if not isinstance(questions, list):
+            questions = [questions]
 
-            # Ensure correct_answers is always present
-            for question in questions:
-                if isinstance(question, dict) and "correct_answers" not in question:
-                    question["correct_answers"] = []
+        # Ensure correct_answers is always present
+        for question in questions:
+            if isinstance(question, dict) and "correct_answers" not in question:
+                question["correct_answers"] = []
 
-            if not quiz_name.endswith(".khn"):
-                quiz_name += ".khn"
+        if not quiz_name.endswith(".khn"):
+            quiz_name += ".khn"
 
-            quiz = {
-                "subject": dict_content["quiz"]["subject"],
-                "language": dict_content["quiz"]["language"],
-                "title": quiz_name[:-4],
-                "questions": questions
-            }
+        quiz = {
+            "subject": dict_content["quiz"]["subject"],
+            "language": dict_content["quiz"]["language"],
+            "title": quiz_name[:-4],
+            "questions": questions
+        }
 
-            json_content = json.dumps(quiz)
-            await ws_manager.emit("wholeQuiz", json_content, to=websocket)
-    else:
-        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+        json_content = json.dumps(quiz)
+        await ws_manager.emit("wholeQuiz", json_content, to=websocket)
 
 @ws_manager.on("moveQuestion")
 @verification_wrapper
@@ -1305,66 +1293,63 @@ async def handle_move_question(websocket, res) -> None:
         websocket (WebSocket): The websocket of the client.
         res (dict): Dictionary containing {passcode, from, to, quiz_name}
     """
-    passcode = res["passcode"]
-    if get_passcode() == passcode:
-        from_index = res["from"]
-        to_index = res["to"]
-        quiz_name = res["quiz_name"]
-        
-        if not quiz_name.endswith(".khn"):
-            quiz_name += ".khn"
+    from_index = res["from"]
+    to_index = res["to"]
+    quiz_name = res["quiz_name"]
+    
+    if not quiz_name.endswith(".khn"):
+        quiz_name += ".khn"
 
-        with relative_open(f"quiz/{quiz_name}", "rb") as f:
-            xml_content = f.read()
-            dict_content = xmltodict.parse(xml_content)
-            if "questions" not in dict_content["quiz"]:
-                dict_content["quiz"]["questions"] = []
+    with relative_open(f"quiz/{quiz_name}", "rb") as f:
+        xml_content = f.read()
+        dict_content = xmltodict.parse(xml_content)
+        if "questions" not in dict_content["quiz"]:
+            dict_content["quiz"]["questions"] = []
 
-            if isinstance(dict_content["quiz"]["questions"], dict):
-                questions = [dict_content["quiz"]["questions"]]
-                dict_content["quiz"]["questions"] = questions
-            elif dict_content["quiz"]["questions"] is None:
-                questions = []
-            elif isinstance(dict_content["quiz"]["questions"][0]["question"], dict):
-                questions = [dict_content["quiz"]["questions"][0]["question"]]
-                dict_content["quiz"]["questions"][0]["question"] = questions
+        if isinstance(dict_content["quiz"]["questions"], dict):
+            questions = [dict_content["quiz"]["questions"]]
+            dict_content["quiz"]["questions"] = questions
+        elif dict_content["quiz"]["questions"] is None:
+            questions = []
+        elif isinstance(dict_content["quiz"]["questions"][0]["question"], dict):
+            questions = [dict_content["quiz"]["questions"][0]["question"]]
+            dict_content["quiz"]["questions"][0]["question"] = questions
 
-            if not isinstance(questions, list):
-                questions = [e["question"] for e in questions]
-            elif len(questions) == 0:
-                questions = []
-            else:
-                questions = questions[0]["question"]
-
-        # Ensure questions is a list
         if not isinstance(questions, list):
-            questions = [questions]
+            questions = [e["question"] for e in questions]
+        elif len(questions) == 0:
+            questions = []
+        else:
+            questions = questions[0]["question"]
 
-        # Ensure correct_answers is always present
-        for question in questions:
-            if "correct_answers" not in question:
-                question["correct_answers"] = []
+    # Ensure questions is a list
+    if not isinstance(questions, list):
+        questions = [questions]
 
-        # Move the question from from_index to to_index
-        questions.insert(to_index, questions.pop(from_index))
+    # Ensure correct_answers is always present
+    for question in questions:
+        if "correct_answers" not in question:
+            question["correct_answers"] = []
 
-        with relative_open(f"quiz/{quiz_name}", "wb") as f:
-            f.write(xmltodict.unparse(dict_content).encode())
+    # Move the question from from_index to to_index
+    questions.insert(to_index, questions.pop(from_index))
 
-        if not quiz_name.endswith(".khn"):
-            quiz_name += ".khn"
+    with relative_open(f"quiz/{quiz_name}", "wb") as f:
+        f.write(xmltodict.unparse(dict_content).encode())
 
-        quiz = {
-            "subject": dict_content["quiz"]["subject"],
-            "language": dict_content["quiz"]["language"],
-            "title": quiz_name[:-4],
-            "questions": questions
-        }
+    if not quiz_name.endswith(".khn"):
+        quiz_name += ".khn"
 
-        json_content = json.dumps(quiz)
-        await ws_manager.emit("wholeQuiz", json_content, to=websocket)
-    else:
-        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+    quiz = {
+        "subject": dict_content["quiz"]["subject"],
+        "language": dict_content["quiz"]["language"],
+        "title": quiz_name[:-4],
+        "questions": questions
+    }
+
+    json_content = json.dumps(quiz)
+    await ws_manager.emit("wholeQuiz", json_content, to=websocket)
+
 
 @ws_manager.on("copyQuestion")
 @verification_wrapper
@@ -1375,56 +1360,52 @@ async def handle_copy_question(websocket, res) -> None:
         websocket (WebSocket): The websocket of the client.
         res (dict): Dictionary containing {passcode, question, to, quiz_name}
     """
-    passcode = res["passcode"]
-    if get_passcode() == passcode:
-        question_to_copy = res["question"]
-        question_to_copy["@duration"] = question_to_copy.pop("duration")
-        question_to_copy["@type"] = question_to_copy.pop("type")
+    question_to_copy = res["question"]
+    question_to_copy["@duration"] = question_to_copy.pop("duration")
+    question_to_copy["@type"] = question_to_copy.pop("type")
 
-        target_index = res["to"]
-        quiz_name = res["quiz_name"]
-        
-        if not quiz_name.endswith(".khn"):
-            quiz_name += ".khn"
+    target_index = res["to"]
+    quiz_name = res["quiz_name"]
+    
+    if not quiz_name.endswith(".khn"):
+        quiz_name += ".khn"
 
-        with relative_open(f"quiz/{quiz_name}", "rb") as f:
-            xml_content = f.read()
-            dict_content = xmltodict.parse(xml_content)
-            if "questions" not in dict_content["quiz"] or dict_content["quiz"]["questions"] is None:
-                dict_content["quiz"]["questions"] = {"question": []}
-            questions = dict_content["quiz"]["questions"].get("question", [])
+    with relative_open(f"quiz/{quiz_name}", "rb") as f:
+        xml_content = f.read()
+        dict_content = xmltodict.parse(xml_content)
+        if "questions" not in dict_content["quiz"] or dict_content["quiz"]["questions"] is None:
+            dict_content["quiz"]["questions"] = {"question": []}
+        questions = dict_content["quiz"]["questions"].get("question", [])
 
-        # Ensure questions is a list
-        if not isinstance(questions, list):
-            questions = [questions]
+    # Ensure questions is a list
+    if not isinstance(questions, list):
+        questions = [questions]
 
-        # Ensure correct_answers is always present
-        for question in questions:
-            if "correct_answers" not in question:
-                question["correct_answers"] = []
+    # Ensure correct_answers is always present
+    for question in questions:
+        if "correct_answers" not in question:
+            question["correct_answers"] = []
 
-        # Copy the question to the target index
-        questions.insert(target_index, question_to_copy)
+    # Copy the question to the target index
+    questions.insert(target_index, question_to_copy)
 
-        dict_content["quiz"]["questions"]["question"] = questions
+    dict_content["quiz"]["questions"]["question"] = questions
 
-        with relative_open(f"quiz/{quiz_name}", "wb") as f:
-            f.write(xmltodict.unparse(dict_content).encode())
+    with relative_open(f"quiz/{quiz_name}", "wb") as f:
+        f.write(xmltodict.unparse(dict_content).encode())
 
-        if not quiz_name.endswith(".khn"):
-            quiz_name += ".khn"
+    if not quiz_name.endswith(".khn"):
+        quiz_name += ".khn"
 
-        quiz = {
-            "subject": dict_content["quiz"]["subject"],
-            "language": dict_content["quiz"]["language"],
-            "title": quiz_name[:-4],
-            "questions": questions
-        }
+    quiz = {
+        "subject": dict_content["quiz"]["subject"],
+        "language": dict_content["quiz"]["language"],
+        "title": quiz_name[:-4],
+        "questions": questions
+    }
 
-        json_content = json.dumps(quiz)
-        await ws_manager.emit("wholeQuiz", json_content, to=websocket)
-    else:
-        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+    json_content = json.dumps(quiz)
+    await ws_manager.emit("wholeQuiz", json_content, to=websocket)
 
 @ws_manager.on("deleteQuestion")
 @verification_wrapper
@@ -1435,45 +1416,42 @@ async def handle_delete_question(websocket, res) -> None:
         websocket (WebSocket): The websocket of the client.
         res (dict): Dictionary containing {passcode, index, quiz_name}
     """
-    passcode = res["passcode"]
-    if get_passcode() == passcode:
-        index = res["index"]
-        quiz_name = res["quiz_name"]
-        
-        if not quiz_name.endswith(".khn"):
-            quiz_name += ".khn"
-        with relative_open(f"quiz/{quiz_name}", "rb") as f:
-            xml_content = f.read()
-            dict_content = xmltodict.parse(xml_content)
-            questions = dict_content["quiz"]["questions"].get("question", [])
+    index = res["index"]
+    quiz_name = res["quiz_name"]
+    
+    if not quiz_name.endswith(".khn"):
+        quiz_name += ".khn"
+    with relative_open(f"quiz/{quiz_name}", "rb") as f:
+        xml_content = f.read()
+        dict_content = xmltodict.parse(xml_content)
+        questions = dict_content["quiz"]["questions"].get("question", [])
 
-        # Ensure questions is a list
-        if not isinstance(questions, list):
-            questions = [questions]
+    # Ensure questions is a list
+    if not isinstance(questions, list):
+        questions = [questions]
 
-        # Delete the question at the specified index
-        if 0 <= index < len(questions):
-            del questions[index]
+    # Delete the question at the specified index
+    if 0 <= index < len(questions):
+        del questions[index]
 
-        dict_content["quiz"]["questions"]["question"] = questions
+    dict_content["quiz"]["questions"]["question"] = questions
 
-        with relative_open(f"quiz/{quiz_name}", "wb") as f:
-            f.write(xmltodict.unparse(dict_content).encode())
+    with relative_open(f"quiz/{quiz_name}", "wb") as f:
+        f.write(xmltodict.unparse(dict_content).encode())
 
-        if not quiz_name.endswith(".khn"):
-            quiz_name += ".khn"
-        
-        quiz = {
-            "subject": dict_content["quiz"]["subject"],
-            "language": dict_content["quiz"]["language"],
-            "title": quiz_name[:-4],
-            "questions": questions
-        }
+    if not quiz_name.endswith(".khn"):
+        quiz_name += ".khn"
+    
+    quiz = {
+        "subject": dict_content["quiz"]["subject"],
+        "language": dict_content["quiz"]["language"],
+        "title": quiz_name[:-4],
+        "questions": questions
+    }
 
-        json_content = json.dumps(quiz)
-        await ws_manager.emit("wholeQuiz", json_content, to=websocket)
-    else:
-        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+    json_content = json.dumps(quiz)
+    await ws_manager.emit("wholeQuiz", json_content, to=websocket)
+
 
 @ws_manager.on("getDrawer")
 @verification_wrapper
@@ -1484,13 +1462,9 @@ async def handle_get_drawer(websocket, res) -> None:
         websocket (WebSocket): The websocket of the client.
         res (dict): Dictionary containing {passcode}
     """
-    passcode = res["passcode"]
-    if get_passcode() == passcode:
-        with relative_open("drawer.json", "r") as f:
-            drawer = json.load(f)
-            await ws_manager.emit("drawer", drawer, to=websocket)
-    else:
-        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+    with relative_open("drawer.json", "r") as f:
+        drawer = json.load(f)
+        await ws_manager.emit("drawer", drawer, to=websocket)
 
 @ws_manager.on("uploadQuiz")
 @verification_wrapper
@@ -1502,27 +1476,23 @@ async def handle_upload_quiz_at_id(websocket, res) -> None:
         websocket (WebSocket): The websocket of the client.
         res (dict): Dictionary containing {passcode, quiz, token}
     """
-    passcode = res["passcode"]
     quiz = res["quiz"]
     token = res["token"]
     
-    if get_passcode() == passcode:
-        # Send the quiz_id and token to kahiindb
-        if quiz.endswith(".khn"):
-            quiz = quiz[:-4]
-        files = {
-            'token': (None, token),
-            'filename': (None, quiz),
-            'file': (quiz, open(f"quiz/{quiz}.khn", 'rb'))
-        }
-        response = requests.post(kahiin_db_address + "/quiz", files=files)
-        if json.loads(response.text) == {"message": "Quiz uploaded successfully"}:
-            await ws_manager.emit("quizUploaded", to=websocket)
-        else:
-            raise Exception("Error while uploading the quiz")
+    # Send the quiz_id and token to kahiindb
+    if quiz.endswith(".khn"):
+        quiz = quiz[:-4]
+    files = {
+        'token': (None, token),
+        'filename': (None, quiz),
+        'file': (quiz, open(f"quiz/{quiz}.khn", 'rb'))
+    }
+    response = requests.post(kahiin_db_address + "/quiz", files=files)
+    if json.loads(response.text) == {"message": "Quiz uploaded successfully"}:
+        await ws_manager.emit("quizUploaded", to=websocket)
     else:
-        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
-
+        raise Exception("Error while uploading the quiz")
+    
 def already_in_drawer(question):
     """
     Check if a question is already in the drawer.
@@ -1547,18 +1517,14 @@ async def handle_download_question(websocket, res) -> None:
         websocket (WebSocket): The websocket of the client.
         res (dict): Dictionary containing {passcode, question}
     """
-    passcode = res["passcode"]
     question = res["question"]
-    if get_passcode() == passcode:
-        with relative_open("drawer.json", "r") as f:
-            drawer = json.load(f)
-            if not already_in_drawer(question):
-                drawer.append(question)
-                with relative_open("drawer.json", "w") as f:
-                    json.dump(drawer, f, indent=4)
-                await ws_manager.emit("questionDownloaded", drawer, to=websocket)
-    else:
-        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+    with relative_open("drawer.json", "r") as f:
+        drawer = json.load(f)
+        if not already_in_drawer(question):
+            drawer.append(question)
+            with relative_open("drawer.json", "w") as f:
+                json.dump(drawer, f, indent=4)
+            await ws_manager.emit("questionDownloaded", drawer, to=websocket)
 
 def download_file(token, file_id, output_filename):
     """
@@ -1598,25 +1564,21 @@ def get_quiz_name_from_id(token, quiz_id):
 @ws_manager.on("downloadQuiz")
 @verification_wrapper
 async def handle_download_quiz(websocket, res) -> None:
-    passcode = res["passcode"]
     quiz_id = res["quiz_id"]
     token = res["token"]
-    if get_passcode() == passcode:
-        quiz_name = get_quiz_name_from_id(token, quiz_id)
-        if quiz_name == "InternalError":
-            await ws_manager.emit("error", "InternalError", to=websocket)
-        if download_file(token, quiz_id, f"quiz/{quiz_name}.khn"):
-            quiz_list = os.listdir(os.path.join(os.path.dirname(__file__), "quiz"))
-            quiz_list.sort()
-            quiz_list = [q[:-4] for q in quiz_list if q != ".gitkeep"]
-            for quiz in quiz_list:
-                if quiz.endswith(".khn"):
-                    quiz_list[quiz_list.index(quiz)] = quiz[:-4]
-            await ws_manager.emit("quizDownloaded", quiz_list, to=websocket)
-        else:
-            await ws_manager.emit("error", "QuizNotFound", to=websocket)
+    quiz_name = get_quiz_name_from_id(token, quiz_id)
+    if quiz_name == "InternalError":
+        await ws_manager.emit("error", "InternalError", to=websocket)
+    if download_file(token, quiz_id, f"quiz/{quiz_name}.khn"):
+        quiz_list = os.listdir(os.path.join(os.path.dirname(__file__), "quiz"))
+        quiz_list.sort()
+        quiz_list = [q[:-4] for q in quiz_list if q != ".gitkeep"]
+        for quiz in quiz_list:
+            if quiz.endswith(".khn"):
+                quiz_list[quiz_list.index(quiz)] = quiz[:-4]
+        await ws_manager.emit("quizDownloaded", quiz_list, to=websocket)
     else:
-        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
+        await ws_manager.emit("error", "QuizNotFound", to=websocket)
 
 @ws_manager.on("restartAll")
 @verification_wrapper
@@ -1629,24 +1591,20 @@ async def handle_restart_all(websocket, res) -> None:
         res (dict): Dictionary containing {passcode}
     """
     global kahiin_db_address, quiz, sleep_manager, client_list, board_list, host_list, game
-    passcode = res["passcode"]
-    if get_passcode() == passcode:
-        for client in client_list + board_list + host_list:
-            await ws_manager.emit("restart", to=client.websocket)
-        await ws_manager.stop()
+    for client in client_list + board_list + host_list:
+        await ws_manager.emit("restart", to=client.websocket)
+    await ws_manager.stop()
 
-        kahiin_db_address = "http://localhost:5000"
-        quiz = Quiz()
-        sleep_manager = SleepManager()
-        client_list = []
-        board_list = []
-        host_list = []
-        game = Game()
+    kahiin_db_address = "http://localhost:5000"
+    quiz = Quiz()
+    sleep_manager = SleepManager()
+    client_list = []
+    board_list = []
+    host_list = []
+    game = Game()
 
-        start_flask()
-    else:
-        await ws_manager.emit("error", "InvalidPasscode", to=websocket)
-
+    start_flask()
+    
 def start_flask():
     # ws_manager.add_background_task(background_task())
     asyncio.run(ws_manager.start())
