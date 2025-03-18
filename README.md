@@ -9,7 +9,7 @@ An open source game for school classes, with server runnable on any terminal.
 1. Install [Docker](https://docs.docker.com/get-docker/)
 2. Run the following command:
 ```bash
-docker built -t kahiin .
+docker build -t kahiin .
 docker run --network=host kahiin
 ```
 
