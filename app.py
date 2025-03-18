@@ -773,7 +773,7 @@ async def end_question(correct_answers):
 async def handle_show_leaderboard(websocket, passcode: str) -> None:
     """Handle the host showing the leaderboard.
 
-    Parameters:'\n\n' +
+    Parameters:
         websocket (WebSocket): The host websocket
         passcode (str): Used for verification wrapper.
     """
